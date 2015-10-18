@@ -6,7 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import nltk
 # nltk.download()
 import operator
-from signal import signal, SIGPIPE, SIG_DFL
+
 
 db = SQLAlchemy()
 
@@ -30,7 +30,6 @@ def query_results(cursor):
 
 def querying():
     # why oh why does this have to go into a function for db to work??
-    signal(SIGPIPE,SIG_DFL) 
     QUERY = """SELECT Zip, lattitude, longitude 
             FROM Latlong
             """
