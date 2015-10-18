@@ -1,3 +1,4 @@
+from __future__ import generators
 from okcupyd.session import Session
 from okcupyd.json_search import SearchFetchable
 from flask import Flask
@@ -5,6 +6,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 import nltk
 # nltk.download()
 import operator
+from signal import signal, SIGPIPE, SIG_DFL
 
 db = SQLAlchemy()
 
@@ -18,15 +20,23 @@ def connect_to_db(app):
 
 # from zipcodes table, get lat, long >> store this in a generator
 
+def query_results(cursor):
+    while True:
+        results = cursor.fetchall()
+        if not results:
+            break
+        for result in results:
+            yield result
+
 def querying():
     # why oh why does this have to go into a function for db to work??
+    signal(SIGPIPE,SIG_DFL) 
     QUERY = """SELECT Zip, lattitude, longitude 
             FROM Latlong
             """
     cursor = db.session.execute(QUERY)
-    results = cursor.fetchone() # how would I make this a generator?!!
-
-    return results
+    generator = query_results(cursor)
+    return generator
 
 def inserting(zip_code, latitude, longitude, most_common_adjective, most_common_count):
     QUERY = """INSERT INTO Adjectives VALUES
@@ -37,38 +47,39 @@ def inserting(zip_code, latitude, longitude, most_common_adjective, most_common_
     db.session.commit()
 
 #i can call my function in interactive mode.  but if i do it normally, i get an error.  Why??
-# answer = querying()
 
+
+# for the zipcode in generator (ideally results is output from calling the function)
+def searchOKC(generator):
 # log into okCupid
-session = Session.login('adobsthecat', 'meow6996')
-entry = (94108, 100, 1000)
-# for the zipcode in generator
-# for entry in results:
-zip_code, latitude, longitude = entry
+    session = Session.login('adobsthecat', 'meow6996')
+    for entry in generator:
+        zip_code, latitude, longitude = entry
 
-searchable_profile = ""
-for profile in SearchFetchable(session=session, location=zip_code)[:2]:
-    if profile.essays.self_summary:
-        print profile
-        searchable_profile += profile.essays.self_summary.lower()
+        searchable_profile = ""
+        for profile in SearchFetchable(session=session, location=zip_code)[:500]:
+            if profile.essays.self_summary:
+                print profile
+                searchable_profile += profile.essays.self_summary.lower()
 
-tokens = nltk.word_tokenize(searchable_profile)
+        tokens = nltk.word_tokenize(searchable_profile)
 
-tagged = nltk.pos_tag(tokens)
+        #tag words by word type (like adjective)
+        tagged = nltk.pos_tag(tokens)
 
-adjectives = {}
+        adjectives = {}
 
-for word, speech_part in tagged:
-    if speech_part == "ADJ" or speech_part == "JJ":
-        adjectives[word] = adjectives.get(word, 0)
-        adjectives[word] += 1
+        for word, speech_part in tagged:
+            if speech_part == "ADJ" or speech_part == "JJ":
+                adjectives[word] = adjectives.get(word, 0)
+                adjectives[word] += 1
 
-sorted_adjectives = sorted(adjectives.items(), key=operator.itemgetter(1))
+        sorted_adjectives = sorted(adjectives.items(), key=operator.itemgetter(1))
 
-most_common_adjective, most_common_count = sorted_adjectives[-1]
+        most_common_adjective, most_common_count = sorted_adjectives[-1]
 
-# will have zip code, lat, long, adjective, and count >> Adjectives table
-# inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
+    # will have zip code, lat, long, adjective, and count >> Adjectives table
+    inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
 
 
 if __name__ == "__main__":
