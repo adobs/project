@@ -58,7 +58,7 @@ def searchOKC(generator):
         searchable_profile = ""
 
         # TODO - edit the search so that it is not within 25 miles of me!!
-        for profile in SearchFetchable(session=session, location=20854, radius=25)[:500]:
+        for profile in SearchFetchable(session=session, location=zip_code, radius=25)[:500]:
             try:
                 if profile.essays.self_summary:
                     print profile
@@ -84,7 +84,7 @@ def searchOKC(generator):
             most_common_adjective, most_common_count = sorted_adjectives[-1]
 
         # will have zip code, lat, long, adjective, and count >> Adjectives table
-            # inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
+            inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
 
             # import pdb; pdb.set_trace()
 
