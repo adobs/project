@@ -54,37 +54,38 @@ def searchOKC(generator):
     session = Session.login('adobsthecat', 'meow6996')
     for entry in generator:
         zip_code, latitude, longitude = entry
-        try:
+        adjectives = {}
+        searchable_profile = ""
 
-            searchable_profile = ""
-            for profile in SearchFetchable(session=session, location=zip_code)[:500]:
+        # TODO - edit the search so that it is not within 25 miles of me!!
+        for profile in SearchFetchable(session=session, location=20854, radius=25)[:500]:
+            try:
                 if profile.essays.self_summary:
                     print profile
                     searchable_profile += profile.essays.self_summary.lower()
 
-            tokens = nltk.word_tokenize(searchable_profile)
+                tokens = nltk.word_tokenize(searchable_profile)
 
-            #tag words by word type (like adjective)
-            tagged = nltk.pos_tag(tokens)
+                #tag words by word type (like adjective)
+                tagged = nltk.pos_tag(tokens)
 
-            adjectives = {}
+            except Exception as e:
+                # e will be the exception object
+                print type(e)
+                continue
 
-            for word, speech_part in tagged:
-                if speech_part == "ADJ" or speech_part == "JJ":
-                    adjectives[word] = adjectives.get(word, 0)
-                    adjectives[word] += 1
+        for word, speech_part in tagged:
+            if speech_part == "ADJ" or speech_part == "JJ" and speech_part != "i":
+                adjectives[word] = adjectives.get(word, 0)
+                adjectives[word] += 1
 
             sorted_adjectives = sorted(adjectives.items(), key=operator.itemgetter(1))
 
             most_common_adjective, most_common_count = sorted_adjectives[-1]
 
         # will have zip code, lat, long, adjective, and count >> Adjectives table
-            inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
-    
-        except Exception as e:
-            # e will be the exception object
-            print type(e)
-            continue
+            # inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
+
             # import pdb; pdb.set_trace()
 
 if __name__ == "__main__":
