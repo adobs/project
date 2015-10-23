@@ -5,6 +5,7 @@ from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
 import nltk
 # nltk.download()
+# from flask_app import app
 import operator
 
 
@@ -52,43 +53,50 @@ def inserting(zip_code, latitude, longitude, most_common_adjective, most_common_
 def searchOKC(generator):
 # log into okCupid
     session = Session.login('adobsthecat', 'meow6996')
+    #change my zip code
     for entry in generator:
         zip_code, latitude, longitude = entry
-        adjectives = {}
         searchable_profile = ""
 
         # TODO - edit the search so that it is not within 25 miles of me!!
-        for profile in SearchFetchable(session=session, location=zip_code, radius=25)[:500]:
+        for profile in SearchFetchable(session=session)[:500]:
             try:
                 if profile.essays.self_summary:
                     print profile
                     searchable_profile += profile.essays.self_summary.lower()
 
-                tokens = nltk.word_tokenize(searchable_profile)
 
-                #tag words by word type (like adjective)
-                tagged = nltk.pos_tag(tokens)
 
             except Exception as e:
                 # e will be the exception object
                 print type(e)
                 continue
+def change_location(location):
+    session = Session.login('adobsthecat', 'woof6996')
+    session.location = location 
+    print session.location
 
-        for word, speech_part in tagged:
-            if speech_part == "ADJ" or speech_part == "JJ" and speech_part != "i":
-                adjectives[word] = adjectives.get(word, 0)
-                adjectives[word] += 1
 
-            sorted_adjectives = sorted(adjectives.items(), key=operator.itemgetter(1))
+def tokenize(string_of_profiles):
+    adjectives = {}
+    tokens = nltk.word_tokenize(string_of_profiles)
+    #tag words by word type (like adjective)
+    tagged = nltk.pos_tag(tokens)
 
-            most_common_adjective, most_common_count = sorted_adjectives[-1]
+    for word, speech_part in tagged:
+        if speech_part == "ADJ" or speech_part == "JJ" and speech_part != "i":
+            adjectives[word] = adjectives.get(word, 0)
+            adjectives[word] += 1
 
-        # will have zip code, lat, long, adjective, and count >> Adjectives table
-            inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
+        sorted_adjectives = sorted(adjectives.items(), key=operator.itemgetter(1))
 
-            # import pdb; pdb.set_trace()
+        most_common_adjective, most_common_count = sorted_adjectives[-1]
 
-if __name__ == "__main__":
-    app = Flask(__name__)
-    connect_to_db(app)
-    db.session.close()
+    # will have zip code, lat, long, adjective, and count >> Adjectives table
+        inserting(zip_code,latitude,longitude,most_common_adjective,most_common_count)
+
+                # import pdb; pdb.set_trace()
+
+# if __name__ == "__main__":
+#     # app = Flask(__name__)
+#     connect_to_db(app)
