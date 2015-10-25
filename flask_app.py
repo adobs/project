@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect
 from jinja2 import StrictUndefined
-from model import Profile, Essay, db, connect_to_db
+from model import Profile, db, connect_to_db
 # from flask_debugtoolbar import DebugToolbarExtension
 
 app = Flask(__name__)

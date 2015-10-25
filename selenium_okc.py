@@ -4,9 +4,10 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import Select
 import time
 from pyvirtualdisplay import Display
+from json import dumps
 
-display = Display(visible=0, size=(800, 600))
-display.start()
+# display = Display(visible=0, size=(800, 600))
+# display.start()
 
 
 driver = webdriver.Firefox()
@@ -22,13 +23,16 @@ driver.get("https://www.okcupid.com/")
 # driver.execute_script("document.querySelector('#gender_dropdown').click();");
 # driver.execute_script("document.querySelector('#gender_dropdown').selectedIndex='1';")
 
-# ADD DRIVER EXECUTE
-document.querySelector('#orientation_container').innerHTML = '<input type="hidden" id="orientation" name="orientation" value="3" data-default="1">'
+# select orientation
+driver.execute_script("document.querySelector('#orientation_container').innerHTML = '<input type\"hidden\" id=\"orientation\" name=\"orientation\" value=\"3\" data-default=\"1\">';")
 
-document.querySelector('#gender_container').innerHTML = '<input type="hidden" id="gender" name="gender" value="1" data-default="2">'
+# select gender
+driver.execute_script("document.querySelector('#gender_container').innerHTML = '<input type=\"hidden\" id=\"gender\" name=\"gender\" value=\"1\" data-default=\"2\">';")
 
 # click green next button
 (driver.find_element_by_class_name('next_page')).click()
+
+################################ SECOND PAGE ##################################################################
 
 # input birthmonth
 driver.execute_script("document.querySelector('#birthmonth').value='02';")
@@ -43,50 +47,150 @@ driver.execute_script("document.querySelector('#birthyear').value='1990';")
 driver.execute_script("document.querySelector('#zip_or_city').value='94108';")
 
 # input email
-driver.execute_script("document.querySelector('#email1').value='alexandradobkin@hotmail.com';")
+driver.execute_script("document.querySelector('#email1').value='dobs@northwestern.edu';")
 
 # input email (confirming)
-driver.execute_script("document.querySelector('#email2').value='alexandradobkin@hotmail.com';")
+driver.execute_script("document.querySelector('#email2').value='dobs@northwestern.edu';")
 
-# clicking outside of input fields
-driver.execute_script("document.querySelector('#form_container').click();")
+#TAB 5 times
+birthmonth = driver.find_element_by_id("birthmonth")
+birthmonth.send_keys(Keys.TAB)
+
+birthday = driver.find_element_by_id("birthday")
+birthday.send_keys(Keys.TAB)
+
+birthyear = driver.find_element_by_id("birthyear")
+birthyear.send_keys(Keys.TAB)
+
+country_select = driver.find_element_by_id("country_selectContainer")
+country_select.send_keys(Keys.TAB)
+
+zip_or_city = driver.find_element_by_id("zip_or_city")
+zip_or_city.send_keys(Keys.TAB)
+
+email1 = driver.find_element_by_id("email1")
+email1.send_keys(Keys.TAB)
+
+email2 = driver.find_element_by_id("email2")
+email2.send_keys(Keys.TAB)
 
 
-time.sleep(10)
+########TODO PUT THIS IN A LOOP
+email_loop = True
+
+while email_loop:
+    # time.sleep(10)
+    # email verification
+    email_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[5].innerHTML;")
+
+    if email_verification == "This email is already in use.":
+        email = raw_input("Enter another email")
+
+        # input email (confirming)
+        driver.execute_script("document.querySelector('#email1').value="+dumps(email))
+        driver.execute_script("document.querySelector('#email2').value="+dumps(email))
+
+
+    else:
+        email_loop = False
+
+    email1 = driver.find_element_by_id("email1")
+    email1.send_keys(Keys.TAB)
+
+    email2 = driver.find_element_by_id("email2")
+    email2.send_keys(Keys.TAB)
+##########END LOOP 
+
+
 # click next button
 driver.execute_script("document.querySelectorAll('button[type=button]')[2].click();")
-try:
-    driver.execute_script("document.querySelectorAll('button[type=button]')[2].click();")
-except Exception as e:
-    print type(e)
-try:
-    driver.execute_script("document.querySelectorAll('button[type=button]')[2].click();")
-except Exception as e:
-    print type(e)
-# input username
-driver.execute_script("document.querySelector('#screenname_input').value='ro1a1340';")
 
-# input password
+
+################################ THIRD PAGE ##################################################################
+
+# input username
+driver.execute_script("document.querySelector('#screenname_input').value='adobsthecat';")
+
+time.sleep(3)
+
+#TAB 1 time
+screenname_input = driver.find_element_by_id("screenname_input")
+screenname_input.send_keys(Keys.TAB)
+
+#TAB 2 time
+screenname_input = driver.find_element_by_id("screenname_input")
+screenname_input.send_keys(Keys.TAB)
+
+
+##########TODO PUT THIS IN A LOOP
+screenname_loop = True
+
+while screenname_loop:
+
+    # suggestions hidden
+
+    screenname_verification = driver.execute_script("return document.querySelectorAll('.statuserror')[0];")
+    print screenname_verification
+    
+    if screenname_verification == "<div class=\"inputcontainer input statuserror\" id=\"screenname_inputContainer\" data-error=\"\">":
+        screenname = raw_input("Enter another screenname")
+        driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
+
+        #TAB 1 time
+        screenname_input = driver.find_element_by_id("screenname_input")
+        screenname_input.send_keys(Keys.TAB)
+
+    else:
+        screenname_loop = False
+    
+    #TAB 1 times
+    screenname_input = driver.find_element_by_id("screenname_input")
+    screenname_input.send_keys(Keys.TAB)
+###########END LOOP
+
+# input password REMEMBER MUST BE AT LEAST 5 CHARACTERS
 driver.execute_script("document.querySelector('#password_input').value='ro1zzaa332';")
 
-# click outside of username/signup in div
-driver.execute_script("document.querySelector('#signup').click();")
+#TAB 1 times
+password_input = driver.find_element_by_id("password_input")
+password_input.send_keys(Keys.TAB)
 
-# sequence to click submit
-driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-try:
-    driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-except Exception as e:
-    print type(e)
-try:
-    driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-except Exception as e:
-    print type(e)
+##########TODO PUT THIS IN A LOOP
 
-# printing positive results to the terminal
-current_url = driver.current_url;
-print current_url
-if current_url == "https://www.okcupid.com/onboarding/steps":
-    print "F YEAH BABY"
+password_loop = True
 
-display.stop()
+while password_loop:
+    
+    password_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[8].innerHTML;")
+    
+    if password_verification =="Password is too weak, choose again.":
+        password = raw_input("Enter another password")
+        driver.execute_script("document.querySelector('#password_input').value="+dumps(password))
+    
+    else:
+        password_loop = False
+    
+    #TAB 1 times
+    password_input = driver.find_element_by_id("password_input")
+    password_input.send_keys(Keys.TAB)
+
+###########END LOOP
+
+# # sequence to click submit
+# driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+# try:
+#     driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+# except Exception as e:
+#     print type(e)
+# try:
+#     driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+# except Exception as e:
+#     print type(e)
+
+# # printing positive results to the terminal
+# current_url = driver.current_url;
+# print current_url
+# if current_url == "https://www.okcupid.com/onboarding/steps":
+#     print "F YEAH BABY"
+
+# display.stop()

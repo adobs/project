@@ -13,21 +13,14 @@ db = SQLAlchemy()
 class Profile(db.Model):
     """Profile information."""
 
-    __tablename__ = "profile"
+    __tablename__ = "profiles"
 
-    username = db.Column(db.Text, db.ForeignKey("essays.username"), primary_key=True, )
+    username = db.Column(db.Text, primary_key=True, )
     # timestamp = db.Column(db.datetime, nullable=False, default = datetime.dateime.utcnow)
     age = db.Column(db.Integer, nullable=True)
     location = db.Column(db.Text, nullable=True)
     gender = db.Column(db.Text, nullable=True)
     orientation = db.Column(db.Text, nullable=True)
-
-class Essay(db.Model):
-    """Profile information."""
-
-    __tablename__ = "essays"
-
-    username = db.Column(db.Text, primary_key=True)
     self_summary = db.Column(db.Text, nullable=True)
     my_life = db.Column(db.Text, nullable=True)
     good_at = db.Column(db.Text, nullable=True)
@@ -39,19 +32,7 @@ class Essay(db.Model):
     private_admission = db.Column(db.Text, nullable=True)
     message_me_if = db.Column(db.Text, nullable=True)
 
-    profile = db.relationship ('Profile', backref=db.backref("essays"))
 
-# class Looking_for(db.Model):
-#     """Profile information."""
-
-#     __tablename__ = "looking_for"
-
-#     username = db.Column(db.Text, primary_key=True)
-#     gentation = db.           Column(db.Text, nullable=True)
-#     ages = db.Column(db.Text, nullable=True)
-#     single = db.Column(db.Text, nullable=True)
-#     near_me = db.Column(db.Text, nullable=True)
-#     kinds = db.Column(db.Text, nullable=True)
 
 class Adjective(db.Model):
     """Profile information."""
@@ -68,7 +49,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_900_loop.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_20_loop_3_table.db'
     db.app = app
     db.init_app(app)
 

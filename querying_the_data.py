@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from model import Profile, Essay, Adjective, db, connect_to_db
+from model import Profile, Adjective, db, connect_to_db
 import nltk
 # nltk.download()
 import operator
