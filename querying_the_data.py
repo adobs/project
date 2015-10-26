@@ -12,10 +12,19 @@ def queries():
 
 
     for location in location_list:
+        print "location is:", location
         adjectives = {}
-        self_summary_list = db.session.query(Essay.self_summary).join(Profile).filter(Profile.location == location).all()
-        self_summary_string = (" ").join(self_summary_list)
+        self_summary_list = db.session.query(Profile.self_summary).filter(Profile.location == location[0]).all()
+        
+        for summary in self_summary_list:
+            summary = summary.encode('ascii', ignore)
 
+        print 
+        print "self self_summary_list", self_summary_list
+        print
+        self_summary_string = " ".join(self_summary_list)
+        # self_summary_string = self_summary_list[0] + self_summary_list[1]
+        self_summary_string = self_summary_string.replace('\n', ' ')
         print self_summary_string
 
         tokens = nltk.word_tokenize(self_summary_string)
