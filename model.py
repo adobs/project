@@ -16,7 +16,7 @@ class Profile(db.Model):
     __tablename__ = "profiles"
 
     username = db.Column(db.Text, primary_key=True, )
-    # timestamp = db.Column(db.datetime, nullable=False, default = datetime.dateime.utcnow)
+    timestamp = db.Column(db.DateTime, nullable=False, default = datetime.utcnow)
     age = db.Column(db.Integer, nullable=True)
     location = db.Column(db.Text, nullable=True)
     gender = db.Column(db.Text, nullable=True)
@@ -49,7 +49,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_20_loop_3_table.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_25_4.db'
     db.app = app
     db.init_app(app)
 

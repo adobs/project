@@ -11,8 +11,8 @@ def test_seed_call():
 def seed_profile_data():
     session = Session.login('adobsthecat', 'woof6996')
     i=0
-    while i <100:
-        for profile in SearchFetchable(session=session)[:20]:
+    while i <10000:
+        for profile in SearchFetchable(session=session)[:900]:
             i+=1
             try: # add to the profile table
                 # inputs for the profile table
@@ -51,12 +51,13 @@ def seed_profile_data():
                 print username, i
                 db.session.add(new_profile)
                 db.session.commit()
-              
 
+              
             except Exception as e:
                 # e will be the exception object
                         print type(e)
                         print str(e)
+                        db.session.rollback()
                         continue
 
   

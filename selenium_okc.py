@@ -14,15 +14,6 @@ driver = webdriver.Firefox()
 driver.get("https://www.okcupid.com/")
 # time.sleep(10)
 
-# # not actually selecting orientation
-# driver.execute_script("document.querySelector('#orientation_dropdown').click();");
-# driver.execute_script("document.querySelector('#orientation_dropdown').selectedIndex='2';")
-
-
-# # not actually selecting gender
-# driver.execute_script("document.querySelector('#gender_dropdown').click();");
-# driver.execute_script("document.querySelector('#gender_dropdown').selectedIndex='1';")
-
 # select orientation
 driver.execute_script("document.querySelector('#orientation_container').innerHTML = '<input type\"hidden\" id=\"orientation\" name=\"orientation\" value=\"3\" data-default=\"1\">';")
 
@@ -129,20 +120,22 @@ while screenname_loop:
 
     # suggestions hidden
 
-    screenname_verification = driver.execute_script("return document.querySelectorAll('.statuserror')[0];")
+    screenname_verification = driver.execute_script("return document.querySelectorAll('#signup_email_typo_hoverbox, .label')[0].innerHTML;")
     print screenname_verification
     
-    if screenname_verification == "<div class=\"inputcontainer input statuserror\" id=\"screenname_inputContainer\" data-error=\"\">":
+    if "<div class=\"label\">(this gets filled by JS)</div><a href=\"#\" id=\"revert_typo\">Nope, change it back</a><div class=\"arrow\"></div>" == screenname_verification:
+        screenname_loop = False
+        print "FALSE"
+
+    else:
         screenname = raw_input("Enter another screenname")
         driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
 
         #TAB 1 time
         screenname_input = driver.find_element_by_id("screenname_input")
         screenname_input.send_keys(Keys.TAB)
-
-    else:
-        screenname_loop = False
-    
+        print "TRUE"
+        
     #TAB 1 times
     screenname_input = driver.find_element_by_id("screenname_input")
     screenname_input.send_keys(Keys.TAB)
