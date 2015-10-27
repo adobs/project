@@ -1,3 +1,4 @@
 my_credentials.*
 env/
 *.pyc
+adobs.pem

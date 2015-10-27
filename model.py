@@ -40,6 +40,8 @@ class Adjective(db.Model):
     __tablename__ = "adjectives"
 
     location = db.Column(db.Text, primary_key=True)
+    latitude = db.Column(db.Integer, nullable=False)
+    longitude = db.Column(db.Integer, nullable=False)
     adjective = db.Column(db.Text, nullable=True)
     count = db.Column(db.Integer, nullable=True)
 
@@ -49,7 +51,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_25_4.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_26.db'
     db.app = app
     db.init_app(app)
 

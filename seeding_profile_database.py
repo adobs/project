@@ -3,11 +3,6 @@ from okcupyd.json_search import SearchFetchable
 from model import Profile, db, connect_to_db
 import time
 
-def test_seed_call():
-    session = Session.login('adobsthecat', 'woof6996')
-    profiles = SearchFetchable(session=session)
-    print profiles
-
 def seed_profile_data():
     session = Session.login('adobsthecat', 'woof6996')
     i=0
