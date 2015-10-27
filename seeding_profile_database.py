@@ -8,11 +8,11 @@ def seed_profile_data():
     locations = db.session.query(Zipcode.zipcodes).all()
     for location in locations:
         i=0
-        while i <100:
+        while i <10000:
         # line that iterates through fields in a diferent database
             print location[0]
 
-            for profile in SearchFetchable(session=session, location="San Francisco")[:20]:
+            for profile in SearchFetchable(session=session, location="San Francisco")[:900]:
 
               
                 i+=1
