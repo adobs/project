@@ -3,7 +3,7 @@
 
 {% block content %}
 <form method="POST" action="/new-user-landing" id="new-user-form">
-Sexual Orientation:
+Sexual Orientation
     <label><input type="radio" name="orientation" value="1">Straight</label>
     <label><input type="radio" name="orientation" value="2">Gay</label>
     <label><input type="radio" name="orientation" value="3">Bisexual</label>
@@ -99,12 +99,13 @@ Password
         }
         else{
             // $('#submit').removeAttr('disabled')
-            $('#new-user-form').click()
+            $('#submit').click()
         }
     
     }
 
     function checkStatus(){
+    //could this all be done with form "sterilization"?  form.sterilze
 
         var formInputs = {
             "orientation": $("#orientation").val(),
@@ -116,14 +117,16 @@ Password
             "email": $("#email").val(),
             "screenname": $("#screenname").val(),
             "password": $("#password").val()
-        }
+        };
 
-        $.post('/new-user', formInputs, printStatus)
+
+        $.post('/new-user', formInputs, printStatus);
+        console.log("made it to check status")
     }
 
     function submitForm(evt){
-        evt.preventDefault
-        checkStatus()
+        evt.preventDefault();
+        checkStatus();
     }
 
     $('#new-user-form').on("submit", submitForm)

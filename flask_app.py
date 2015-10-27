@@ -47,6 +47,17 @@ def create_a_new_user():
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
+    print "hello"
+    print orientation 
+    print gender 
+    print birthmonth 
+    print birthdate 
+    print birthyear
+    print zip 
+    print email 
+    print screenname 
+    print password 
+
 
     return create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zip, email, screenname, password)
 
