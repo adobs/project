@@ -51,8 +51,8 @@ def seed_profile_data():
                                     message_me_if=message_me_if)
 
                 print username, i
-                # db.session.add(new_profile)
-                # db.session.commit()
+                db.session.add(new_profile)
+                db.session.commit()
 
                 
             except Exception as e:
