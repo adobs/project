@@ -35,7 +35,7 @@ class Profile(db.Model):
 
 
 class Adjective(db.Model):
-    """Profile information."""
+    """Count of adjectives by location"""
 
     __tablename__ = "adjectives"
 
@@ -46,12 +46,18 @@ class Adjective(db.Model):
     count = db.Column(db.Integer, nullable=True)
 
 
+class Zipcode(db.Model):
+    """List of zipcodes."""
+
+    __tablename__ = "zipcodes"
+
+    zipcodes = db.Column(db.Text, primary_key=True)
 
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_26.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_26_test.db'
     db.app = app
     db.init_app(app)
 
