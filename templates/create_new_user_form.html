@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title%}New User{% endblock %}
+
+{% block content %}
+<form method="POST" action="/new-user-landing" id="new-user-form">
+Sexual Orientation:
+    <label><input type="radio" name="orientation" value="1">Straight</label>
+    <label><input type="radio" name="orientation" value="2">Gay</label>
+    <label><input type="radio" name="orientation" value="3">Bisexual</label>
+Gender
+    <label><input type="radio" name="gender" value="1">Man</label>
+    <label><input type="radio" name="gender" value="2">Woman</label>
+Birthday
+Birthmonth
+    <select name="birthmonth" id="birthmonth" required>
+        <option value="01">1</option>
+        <option value="02">2</option>
+        <option value="03">3</option>
+        <option value="04">4</option>
+        <option value="05">5</option>
+        <option value="06">6</option>
+        <option value="07">7</option>
+        <option value="08">8</option>
+        <option value="09">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+    </select>
+
+Birthdate
+    <select name="birthdate" id="birthdate">
+        <option value="01">1</option>
+        <option value="02">2</option>
+        <option value="03">3</option>
+        <option value="04">4</option>
+        <option value="05">5</option>
+        <option value="06">6</option>
+        <option value="07">7</option>
+        <option value="08">8</option>
+        <option value="09">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="13">13</option>
+        <option value="14">14</option>
+        <option value="15">15</option>
+        <option value="16">16</option>
+        <option value="17">17</option>
+        <option value="18">18</option>
+        <option value="19">19</option>
+        <option value="20">20</option>
+        <option value="21">21</option>
+        <option value="22">22</option>
+        <option value="23">23</option>
+        <option value="24">24</option>
+        <option value="25">25</option>
+        <option value="26">26</option>
+        <option value="27">27</option>
+        <option value="28">28</option>
+        <option value="29">29</option>
+        <option value="30">20</option>
+        <option value="31">31</option>
+    </select>
+
+Birthyear
+    <select name="birthyear" id="birthyear">
+        <option value="1990">1990</option>
+        <option value="1989">1989</option>
+        <option value="1988">1988</option>
+    </select>
+
+Zip
+    <label name="zipcode">
+    <input type="text" patten="\d{5,5}" placeholder="ZIP" id="zip" required>
+    </label>
+
+Email
+    <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div>
+
+Username
+    <label name="screenname"><input type="text" patten="\d{0,15}" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
+
+Password
+    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div>
+
+    <input type='submit' value="Register">
+
+</form>
+<script>
+    function printStatus(results){
+        if (results=="This email is already in use."){
+            $('#email-status').html(results);
+        }
+        else if (results=="Screenname already in use"){
+            $('#screenname-status').html(results);
+        }
+        else if (results == "Password is too weak, choose again"){
+            $('#password-status').html(results);
+        }
+        else{
+            // $('#submit').removeAttr('disabled')
+            $('#new-user-form').click()
+        }
+    
+    }
+
+    function checkStatus(){
+
+        var formInputs = {
+            "orientation": $("#orientation").val(),
+            "gender": $("#gender").val(),
+            "birthmonth": $("#birthmonth").val(),
+            "birthdate": $("#birthdate").val(),
+            "birthyear": $("#birthyear").val(),
+            "zip": $("#zip").val(),
+            "email": $("#email").val(),
+            "screenname": $("#screenname").val(),
+            "password": $("#password").val()
+        }
+
+        $.post('/new-user', formInputs, printStatus)
+    }
+
+    function submitForm(evt){
+        evt.preventDefault
+        checkStatus()
+    }
+
+    $('#new-user-form').on("submit", submitForm)
+</script>
+
+
+
+{% endblock %}
