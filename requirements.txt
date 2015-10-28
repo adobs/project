@@ -18,7 +18,7 @@ lxml==3.5.0b1
 mechanize==0.2.5
 nltk==3.1
 numpy==1.10.1
-okcupyd==1.0.0alpha1
+okcupyd==1.0.0alpha2
 path.py==8.1.2
 pexpect==4.0.1
 pickleshare==0.5

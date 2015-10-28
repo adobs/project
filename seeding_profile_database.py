@@ -1,5 +1,6 @@
 from okcupyd.session import Session
 from okcupyd.json_search import SearchFetchable
+from okcupyd.user import User
 from model import Profile, Zipcode, db, connect_to_db
 import time
 
@@ -7,12 +8,13 @@ def seed_profile_data():
     session = Session.login('adobsthecat', 'woof6996')
     # locations = db.session.query(Zipcode.zipcodes).all()
     # for location in locations:
+    user = User(session=session)
     i=0
     while i <100:
     # line that iterates through fields in a diferent database
         # print location[0]
-
-        for profile in SearchFetchable(session=session, location="94108")[:20]:
+        
+        for profile in user.search(location="94108")[:20]:
 
           
             i+=1

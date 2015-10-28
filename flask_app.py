@@ -6,6 +6,7 @@ from okcupyd.session import Session
 from okcupyd.json_search import SearchFetchable
 from selenium_okc import create_new_user
 from sending_a_message import send_message
+import json 
 
 app = Flask(__name__)
 
@@ -128,7 +129,7 @@ def map():
         json_compiled[adjective.location]['adj']=adjective.adjective
         json_compiled[adjective.location]['count']=adjective.count
      
-    return render_template("map.html", adjectives=json_compiled)
+    return render_template("map.html", adjectives=json.dumps({"lat": 180, "lng": 240}))
 
 if __name__ == "__main__":
     app.debug = True

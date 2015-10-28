@@ -2,6 +2,7 @@
 {% block title%}Map{% endblock %}
 
 {% block content %}
+<div id="map" style="height: 600px; width 100%"></div>
 <script>
 
 var map;
@@ -14,6 +15,7 @@ function initMap() {
 
 // In the following example, markers appear when the user clicks on the map.
 // Each marker is labeled with a single alphabetical character.
+var adjectives = {{ adjectives|safe }}
 var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 var labelIndex = 0;
 
@@ -44,8 +46,8 @@ function addMarker(location, map) {
   });
 }
 
-google.maps.event.addDomListener(window, 'load', initialize);
+// google.maps.event.addDomListener(window, 'load', initialize);
 </script>
-   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&callback=initMap"
+   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&callback=initialize"
         async defer></script>
 {% endblock %}
