@@ -8,6 +8,7 @@ from json import dumps
 
 # input password REMEMBER MUST BE AT LEAST 5 CHARACTERS
 # input username REMEMBER MUST BE LESS THAN 16 CHARACTERS
+# add check to zipcode 
 
 # ensure Firefox page doesn't open
 def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, email, screenname, password):

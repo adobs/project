@@ -1,18 +1,47 @@
 {% extends "base.html" %}
-{% block title%}New User{% endblock %}
+{% block title%}Login{% endblock %}
 
 {% block content %}
 
-<form method="POST">
+<!-- change it so that when logging in again, div disappears -->
+
+<form id="login-form" method="POST" action="/login-landing">
 Username
-    <label name="screenname"><input type="text" placeholder="Username" id="screenname" required></label><br>
+    <label><input name="screenname" type="text" placeholder="Username" id="screenname" required></label><br>
 Password
-    <label name="password"><input type="password" placeholder="Password" id="password" required></label>
+    <label><input name="password" type="password" placeholder="Password" id="password" required></label><div id="login-status"></div>
 
 <input type='submit' value="Login">
 
 </form>
 
+<script>
+    function printStatus(results){
+        if (results==true){
+            $('#new-user-form').unbind('submit');
+            $('#new-user-form').submit();
+        }else{
+            $("#login-status").html("Invalid username/password.")
+        }
+
+
+    }
+
+    function verfiyLogin(evt){
+        evt.preventDefault
+
+        var formInputs = {
+            "screenname": $("#screenname").val()
+            "password": $("#password").val()
+
+        };
+        
+        $.post('/login', formInputs, printStatus);
+
+    }
+
+    $("#login-form").on('submit', verifyLogin);
+</script>
 
 
 

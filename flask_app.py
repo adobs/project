@@ -6,6 +6,7 @@ from okcupyd.session import Session
 from okcupyd.json_search import SearchFetchable
 from selenium_okc import create_new_user
 from sending_a_message import send_message
+from signing_in import is_signed_in
 import json 
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ def home():
     """Home page"""
 
 
-    return "OKCB"
+    return render_template("home.html")
 
 @app.route("/new-user-form")
 def new_user_form():
@@ -41,7 +42,7 @@ def create_a_new_user():
     birthmonth = request.form.get("birthmonth")
     birthdate = request.form.get("birthdate")
     birthyear = request.form.get("birthyear")
-    zip = request.form.get("zip")
+    zipcode = request.form.get("zip")
     email = request.form.get("email")
     screenname = request.form.get("screenname")
     password = request.form.get("password")
@@ -49,12 +50,14 @@ def create_a_new_user():
     session["screenname"] = screenname
     session["password"] = password
 
-    return create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zip, email, screenname, password)
+    return create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zipcode, email, screenname, password)
 
 @app.route("/new-user-landing", methods=["POST"])
 def new_user_landing():
     """Is this page necessary"""
- 
+    
+    flash("You have successfully created a new user")
+
     return redirect("/")
 
 @app.route("/login")
@@ -65,16 +68,24 @@ def login_form():
 
 @app.route("/login", methods=["POST"])
 def login():
-    """Login page"""
+    """JSON - Login page"""
 
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
-    #HOW DO I VERIFY LOGIN
+    if is_signed_in(screenname, password):
+        session["screenname"] = screenname
+        session["password"] = password   
 
-    session["screenname"] = screenname
-    session["password"] = password   
+    print session
+    
+    return is_signed_in(screenname, password)
 
+@app.route("/login-landing", methods=["POST"])
+def login_landing():
+    """Is this page necessary"""
+    
+    flash("You have successfully logged in")
     return redirect("/")
 
 
@@ -85,7 +96,7 @@ def logout():
     session.clear()
     flash("You have been logged out")
 
-    return redirect("/okcbot")
+    return redirect("/")
 
 
 @app.route("/okcbot")
@@ -100,21 +111,21 @@ def bot_form():
 def bot():
     """Input text for bot to send"""
 
-    minimum_age = request.form.get("minimum_age")
-    maximum_age = request.form.get("maximum_age")
+    minimum_age = int(request.form.get("minimum_age"))
+    maximum_age = int(request.form.get("maximum_age"))
     gentation = request.form.get("gentation")
     word = request.form.get("word")
     message = request.form.get("message")
-    num = request.form.get("num")
+    num = int(request.form.get("num"))
 
     print session["screenname"]
     print session["password"]
 
-    send_message(session["screenname"], session["password"], minimum_age, maximum_age, gentation, word, message, num)
+    send_message(session["screenname"], session["password"], minimum_age, maximum_age, gentation, message, num, word)
 
     flash("Message(s) successfully sent")
 
-    return render_template("/okcbot")
+    return redirect("/")
 
 @app.route("/map")
 def map():
