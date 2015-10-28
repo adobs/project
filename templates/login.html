@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title%}New User{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+Username
+    <label name="screenname"><input type="text" placeholder="Username" id="screenname" required></label><br>
+Password
+    <label name="password"><input type="password" placeholder="Password" id="password" required></label>
+
+<input type='submit' value="Login">
+
+</form>
+
+
+
+
+{% endblock %}

@@ -123,10 +123,7 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
 
         screenname_verification = driver.execute_script('return document.querySelector("#screenname_inputContainer").innerHTML')
         
-        if "suggestions hide" in screenname_verification:
-            screenname_loop = False
-
-        else:
+        if "Available names:" in screenname_verification:
             return "Screenname already in use."
             # screenname = raw_input("Screenname already in use")
             # driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
@@ -137,7 +134,12 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
 
             #TAB 2 time
             screenname_input = driver.find_element_by_id("screenname_input")
-            screenname_input.send_keys(Keys.TAB)
+            screenname_input.send_keys(Keys.TAB) 
+
+
+        else:
+            screenname_loop = False
+            
             
         #TAB 1 times
         screenname_input = driver.find_element_by_id("screenname_input")

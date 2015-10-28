@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title%}New User{% endblock %}
+
+{% block content %}
+
+
+<form method="POST">
+Minimum Age
+    <label name="minimum_age"><input type="text" placeholder="Min age" id="minimum_age"></label><br>
+Maximum Age
+    <label name="maximum_age"><input type="text" placeholder="Max age" id="maximum_age"></label><br>
+Gender
+    <select name="gentation" id="gentation">
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+    </select><br>
+Key word in profile
+    <label name="word"><input type="text" placeholder="Word" id="word"></label><br>
+Number of people to message
+   <label name="num"><input type="text" placeholder="Number" id="num"></label><br>
+Message to send
+   <label name="message"><input type="text" placeholder="Message" id="message"></label><br>
+
+<input type='submit' value="Send">
+</form>
+
+
+
+
+{% endblock %}

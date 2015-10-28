@@ -4,12 +4,12 @@
 {% block content %}
 <form method="POST" action="/new-user-landing" id="new-user-form">
 Sexual Orientation
-    <label><input type="radio" name="orientation" value="1">Straight</label>
-    <label><input type="radio" name="orientation" value="2">Gay</label>
-    <label><input type="radio" name="orientation" value="3">Bisexual</label>
+    <label><input type="radio" class="orientation" name="orientation" value="1">Straight</label>
+    <label><input type="radio" class="orientation" name="orientation" value="2">Gay</label>
+    <label><input type="radio" class="orientation" name="orientation" value="3">Bisexual</label>
 Gender
-    <label><input type="radio" name="gender" value="1">Man</label>
-    <label><input type="radio" name="gender" value="2">Woman</label>
+    <label><input type="radio" class="gender" name="gender" value="1">Man</label>
+    <label><input type="radio" class="gender" name="gender" value="2">Woman</label>
 Birthday
 Birthmonth
     <select name="birthmonth" id="birthmonth" required>
@@ -71,35 +71,36 @@ Birthyear
 
 Zip
     <label name="zipcode">
-    <input type="text" patten="\d{5,5}" placeholder="ZIP" id="zip" required>
+    <input type="text" pattern="\d{5,5}" placeholder="ZIP" id="zip" required>
     </label>
 
 Email
     <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div>
 
 Username
-    <label name="screenname"><input type="text" patten="\d{0,15}" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
+    <label name="screenname"><input type="text" pattern="\d{0,15}" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
 
 Password
-    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div>
+    <label name="password"><input type="text" placeholder="Password" id="password" required></label><div id="password-status"></div>
 
     <input type='submit' value="Register">
 
 </form>
 <script>
     function printStatus(results){
+        console.log("made it to print status")
         if (results=="This email is already in use."){
             $('#email-status').html(results);
         }
-        else if (results=="Screenname already in use"){
+        else if (results=="Screenname already in use."){
             $('#screenname-status').html(results);
         }
-        else if (results == "Password is too weak, choose again"){
+        else if (results == "Password is too weak, choose again."){
             $('#password-status').html(results);
         }
         else{
-            // $('#submit').removeAttr('disabled')
-            $('#submit').click()
+            $('#submit').removeAttr('disabled')
+            $('#new-user-form').unbind('submit')
         }
     
     }
@@ -108,8 +109,8 @@ Password
     //could this all be done with form "sterilization"?  form.sterilze
 
         var formInputs = {
-            "orientation": $("#orientation").val(),
-            "gender": $("#gender").val(),
+            "orientation": $(".orientation").val(),
+            "gender": $(".gender").val(),
             "birthmonth": $("#birthmonth").val(),
             "birthdate": $("#birthdate").val(),
             "birthyear": $("#birthyear").val(),
@@ -126,6 +127,8 @@ Password
 
     function submitForm(evt){
         evt.preventDefault();
+        //how do I get this to work
+        $('#new-user-form').attr('disabled',true)
         checkStatus();
     }
 
