@@ -17,23 +17,21 @@ Password
 
 <script>
     function printStatus(results){
-        if (results==true){
-            $('#new-user-form').unbind('submit');
-            $('#new-user-form').submit();
+        if(results==="True"){
+            $('#login-form').unbind('submit');
+            $('#login-form').submit();
+             console.log(results);
         }else{
             $("#login-status").html("Invalid username/password.")
         }
-
-
     }
 
-    function verfiyLogin(evt){
-        evt.preventDefault
+    function verifyLogin(evt){
+        evt.preventDefault();
 
         var formInputs = {
-            "screenname": $("#screenname").val()
+            "screenname": $("#screenname").val(),
             "password": $("#password").val()
-
         };
         
         $.post('/login', formInputs, printStatus);

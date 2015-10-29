@@ -82,10 +82,10 @@ Email
     <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div>
 
 Username
-    <label name="screenname"><input type="text" pattern="\d{0,15}" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
+    <label name="screenname"><input type="text" maxlength="15" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
 
 Password
-    <label name="password"><input type="text" placeholder="Password" id="password" required></label><div id="password-status"></div>
+    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div>
 
     <input type='submit' value="Register">
 
@@ -131,10 +131,15 @@ Password
 
     function submitForm(evt){
         evt.preventDefault();
+        $('#email-status').html("");
+        $('#screenname-status').html("");
+        $('#password-status').html("");
+
         //how do I get this to work
         $('#new-user-form').attr('disabled',true)
         checkStatus();
     }
+        
 
     $('#new-user-form').on("submit", submitForm)
 </script>

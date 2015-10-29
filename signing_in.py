@@ -8,6 +8,6 @@ def is_signed_in(screenname, password):
         user = User(session=session)
     except Exception as e:
         print (e)
-        return False   
+        return "False"   
     
-    return True
+    return "True"

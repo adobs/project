@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Adjective Map{% endblock %}
+{% block head %}
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+    <script>
+
+// In the following example, markers appear when the user clicks on the map.
+// Each marker is labeled with a single alphabetical character.
+// var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// var labelIndex = 0;
+
+var adjectives = {{ adjectives | safe }}
+// console.log(adjectives)
+
+// Adds a marker to the map.
+function addMarkers(map, dictionary) {
+  // Add the marker at the clicked location, and add the next-available label
+  // from the array of alphabetical characters.
+
+  for (entry in dictionary){
+
+    var latitude = dictionary[entry]['lat'];
+    var longitude = dictionary[entry]['lng'];
+    var adjective = dictionary[entry]['adj'];
+
+    var location = {
+      lat: latitude, lng: longitude
+    };
+
+    // var marker = new google.maps.Marker({
+
+    var marker = new MarkerWithLabel({
+      position: location,
+      labelContent: adjective,
+      labelAnchor: new google.maps.Point(22, 0),
+      map: map,
+      labelClass: "labels",
+      labelInBackground: false
+    });
+  }
+
+}
+
+function initialize() {
+  var bangalore = { lat: 39.8282, lng: -98.5795 };
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 4,
+    center: bangalore
+  });
+
+  // Add a marker at the center of the map.
+  addMarkers(map, adjectives);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+  </script>
+
+{% endblock %}
+
+{% block content %}
+    <div id="map"></div>
+{% endblock %}

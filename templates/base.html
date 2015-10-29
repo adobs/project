@@ -2,7 +2,29 @@
 <html>
 <head>
 <title>{% block title %}INSERT TITLE{% endblock %}</title>
+<style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+      .labels {
+         color: white;
+         background-color: red;
+         font-family: "Lucida Grande", "Arial", sans-serif;
+         border: solid black 2px;
+         font-size: 10px;
+         text-align: center;
+         width: 30px;     
+         /*white-space: nowrap;*/
+       }
+ </style>
+    </style>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> 
+{% block head %}{% endblock %}
 </head>
 <body>
  <!-- Show flashed messages -->

@@ -73,7 +73,7 @@ def login():
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
-    if is_signed_in(screenname, password):
+    if is_signed_in(screenname, password) == "True":
         session["screenname"] = screenname
         session["password"] = password   
 
@@ -113,15 +113,16 @@ def bot():
 
     minimum_age = int(request.form.get("minimum_age"))
     maximum_age = int(request.form.get("maximum_age"))
+    location = request.form.get("location")
+    radius = int(request.form.get("radius"))
     gentation = request.form.get("gentation")
-    word = request.form.get("word")
     message = request.form.get("message")
     num = int(request.form.get("num"))
 
     print session["screenname"]
     print session["password"]
 
-    send_message(session["screenname"], session["password"], minimum_age, maximum_age, gentation, message, num, word)
+    send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
 
     flash("Message(s) successfully sent")
 
@@ -129,18 +130,20 @@ def bot():
 
 @app.route("/map")
 def map():
-    """Map page.  VERY BROKEN"""
+    """Map page."""
 
-    adjective = db.session.query(Adjective)
-    cols = Adjective.__table__.columns
+    adjectives = db.session.query(Adjective).all()
     json_compiled = {}
-    for entry in adjective:
-        json_compiled[adjective.location]['lat']=adjective.latitude
-        json_compiled[adjective.location]['lng']=adjective.longitude
-        json_compiled[adjective.location]['adj']=adjective.adjective
-        json_compiled[adjective.location]['count']=adjective.count
-     
-    return render_template("map.html", adjectives=json.dumps({"lat": 180, "lng": 240}))
+    for entry in adjectives:
+
+        json_compiled[entry.location]= {}
+        json_compiled[entry.location]['lat']=entry.latitude
+        json_compiled[entry.location]['lng']=entry.longitude
+        json_compiled[entry.location]['adj']=entry.adjective
+        json_compiled[entry.location]['count']=entry.count
+    
+    return render_template("map2.html", adjectives=json.dumps(json_compiled))
+    # return render_template("map2.html")
 
 if __name__ == "__main__":
     app.debug = True
