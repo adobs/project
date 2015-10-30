@@ -16,12 +16,19 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-@app.route("/", methods=["POST"])
+@app.route("/")
 def home():
     """Home page"""
 
 
     return render_template("home.html")
+
+@app.route("/", methods=["POST"])
+def home_landing():
+    """Home page"""
+
+
+    return redirect("/")
 
 @app.route("/new-user-form")
 def new_user_form():
@@ -57,14 +64,7 @@ def create_a_new_user():
             session["password"] = password   
             flash("You have successfully created a new user")
     print results
-    return results
-
-
-# @app.route("/new-user-landing", methods=["POST"])
-# def new_user_landing():
-#     """Is this page necessary"""
-#     return redirect("/")
-    
+    return results    
 
 
 @app.route("/login")
@@ -85,15 +85,7 @@ def login():
         session["password"] = password   
         flash("You have successfully logged in")
 
-    print session
-    
     return is_signed_in(screenname, password)
-
-# @app.route("/login-landing", methods=["POST"])
-# def login_landing():
-#     """Is this page necessary"""
-    
-#     return redirect("/")
 
 
 @app.route("/logout")
@@ -131,13 +123,15 @@ def bot():
     print session["screenname"]
     print session["password"]
 
-    restult = send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
-    #add ajax to make it do something if there is an error
-    if not result:
+    result = send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
+    
+    print result
+
+    if result:
+        return result
+    else: 
         flash("Message(s) successfully sent")
         return ""
-    else: 
-        return result
 
 @app.route("/map")
 def map():

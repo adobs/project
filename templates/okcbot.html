@@ -35,22 +35,24 @@ Message to send
 </form>
 
 <script>
-$('#loading').hide();
 
 function printStatus(results){
-    if results:
-        $("#status").html(results)
-    else:
-        $("#submit-btn").click()
-
+    if (results){
+        $('#loading').hide();
+        $("#status").html(results);
+    }else{
+        $('#okcbot-form').unbind("submit")
+        $("#okcbot-form").submit();
+    }
 }
 
 
 function checkStatus(evt){
     evt.preventDefault();
     $("#loading").show();
+    $("#status").html("");
 
-    var formInputs{
+    var formInputs = {
         "minimum_age": $("#minimum_age").val(),
         "maximum_age": $("#maximum_age").val(),
         "location": $("#location").val(),
@@ -63,7 +65,10 @@ function checkStatus(evt){
     $.post('/okcbot', formInputs, printStatus);
 }
 
+$('#loading').hide();
 $("#okcbot-form").on('submit', checkStatus);
+
+console.log("outside of function")
 
 </script>
 

@@ -10,6 +10,17 @@
 var adjectives = {{ adjectives | safe }}
 console.log(adjectives)
 
+var infoWindow = new google.maps.InfoWindow({
+  width: 150
+});
+
+function bindInfoWindow(marker, map, infoWindow, html) {
+      google.maps.event.addListener(marker, 'click', function () {
+          infoWindow.close();
+          infoWindow.setContent(html);
+          infoWindow.open(map, marker);
+      });
+}
 // Adds a marker to the map.
 function addMarkers(map, dictionary) {
   // Add the marker at the clicked location, and add the next-available label
@@ -36,11 +47,7 @@ function addMarkers(map, dictionary) {
     });
 
 
-    var contentString = '<div id="content"><p>'+population+' profiles in this area</p><p>'+count+' profiles with '+adjective+'</p></div>';
-
-    var infowindow = new google.maps.InfoWindow({
-      content: contentString
-    });
+    var html = '<div id="content"><p>'+population+' profile(s) in this area</p><p>'+count+' occurences of '+adjective+'</p></div>';
     
     var marker = new MarkerWithLabel({
       position: {lat: latitude, lng: longitude},
@@ -51,13 +58,16 @@ function addMarkers(map, dictionary) {
       labelInBackground: false
     });
 
-    marker.addListener('click', function() {
-      infowindow.open(map, marker);
-    });
-
+    // marker.addListener('click', openInfoWindow);
+    
+    bindInfoWindow(marker, map, infoWindow, html);
   }
+
 }
 
+// function openInfoWindow(){
+//   infowindow.open(map, marker);
+// }
 
 
 function initialize() {
