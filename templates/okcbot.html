@@ -4,9 +4,9 @@
 {% block content %}
 
 
-<form method="POST">
+<form method="POST" action="/" id="okcbot-form">
 Minimum Age
-    <label ><input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required></label><br>
+    <label><input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required></label><br>
 Maximum Age
     <label><input name="maximum_age" type="text" placeholder="Max age" id="maximum_age" required></label><br>
 Seeking
@@ -26,11 +26,45 @@ Number of people to message
    <label><input type="text" name="num" placeholder="Number" id="num" required></label><br>
 Message to send
    <label><input type="text" name="message" placeholder="Message" id="message" required></label><br>
+ 
+ <div id="status"></div>
 
-<input type='submit' value="Send">
+ <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+
+<input id='submit-btn' type='submit' value="Send">
 </form>
 
+<script>
+$('#loading').hide();
+
+function printStatus(results){
+    if results:
+        $("#status").html(results)
+    else:
+        $("#submit-btn").click()
+
+}
 
 
+function checkStatus(evt){
+    evt.preventDefault();
+    $("#loading").show();
+
+    var formInputs{
+        "minimum_age": $("#minimum_age").val(),
+        "maximum_age": $("#maximum_age").val(),
+        "location": $("#location").val(),
+        "radius": $("#radius").val(),
+        "gentation": $("#gentation").val(),
+        "message": $("#message").val(),
+        "num": $("#num").val()
+    }
+
+    $.post('/okcbot', formInputs, printStatus);
+}
+
+$("#okcbot-form").on('submit', checkStatus);
+
+</script>
 
 {% endblock %}

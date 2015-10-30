@@ -71,6 +71,7 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
     email2 = driver.find_element_by_id("email2")
     email2.send_keys(Keys.TAB)
 
+    time.sleep(3)
         ########### start email verification 
         
     email_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[5].innerHTML;")
@@ -110,7 +111,7 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
 
         ########## start screenname verification
 
-
+        time.sleep(3)
         screenname_verification = driver.execute_script('return document.querySelector("#screenname_inputContainer").innerHTML')
         
         if "Available names:" in screenname_verification:

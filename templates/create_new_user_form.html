@@ -6,7 +6,7 @@
 <!-- change it so that when logging in again, div disappears -->
 
 
-<form id="new-user-form" action="/new-user-landing" method="POST">
+<form id="new-user-form" action="/" method="POST">
 Sexual Orientation
     <label><input type="radio" class="orientation" name="orientation" value="1" checked>Straight</label>
     <label><input type="radio" class="orientation" name="orientation" value="2">Gay</label>
@@ -35,7 +35,7 @@ Birthyear
         <option value="{{ year }}">{{ year }}</option>
         {% endfor %}
     </select><br>
-    <!-- <div id="loading"><img id="loading-img" src= -->
+
 Zip
     <label name="zipcode">
     <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required>
@@ -50,13 +50,15 @@ Username
 Password
     <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div><br>
 
+    <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+
     <input id="submit-btn" type='submit' value="Register">
 
 </form>
 <script>
     function printStatus(results){
         console.log("made it to print status");
-
+        $("#loading").hide();
         if (results==="This email is already in use."){
             $('#email-status').html(results);
         }
@@ -96,6 +98,7 @@ Password
 
     function submitForm(evt){
         evt.preventDefault();
+        $('#loading').show();
         console.log("hey");
         $('#email-status').html("");
         $('#screenname-status').html("");
@@ -105,12 +108,9 @@ Password
         checkStatus();
     }
         
-
+    $('#loading').hide();
     $('#new-user-form').on("submit", submitForm);
 
-    $(window).load(function() {
-        $('#loading').hide();
-    });
 
 </script>
 

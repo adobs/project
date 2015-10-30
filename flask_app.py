@@ -16,7 +16,7 @@ app.secret_key = "ABC"
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
 
-@app.route("/")
+@app.route("/", methods=["POST"])
 def home():
     """Home page"""
 
@@ -48,23 +48,24 @@ def create_a_new_user():
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
+    print orientation
+    print birthmonth
     results = create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zipcode, email, screenname, password)
-    
     if results == "success":
         if is_signed_in(screenname, password) == "True":
             session["screenname"] = screenname
             session["password"] = password   
-
+            flash("You have successfully created a new user")
+    print results
     return results
 
 
-@app.route("/new-user-landing", methods=["POST"])
-def new_user_landing():
-    """Is this page necessary"""
+# @app.route("/new-user-landing", methods=["POST"])
+# def new_user_landing():
+#     """Is this page necessary"""
+#     return redirect("/")
     
-    flash("You have successfully created a new user")
 
-    return redirect("/")
 
 @app.route("/login")
 def login_form():
@@ -82,22 +83,22 @@ def login():
     if is_signed_in(screenname, password) == "True":
         session["screenname"] = screenname
         session["password"] = password   
+        flash("You have successfully logged in")
 
     print session
     
     return is_signed_in(screenname, password)
 
-@app.route("/login-landing", methods=["POST"])
-def login_landing():
-    """Is this page necessary"""
+# @app.route("/login-landing", methods=["POST"])
+# def login_landing():
+#     """Is this page necessary"""
     
-    flash("You have successfully logged in")
-    return redirect("/")
+#     return redirect("/")
 
 
 @app.route("/logout")
 def logout():
-    """Login page"""
+    """Logout page"""
 
     session.clear()
     flash("You have been logged out")
@@ -111,6 +112,8 @@ def bot_form():
 
 
     return render_template("okcbot.html")
+
+
 
 
 @app.route("/okcbot", methods=["POST"])
@@ -128,11 +131,13 @@ def bot():
     print session["screenname"]
     print session["password"]
 
-    send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
-
-    flash("Message(s) successfully sent")
-
-    return redirect("/")
+    restult = send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
+    #add ajax to make it do something if there is an error
+    if not result:
+        flash("Message(s) successfully sent")
+        return ""
+    else: 
+        return result
 
 @app.route("/map")
 def map():
