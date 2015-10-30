@@ -6,107 +6,72 @@
 <!-- change it so that when logging in again, div disappears -->
 
 
-<form method="POST" action="/new-user-landing" id="new-user-form">
+<form id="new-user-form" action="/new-user-landing" method="POST">
 Sexual Orientation
-    <label><input type="radio" class="orientation" name="orientation" value="1">Straight</label>
+    <label><input type="radio" class="orientation" name="orientation" value="1" checked>Straight</label>
     <label><input type="radio" class="orientation" name="orientation" value="2">Gay</label>
-    <label><input type="radio" class="orientation" name="orientation" value="3">Bisexual</label>
+    <label><input type="radio" class="orientation" name="orientation" value="3">Bisexual</label><br>
 Gender
-    <label><input type="radio" class="gender" name="gender" value="1">Man</label>
-    <label><input type="radio" class="gender" name="gender" value="2">Woman</label>
+    <label><input type="radio" class="gender" name="gender" value="1" checked>Man</label>
+    <label><input type="radio" class="gender" name="gender" value="2">Woman</label><br>
 Birthday
 Birthmonth
     <select name="birthmonth" id="birthmonth" required>
-        <option value="01">1</option>
-        <option value="02">2</option>
-        <option value="03">3</option>
-        <option value="04">4</option>
-        <option value="05">5</option>
-        <option value="06">6</option>
-        <option value="07">7</option>
-        <option value="08">8</option>
-        <option value="09">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
+        {% for month in months %}
+        <option value="{{ month }}">{{ month }}</option>
+        {% endfor %}
     </select>
 
 Birthdate
     <select name="birthdate" id="birthdate">
-        <option value="01">1</option>
-        <option value="02">2</option>
-        <option value="03">3</option>
-        <option value="04">4</option>
-        <option value="05">5</option>
-        <option value="06">6</option>
-        <option value="07">7</option>
-        <option value="08">8</option>
-        <option value="09">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
-        <option value="21">21</option>
-        <option value="22">22</option>
-        <option value="23">23</option>
-        <option value="24">24</option>
-        <option value="25">25</option>
-        <option value="26">26</option>
-        <option value="27">27</option>
-        <option value="28">28</option>
-        <option value="29">29</option>
-        <option value="30">20</option>
-        <option value="31">31</option>
+        {% for day in days %}
+        <option value="{{ day }}">{{ day }}</option>
+        {% endfor %}
     </select>
 
 Birthyear
     <select name="birthyear" id="birthyear">
-        <option value="1990">1990</option>
-        <option value="1989">1989</option>
-        <option value="1988">1988</option>
-    </select>
-
+        {% for year in years %}
+        <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
+    </select><br>
+    <!-- <div id="loading"><img id="loading-img" src= -->
 Zip
     <label name="zipcode">
-    <input type="text" pattern="\d{5,5}" placeholder="ZIP" id="zip" required>
-    </label>
+    <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required>
+    </label><br>
 
 Email
-    <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div>
+    <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div><br>
 
 Username
-    <label name="screenname"><input type="text" maxlength="15" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div>
+    <label name="screenname"><input type="text" maxlength="15" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div><br>
 
 Password
-    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div>
+    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div><br>
 
-    <input type='submit' value="Register">
+    <input id="submit-btn" type='submit' value="Register">
 
 </form>
 <script>
     function printStatus(results){
-        console.log("made it to print status")
-        if (results=="This email is already in use."){
+        console.log("made it to print status");
+
+        if (results==="This email is already in use."){
             $('#email-status').html(results);
         }
-        else if (results=="Screenname already in use."){
+        else if (results==="Screenname already in use."){
             $('#screenname-status').html(results);
         }
-        else if (results == "Password is too weak, choose again."){
+        else if (results === "Password is too weak, choose again."){
             $('#password-status').html(results);
         }
-        else{
-            $('#submit').removeAttr('disabled')
-            $('#new-user-form').unbind('submit')
+        else if (results === "success") {
+            $('#new-user-form').unbind("submit");
+            $('#new-user-form').submit();
         }
     
+        $('#submit-btn').removeAttr('disabled');
     }
 
     function checkStatus(){
@@ -131,17 +96,22 @@ Password
 
     function submitForm(evt){
         evt.preventDefault();
+        console.log("hey");
         $('#email-status').html("");
         $('#screenname-status').html("");
         $('#password-status').html("");
 
-        //how do I get this to work
-        $('#new-user-form').attr('disabled',true)
+        $('#submit-btn').attr('disabled',true);
         checkStatus();
     }
         
 
-    $('#new-user-form').on("submit", submitForm)
+    $('#new-user-form').on("submit", submitForm);
+
+    $(window).load(function() {
+        $('#loading').hide();
+    });
+
 </script>
 
 

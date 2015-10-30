@@ -2,8 +2,6 @@ from flask import Flask, request, render_template, redirect, flash, session
 from jinja2 import StrictUndefined
 from model import Profile, Adjective, db, connect_to_db
 # from flask_debugtoolbar import DebugToolbarExtension
-from okcupyd.session import Session
-from okcupyd.json_search import SearchFetchable
 from selenium_okc import create_new_user
 from sending_a_message import send_message
 from signing_in import is_signed_in
@@ -29,8 +27,11 @@ def home():
 def new_user_form():
     """Registration form"""
 
+    months = xrange(1,13)
+    days = xrange(1,32)
+    years = xrange(1997,1914,-1)
 
-    return render_template("create_new_user_form.html")
+    return render_template("create_new_user_form.html", months=months, days=days, years=years)
 
 
 @app.route("/new-user", methods=["POST"])
@@ -47,10 +48,15 @@ def create_a_new_user():
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
-    session["screenname"] = screenname
-    session["password"] = password
+    results = create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zipcode, email, screenname, password)
+    
+    if results == "success":
+        if is_signed_in(screenname, password) == "True":
+            session["screenname"] = screenname
+            session["password"] = password   
 
-    return create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zipcode, email, screenname, password)
+    return results
+
 
 @app.route("/new-user-landing", methods=["POST"])
 def new_user_landing():
@@ -133,6 +139,7 @@ def map():
     """Map page."""
 
     adjectives = db.session.query(Adjective).all()
+    profile_locations = db.session.query(Profile.location).all()
     json_compiled = {}
     for entry in adjectives:
 
@@ -141,9 +148,10 @@ def map():
         json_compiled[entry.location]['lng']=entry.longitude
         json_compiled[entry.location]['adj']=entry.adjective
         json_compiled[entry.location]['count']=entry.count
+        json_compiled[entry.location]['population']= profile_locations.count(tuple([entry.location]))
     
+
     return render_template("map2.html", adjectives=json.dumps(json_compiled))
-    # return render_template("map2.html")
 
 if __name__ == "__main__":
     app.debug = True

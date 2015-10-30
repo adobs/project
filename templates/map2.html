@@ -7,48 +7,64 @@
     <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
     <script>
 
-// In the following example, markers appear when the user clicks on the map.
-// Each marker is labeled with a single alphabetical character.
-// var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-// var labelIndex = 0;
-
 var adjectives = {{ adjectives | safe }}
-// console.log(adjectives)
+console.log(adjectives)
 
 // Adds a marker to the map.
 function addMarkers(map, dictionary) {
   // Add the marker at the clicked location, and add the next-available label
   // from the array of alphabetical characters.
 
-  for (entry in dictionary){
+  for(entry in dictionary){
 
     var latitude = dictionary[entry]['lat'];
     var longitude = dictionary[entry]['lng'];
     var adjective = dictionary[entry]['adj'];
+    var count = dictionary[entry]['count'];
+    var population = dictionary[entry]['population']
 
-    var location = {
-      lat: latitude, lng: longitude
-    };
 
-    // var marker = new google.maps.Marker({
+    var cityCircle = new google.maps.Circle({
+      strokeColor: '#FF0000',
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+      fillColor: '#FF0000',
+      fillOpacity: 0.35,
+      map: map,
+      center: {lat: latitude, lng: longitude},
+      radius: count * 10
+    });
 
+
+    var contentString = '<div id="content"><p>'+population+' profiles in this area</p><p>'+count+' profiles with '+adjective+'</p></div>';
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    
     var marker = new MarkerWithLabel({
-      position: location,
+      position: {lat: latitude, lng: longitude},
       labelContent: adjective,
-      labelAnchor: new google.maps.Point(22, 0),
+      // labelAnchor: new google.maps.Point(22, 0),
       map: map,
       labelClass: "labels",
       labelInBackground: false
     });
-  }
 
+    marker.addListener('click', function() {
+      infowindow.open(map, marker);
+    });
+
+  }
 }
 
+
+
 function initialize() {
-  var bangalore = { lat: 39.8282, lng: -98.5795 };
+  var lebanon = { lat: 39.8282, lng: -98.5795 };
   var map = new google.maps.Map(document.getElementById('map'), {
     zoom: 4,
-    center: bangalore
+    center: lebanon
   });
 
   // Add a marker at the center of the map.

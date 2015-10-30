@@ -16,6 +16,7 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
     display.start()
 
     driver = webdriver.Firefox()
+    
     driver.get("https://www.okcupid.com/")
     # time.sleep(10)
 
@@ -70,23 +71,15 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
     email2 = driver.find_element_by_id("email2")
     email2.send_keys(Keys.TAB)
 
-    ########### start email verification loop
-    email_loop = True
+        ########### start email verification 
+        
+    email_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[5].innerHTML;")
 
-    while email_loop:
-        email_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[5].innerHTML;")
+    if email_verification == "This email is already in use.":
+        error_status = "This email is already in use."
+        
 
-        if email_verification == "This email is already in use.":
-            return "This email is already in use."
-
-            # input email (confirming)
-            driver.execute_script("document.querySelector('#email1').value="+dumps(email))
-            driver.execute_script("document.querySelector('#email2').value="+dumps(email))
-
-
-        else:
-            email_loop = False
-
+    else:
         email1 = driver.find_element_by_id("email1")
         email1.send_keys(Keys.TAB)
 
@@ -95,99 +88,85 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
     ########## END LOOP 
 
 
-    # click next button
-    driver.execute_script("document.querySelectorAll('button[type=button]')[2].click();")
+        # click next button
+        driver.execute_script("document.querySelectorAll('button[type=button]')[2].click();")
 
 
-    ################################ THIRD PAGE ##################################################################
+        ################################ THIRD PAGE ##################################################################
 
-    # input username REMEMBER MUST BE LESS THAN 16 CHARACTERS
-    driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
+        # input username REMEMBER MUST BE LESS THAN 16 CHARACTERS
+        driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
 
-    time.sleep(3)
+        time.sleep(3)
 
-    #TAB 1 time
-    screenname_input = driver.find_element_by_id("screenname_input")
-    screenname_input.send_keys(Keys.TAB)
+        #TAB 1 time
+        screenname_input = driver.find_element_by_id("screenname_input")
+        screenname_input.send_keys(Keys.TAB)
 
-    #TAB 2 time
-    screenname_input = driver.find_element_by_id("screenname_input")
-    screenname_input.send_keys(Keys.TAB)
+        #TAB 2 time
+        screenname_input = driver.find_element_by_id("screenname_input")
+        screenname_input.send_keys(Keys.TAB)
 
 
-    ########## start screenname loop
-    screenname_loop = True
+        ########## start screenname verification
 
-    while screenname_loop:
-
-        # suggestions hidden
 
         screenname_verification = driver.execute_script('return document.querySelector("#screenname_inputContainer").innerHTML')
         
         if "Available names:" in screenname_verification:
-            return "Screenname already in use."
-            # screenname = raw_input("Screenname already in use")
-            # driver.execute_script("document.querySelector('#screenname_input').value="+dumps(screenname))
+            error_status = "Screenname already in use."
 
-            #TAB 1 time
+        else:
+            #TAB 1 times
             screenname_input = driver.find_element_by_id("screenname_input")
             screenname_input.send_keys(Keys.TAB)
+            ###########END LOOP
 
-            #TAB 2 time
-            screenname_input = driver.find_element_by_id("screenname_input")
-            screenname_input.send_keys(Keys.TAB) 
+            # input password REMEMBER MUST BE AT LEAST 5 CHARACTERS
+            driver.execute_script("document.querySelector('#password_input').value="+dumps(password))
 
+            time.sleep(3)
+            #TAB 1 times
+            password_input = driver.find_element_by_id("password_input")
+            password_input.send_keys(Keys.TAB)
 
-        else:
-            screenname_loop = False
+            time.sleep(3)
+
+            #TAB 2 times
+            password_input = driver.find_element_by_id("password_input")
+            password_input.send_keys(Keys.TAB)
+
+            ########## start password verification
+          
+                
+            password_verification = driver.execute_script('return document.querySelectorAll(".okform-feedback")[8].innerHTML;')
             
+            if password_verification =="Password is too weak, choose again.":
+                error_status = "Password is too weak, choose again."
             
-        #TAB 1 times
-        screenname_input = driver.find_element_by_id("screenname_input")
-        screenname_input.send_keys(Keys.TAB)
-    ###########END LOOP
-
-    # input password REMEMBER MUST BE AT LEAST 5 CHARACTERS
-    driver.execute_script("document.querySelector('#password_input').value="+dumps(password))
-
-    #TAB 1 times
-    password_input = driver.find_element_by_id("password_input")
-    password_input.send_keys(Keys.TAB)
-
-    ########## start password loop
-    password_loop = True
-
-    while password_loop:
-        
-        password_verification = driver.execute_script("return document.querySelectorAll('.okform-feedback')[8].innerHTML;")
-        
-        if password_verification =="Password is too weak, choose again.":
-            # password = raw_input("Enter another password")
-            return "Password is too weak, choose again."
-            # driver.execute_script("document.querySelector('#password_input').value="+dumps(password))
-        
-        else:
-            password_loop = False
-        
-        #TAB 1 times
-        password_input = driver.find_element_by_id("password_input")
-        password_input.send_keys(Keys.TAB)
-    ###########END LOOP
+            else:
+                #TAB 1 times
+                password_input = driver.find_element_by_id("password_input")
+                password_input.send_keys(Keys.TAB)
 
 
-    # sequence to click submit
-    driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-    try:
-        driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-    except Exception as e:
-        print type(e)
-    try:
-        driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
-    except Exception as e:
-        print type(e)
+                # sequence to click submit
+                driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+                try:
+                    driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+                except Exception as e:
+                    print type(e)
+                try:
+                    driver.execute_script("document.querySelectorAll('button[type=submit]')[0].click();")
+                except Exception as e:
+                    print type(e)
+
+                error_status = "success"
+
 
     display.stop()
-    return "success"
+    driver.quit()
+    return error_status
     # driver.current_url
     # printing positive results to the terminal
     # print current_url
