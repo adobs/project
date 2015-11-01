@@ -22,7 +22,7 @@ function bindInfoWindow(marker, map, infoWindow, html) {
       });
 }
 // Adds a marker to the map.
-function addMarkers(map, dictionary) {
+function addMarkers(dictionary) {
   // Add the marker at the clicked location, and add the next-available label
   // from the array of alphabetical characters.
 
@@ -47,7 +47,7 @@ function addMarkers(map, dictionary) {
     });
 
 
-    var html = '<div id="content"><p>'+population+' profile(s) in this area</p><p>'+count+' occurences of '+adjective+'</p></div>';
+    var html = '<div id="content"><p>'+population+' profiles) in this area</p><p>'+count+' occurences of '+adjective+'</p></div>';
     
     var marker = new MarkerWithLabel({
       position: {lat: latitude, lng: longitude},

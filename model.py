@@ -1,5 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy 
 from datetime import datetime
+from sqlalchemy.dialects import postgresql
 # This is the connection to the SQLite database; we're getting this through
 # the Flask-SQLAlchemy helper library. On this, we can find the `session`
 # object, where we do most of our interactions (like committing, etc.)
@@ -18,7 +19,7 @@ class Profile(db.Model):
     username = db.Column(db.Text, primary_key=True, )
     timestamp = db.Column(db.DateTime, nullable=False, default = datetime.utcnow)
     age = db.Column(db.Integer, nullable=True)
-    location = db.Column(db.Text, nullable=True)
+    location = db.Column(db.Text, db.ForeignKey('locations.location'), nullable=True)
     gender = db.Column(db.Text, nullable=True)
     orientation = db.Column(db.Text, nullable=True)
     self_summary = db.Column(db.Text, nullable=True)
@@ -35,16 +36,14 @@ class Profile(db.Model):
 
 
 class Adjective(db.Model):
-    """Count of adjectives by location"""
+    """List of adjectives per user"""
 
     __tablename__ = "adjectives"
 
-    location = db.Column(db.Text, primary_key=True)
-    latitude = db.Column(db.Integer, nullable=False)
-    longitude = db.Column(db.Integer, nullable=False)
-    adjective = db.Column(db.Text, nullable=True)
-    count = db.Column(db.Integer, nullable=True)
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
+    adjectives = db.Column(postgresql.ARRAY(db.Text), nullable=False)
 
+    profile = db.relationship('Profile', backref=db.backref('adjectives'))
 
 class Zipcode(db.Model):
     """List of zipcodes."""
@@ -53,11 +52,23 @@ class Zipcode(db.Model):
 
     zipcodes = db.Column(db.Text, primary_key=True)
 
+class Location(db.Model):
+    """List of locations and lat/long"""
+
+    __tablename__ = "locations"
+
+    location = db.Column(db.Text, primary_key=True)
+    latitude = db.Column(db.Numeric)
+    longitude = db.Column(db.Numeric)
+
+    profile = db.relationship('Profile', backref=db.backref('locations'))
+
+
 def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///profiles_10_25_4.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///profiles'
     db.app = app
     db.init_app(app)
 
@@ -69,3 +80,4 @@ if __name__ == "__main__":
 
     connect_to_db(app)
     print "Connected to DB."
+    db.create_all()
