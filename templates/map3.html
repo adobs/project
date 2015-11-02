@@ -20,11 +20,12 @@ function bindInfoWindow(marker, map, infoWindow, html) {
           infoWindow.open(map, marker);
       });
 }
+
 // Adds a marker to the map.
 function addMarkers(dictionary) {
-  // Add the marker at the clicked location, and add the next-available label
-  // from the array of alphabetical characters.
+
   console.log("addMarkers")
+  $('#loading').hide();
   console.log("Dict is" + dictionary)
   for(entry in dictionary){
 
@@ -124,6 +125,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
                 <label for="age">Age range:</label>
                      <input type="text" id="age" readonly>               
                         <div id="slider-range"></div>
+                 <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
                 <input type="submit" value="submit">
             </form>
 
@@ -139,6 +141,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
 
 function formSubmission(evt){
     evt.preventDefault();
+    $("#loading").show();
     console.log("formSubmission");
 
     var inputs = {
@@ -167,5 +170,7 @@ $(function() {
     $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
       " - " + $( "#slider-range" ).slider( "values", 1 ) );
   });
+
+$('#loading').hide();
   </script>
 {% endblock %}

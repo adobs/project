@@ -138,19 +138,6 @@ def bot():
 def map():
     """Map page."""
 
-    # adjectives = db.session.query(Adjective).all()
-    # profile_locations = db.session.query(Profile.location).all()
-    # json_compiled = {}
-    # for entry in adjectives:
-
-    #     json_compiled[entry.location]= {}
-    #     json_compiled[entry.location]['lat']=entry.latitude
-    #     json_compiled[entry.location]['lng']=entry.longitude
-    #     json_compiled[entry.location]['adj']=entry.adjective
-    #     json_compiled[entry.location]['count']=entry.count
-    #     json_compiled[entry.location]['population']= profile_locations.count(tuple([entry.location]))
-    
-
     return render_template("map3.html")
 
 @app.route("/map-json")
@@ -167,21 +154,17 @@ def map_json():
     age = request.args.get("age")
     age_list = re.split(' \- ',age)
 
-    locations = db.session.query(Profile.location).all()
-
-    locations = list(set(locations))
+    locations = db.session.query(Location.location).all()
 
     for i in range(10-len(orientation_list)):
         orientation_list.append("None")
 
-    # print "orientationlist is", orientation_list
 
     orientation0, orientation1, orientation2, orientation3, orientation4, orientation5, orientation6, orientation7, orientation8, orientation9 = orientation_list 
 
     for i in range(16-len(gender_list)):
         gender_list.append("None")
 
-    # print "gender_list is", gender_list 
 
     gender0, gender1, gender2, gender3, gender4, gender5, gender6, gender7, gender8, gender9, gender10, gender11, gender12, gender13, gender14, gender15 = gender_list
 
@@ -190,8 +173,8 @@ def map_json():
     compiled = {}
     i=0
     for location in locations:
-        print "location", location, "is of type", type(location)
-        print "location[0] =", location[0]
+
+        location = location[0]
         #returns a list of tuples
         adjective_list = db.session.query(Adjective.adjectives).join(Profile).filter(db.or_(
             Profile.orientation.like('%'+orientation0+'%'), 
@@ -219,22 +202,22 @@ def map_json():
                 Profile.gender.like('%'+gender12+'%'),
                 Profile.gender.like('%'+gender13+'%'),
                 Profile.gender.like('%'+gender14+'%'),
-                Profile.gender.like('%'+gender15+'%'))).filter(Profile.age >= age_min).filter(Profile.age <= age_max).filter(Profile.location == location[0]).all()
+                Profile.gender.like('%'+gender15+'%'))).filter(Profile.age >= age_min).filter(Profile.age <= age_max).filter(Profile.location == location).all()
 
-        print "adjective list is", adjective_list
-        
-        if adjective_list:
+        word_list = []
+        for adjectives in adjective_list:
+            word_list.extend(adjectives[0])
+
+      
+        if word_list:
             population = len(adjective_list)
 
-            adjective, count = calculate_word_count(adjective_list)
-
+            adjective, count = calculate_word_count(word_list)
+        
             latitude = db.session.query(Location.latitude).filter(Location.location==location).one()[0]
             longitude = db.session.query(Location.longitude).filter(Location.location==location).one()[0]
 
-            print "latitude is",latitude,"of type", type(latitude)
 
-
-            location = location[0]
             compiled[location]= {}
             compiled[location]['lat']=latitude
             compiled[location]['lng']=longitude
@@ -245,14 +228,7 @@ def map_json():
             i+=1
             if i %10 == 0:
                 print i, datetime.utcnow()
-            # print adjective_list
-
-            print "ORIENTATION IS", orientation
-            print gender_list
-            print age_list
-
-            print compiled
-
+            
     return jsonify(compiled)
 
 if __name__ == "__main__":

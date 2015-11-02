@@ -1,9 +1,5 @@
 import operator
-def calculate_word_count(adjective_list):
-    #list is a list of tuples
-    word_list = []
-    for adjectives in adjective_list:
-        word_list.extend(adjectives[0])
+def calculate_word_count(word_list):
 
     counting_dictionary = {}
 
