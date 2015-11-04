@@ -72,7 +72,16 @@
             radius: count * 50
             });
 
+
+            {% if session %}
+
             var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Message Profiles in '+location+'</button><p><span id="count">'+count+'</span> occurences of '+adjective+'</p><div hidden>'+profiles+'</div><div hidden>'+profile_list+'</div><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal2">Message Profiles with '+adjective+'</button></div>';
+
+            {% else %}
+
+            var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal" disabled>Login to Message Profiles in '+location+'</button><p><span id="count">'+count+'</span> occurences of '+adjective+'</p><div hidden>'+profiles+'</div><div hidden>'+profile_list+'</div><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal2" disabled>Login to Message Profiles with '+adjective+'</button></div>';
+
+            {% endif %}
 
             var marker = new MarkerWithLabel({
               position: {lat: latitude, lng: longitude},
@@ -124,19 +133,22 @@
         <div class="col-md-3 right-side" id="controls">
             <form id='map-choices-form'>
                 <label>
-                    <h1>Orientation</h1>
+
+                    <!-- HTML to write -->
+                    <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many orientations you would like to filter on">Orientation</a></h1>
                     {% for orientation in orientations %}
                     <input type="checkbox" name="orientation" value="{{orientation.orientation}}">{{orientation.orientation}}
                     {% endfor %}
 
                 </label><br>
                 <label>
-                    <h1>Gender</h1>
+                    <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many genders you would like to filter on">Gender</a></h1>
                     {% for gender in genders %}
                     <input type="checkbox" name="gender" value="{{gender.gender}}">{{gender.gender}}
                     {% endfor %}
                 </label>
-                <label for="age"><h1>Age range:</label>
+                <label for="age"><h1><a href="#" data-toggle="tooltip-orientation" title="Select the age range you would like to filter on">Age range:</a>
+                </label>
                      <input type="text" id="age" readonly></h1>              
                         <div id="slider-range"></div>
                  <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
@@ -193,15 +205,54 @@
   </div>
 
 
+<!-- Large modal -->
+<!-- <button type="button" id="pageModal" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-lg">About Maps</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">About Maps Page</h4>
+      </div>
+      <div class="modal-body">
+        <p>This page maps common adjectives in a given location.  It allows you to filter on orientation, gender, and age.</p>
+        <p>It will show you, by location, what the most common adjectives are people use to describe themselves based on the filters you set.</p>
+        <p>To get started, select:</p>
+        <ul>
+          <li>orientation</li>
+          <li>gender</li>
+          <li>age</li>
+        </ul>
+        ...and submit!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Begin!</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
 
 
 
+
+<!-- Generated tootip markup by the plugin -->
+<!-- <div class="tooltip top" role="tooltip-orientation">
+  <div class="tooltip-arrow"></div>
+  <div class="tooltip-inner">
+  </div>
+</div>
+
+
+ -->
 
 
 <script>
 
 
-
+$('#orientation-hover').tooltip()
 
 function addToModal(data){
   $("#add-short-count").html(data.short_list)
@@ -280,6 +331,9 @@ function messageLongSubmission(evt){
 
 $("#long-list-form").on('submit', messageLongSubmission);
 
+$( document ).ready(function() {
+    $('#pageModal').modal();
+});
 
   </script>
 {% endblock %}
