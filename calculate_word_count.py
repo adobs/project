@@ -3,9 +3,9 @@ def calculate_word_count(word_list):
 
     counting_dictionary = {}
 
-    for word in word_list:
-        counting_dictionary[word] = counting_dictionary.get(word, 0)
-        counting_dictionary[word] += 1
+    for adjective in word_list:
+        counting_dictionary[adjective] = counting_dictionary.get(adjective, 0)
+        counting_dictionary[adjective] += 1
 
     sorted_adjectives = sorted(counting_dictionary.items(), key=operator.itemgetter(1))
 

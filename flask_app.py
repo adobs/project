@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, flash, session, jsonify
 from jinja2 import StrictUndefined
-from model import Profile, Adjective, Location, db, connect_to_db
+from model import Profile, Adjective, Gender, Orientation, UsernameOrientation, UsernameGender, Location, db, connect_to_db
 # from flask_debugtoolbar import DebugToolbarExtension
 from selenium_okc import create_new_user
 from sending_a_message import send_message
@@ -8,6 +8,8 @@ from signing_in import is_signed_in
 import re
 from calculate_word_count import calculate_word_count
 from datetime import datetime
+from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
+
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
@@ -56,8 +58,6 @@ def create_a_new_user():
     screenname = request.form.get("screenname")
     password = request.form.get("password")
 
-    print orientation
-    print birthmonth
     results = create_new_user(orientation, gender, birthmonth, birthdate, birthyear, zipcode, email, screenname, password)
     if results == "success":
         if is_signed_in(screenname, password) == "True":
@@ -126,8 +126,6 @@ def bot():
 
     result = send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
     
-    print result
-
     if result:
         return result
     else: 
@@ -138,12 +136,17 @@ def bot():
 def map():
     """Map page."""
 
-    return render_template("map3.html")
+    orientations = db.session.query(Orientation).all()
+    genders = db.session.query(Gender).all()
 
-@app.route("/map-json")
+    return render_template("map3.html", orientations=orientations, genders=genders)
+
+@app.route("/map.json")
 def map_json():
     """Map page."""
 
+    #put this section into a function
+    # make this a new object, return the object
     orientation = request.args.get("orientation")
     orientation = re.sub('orientation=','',orientation)
     orientation_list = re.split('&',orientation)
@@ -156,80 +159,47 @@ def map_json():
 
     locations = db.session.query(Location.location).all()
 
-    for i in range(10-len(orientation_list)):
-        orientation_list.append("None")
-
-
-    orientation0, orientation1, orientation2, orientation3, orientation4, orientation5, orientation6, orientation7, orientation8, orientation9 = orientation_list 
-
-    for i in range(16-len(gender_list)):
-        gender_list.append("None")
-
-
-    gender0, gender1, gender2, gender3, gender4, gender5, gender6, gender7, gender8, gender9, gender10, gender11, gender12, gender13, gender14, gender15 = gender_list
-
-    age_min, age_max = int(age_list[0]), int(age_list[1])
 
     compiled = {}
-    i=0
+    i = 0
     for location in locations:
 
         location = location[0]
         #returns a list of tuples
-        adjective_list = db.session.query(Adjective.adjectives).join(Profile).filter(db.or_(
-            Profile.orientation.like('%'+orientation0+'%'), 
-            Profile.orientation.like('%'+orientation1+'%'),
-            Profile.orientation.like('%'+orientation2+'%'),
-            Profile.orientation.like('%'+orientation3+'%'),
-            Profile.orientation.like('%'+orientation4+'%'),
-            Profile.orientation.like('%'+orientation5+'%'),
-            Profile.orientation.like('%'+orientation6+'%'),
-            Profile.orientation.like('%'+orientation7+'%'),
-            Profile.orientation.like('%'+orientation8+'%'),  
-            Profile.orientation.like('%'+orientation9+'%'))).filter(db.or_(
-                Profile.gender.like('%'+gender0+'%'),
-                Profile.gender.like('%'+gender1+'%'),
-                Profile.gender.like('%'+gender2+'%'),
-                Profile.gender.like('%'+gender3+'%'),
-                Profile.gender.like('%'+gender4+'%'),
-                Profile.gender.like('%'+gender5+'%'),
-                Profile.gender.like('%'+gender6+'%'),
-                Profile.gender.like('%'+gender7+'%'),
-                Profile.gender.like('%'+gender8+'%'),
-                Profile.gender.like('%'+gender9+'%'),
-                Profile.gender.like('%'+gender10+'%'),
-                Profile.gender.like('%'+gender11+'%'),
-                Profile.gender.like('%'+gender12+'%'),
-                Profile.gender.like('%'+gender13+'%'),
-                Profile.gender.like('%'+gender14+'%'),
-                Profile.gender.like('%'+gender15+'%'))).filter(Profile.age >= age_min).filter(Profile.age <= age_max).filter(Profile.location == location).all()
+        # cache and pre-fetch
+        # asynchronous -- twisted
 
-        word_list = []
-        for adjectives in adjective_list:
-            word_list.extend(adjectives[0])
+        # wrap into a function, get_joined_adjectives()
+        print "location is", location
+        adjective_list, population = get_joined_adjectives(orientation_list, gender_list, age_list, location)
+        print "adjective list is", adjective_list
 
-      
-        if word_list:
-            population = len(adjective_list)
-
-            adjective, count = calculate_word_count(word_list)
+        latitude, longitude = get_lat_long(location)
         
-            latitude = db.session.query(Location.latitude).filter(Location.location==location).one()[0]
-            longitude = db.session.query(Location.longitude).filter(Location.location==location).one()[0]
+        if adjective_list:
 
-
-            compiled[location]= {}
-            compiled[location]['lat']=latitude
-            compiled[location]['lng']=longitude
-            compiled[location]['adj']=adjective
-            compiled[location]['count']=count
-            compiled[location]['population']= population
+            adjective, count = calculate_word_count(adjective_list)
+            
+            compiled[location] = {}
+            compiled[location] = add_adjective_to_compiled(compiled, location, latitude, longitude, population, adjective, count)
+ 
 
             i+=1
-            if i %10 == 0:
+            if i % 10 == 0:
                 print i, datetime.utcnow()
+
+        else:
+            compiled[location]= {}
+            compiled[location] = add_nothing_to_compiled(compiled, location, latitude, longitude)
             
     return jsonify(compiled)
+
+
+@app.route("/modal")
+def modal():
+    """Map page."""
+
+    return render_template("modal.html")
 
 if __name__ == "__main__":
     app.debug = True

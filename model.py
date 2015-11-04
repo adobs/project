@@ -35,22 +35,67 @@ class Profile(db.Model):
 
 
 
+class OldAdjective(db.Model):
+    """List of adjectives per user"""
+
+    __tablename__ = "oldadjectives"
+
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
+    adjectives = db.Column(postgresql.ARRAY(db.Text), nullable=False)
+
+    profile = db.relationship('Profile', backref=db.backref('oldadjectives'))
+
+
+
 class Adjective(db.Model):
     """List of adjectives per user"""
 
     __tablename__ = "adjectives"
 
-    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
-    adjectives = db.Column(postgresql.ARRAY(db.Text), nullable=False)
+    adjective_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), nullable=False)
+    adjective = db.Column(db.Text)
 
-    profile = db.relationship('Profile', backref=db.backref('adjectives'))
+    profile = db.relationship('Profile', backref=db.backref('adjectives', lazy='dynamic'))
 
-class Zipcode(db.Model):
-    """List of zipcodes."""
 
-    __tablename__ = "zipcodes"
+class Orientation(db.Model):
 
-    zipcodes = db.Column(db.Text, primary_key=True)
+    __tablename__ = "orientations"
+
+    orientation = db.Column(db.Text, primary_key=True)
+
+
+class UsernameOrientation(db.Model):
+
+    __tablename__ = "usernameorientations"
+
+    username_orientation_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    username = db.Column(db.Text, db.ForeignKey("profiles.username"), nullable=False)
+    orientation = db.Column(db.Text, db.ForeignKey("orientations.orientation"), nullable=False)
+
+    orientations = db.relationship('Orientation', backref=db.backref("usernameorientations", lazy='dynamic'))
+    profile = db.relationship('Profile', backref=db.backref("usernameorientations",lazy='dynamic'))
+
+
+class Gender(db.Model):
+
+    __tablename__ = "genders"
+
+    gender = db.Column(db.Text, primary_key=True)
+
+
+class UsernameGender(db.Model):
+
+    __tablename__ = "usernamegenders"
+
+    username_gender_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), nullable=False)
+    gender = db.Column(db.Text, db.ForeignKey('genders.gender'), nullable=False)
+
+    genders = db.relationship('Gender', backref=db.backref('usernamegenders', lazy='dynamic'))
+    profile = db.relationship('Profile', backref=db.backref('usernamegenders', lazy='dynamic'))
+
 
 class Location(db.Model):
     """List of locations and lat/long"""
@@ -62,6 +107,15 @@ class Location(db.Model):
     longitude = db.Column(db.Numeric)
 
     profile = db.relationship('Profile', backref=db.backref('locations'))
+
+
+class Zipcode(db.Model):
+    """List of zipcodes."""
+
+    __tablename__ = "zipcodes"
+
+    zipcodes = db.Column(db.Text, primary_key=True)
+
 
 
 def connect_to_db(app):

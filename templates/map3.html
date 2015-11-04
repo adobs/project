@@ -4,81 +4,106 @@
 {% block head %}
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
-    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+    <!-- Google Maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
+  <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+
     <script>
+    $('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').focus()
+    })
+
+    $('#myModal').modal()
+
+    </script>
 
 
-var infoWindow = new google.maps.InfoWindow({
-  width: 150
-});
+    <script>
+// (function () {
+    var styles = [{"featureType":"all","elementType":"all","stylers":[{"hue":"#ffbb00"}]},{"featureType":"all","elementType":"geometry.fill","stylers":[{"hue":"#ffbb00"}]},{"featureType":"all","elementType":"labels.text.fill","stylers":[{"hue":"#ffbb00"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"color":"#7da5ea"}]}]
 
-function bindInfoWindow(marker, map, infoWindow, html) {
-      google.maps.event.addListener(marker, 'click', function () {
-          infoWindow.close();
-          infoWindow.setContent(html);
-          infoWindow.open(map, marker);
+
+    var infoWindow = new google.maps.InfoWindow({
+      width: 150
+    });
+
+    function bindInfoWindow(marker, map, infoWindow, html) {
+          google.maps.event.addListener(marker, 'click', function () {
+              infoWindow.close();
+              infoWindow.setContent(html);
+              infoWindow.open(map, marker);
+          });
+    }
+
+    // Adds a marker to the map.
+    function addMarkers(dictionary){
+      $('#loading').hide();
+
+      for(entry in dictionary){
+
+        var latitude = dictionary[entry]['lat'];
+        var longitude = dictionary[entry]['lng'];
+        var adjective = dictionary[entry]['adj'];
+        var count = dictionary[entry]['count'];
+        var population = dictionary[entry]['population']
+        var location = dictionary[entry]['location'];
+
+
+        if (adjective != ""){
+            var cityCircle = new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            center: {lat: latitude, lng: longitude},
+            radius: count * 50
+            });
+
+
+            var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Launch demo modal</button><p>'+count+' occurences of '+adjective+'</p></div>';
+            
+            var marker = new MarkerWithLabel({
+              position: {lat: latitude, lng: longitude},
+              labelContent: adjective,
+              map: map,
+              labelClass: "labels",
+              labelInBackground: false
+            });  
+          
+        }else{
+
+            var html = '<div id="content"><p>No profiles match your search parameters</p><p>in '+location+'</p></div>';
+            
+            var marker = new google.maps.Marker({
+              position: {lat: latitude, lng: longitude},
+              label: adjective,
+              map: map
+            });
+        }
+
+        bindInfoWindow(marker, map, infoWindow, html);
+      }
+
+    }
+
+
+    var map;
+    function initialize() {
+      var lebanon = { lat: 39.8282, lng: -98.5795 };
+      map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 4,
+        center: lebanon
       });
-}
-
-// Adds a marker to the map.
-function addMarkers(dictionary) {
-
-  console.log("addMarkers")
-  $('#loading').hide();
-  console.log("Dict is" + dictionary)
-  for(entry in dictionary){
-
-    var latitude = dictionary[entry]['lat'];
-    var longitude = dictionary[entry]['lng'];
-    var adjective = dictionary[entry]['adj'];
-    var count = dictionary[entry]['count'];
-    var population = dictionary[entry]['population']
+        // .setOptions({styles, styles})
+      return map;
+    }
 
 
-    var cityCircle = new google.maps.Circle({
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.8,
-      strokeWeight: 2,
-      fillColor: '#FF0000',
-      fillOpacity: 0.35,
-      map: map,
-      center: {lat: latitude, lng: longitude},
-      radius: count * 10
-    });
+    google.maps.event.addDomListener(window, 'load', initialize);
 
-
-    var html = '<div id="content"><p>'+population+' profiles in this area</p><p>'+count+' occurences of '+adjective+'</p></div>';
-    
-    var marker = new MarkerWithLabel({
-      position: {lat: latitude, lng: longitude},
-      labelContent: adjective,
-      // labelAnchor: new google.maps.Point(22, 0),
-      map: map,
-      labelClass: "labels",
-      labelInBackground: false
-    });
-
-    // marker.addListener('click', openInfoWindow);
-    
-    bindInfoWindow(marker, map, infoWindow, html);
-  }
-
-}
-
-
-var map;
-function initialize() {
-  var lebanon = { lat: 39.8282, lng: -98.5795 };
-  map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 4,
-    center: lebanon
-  });
-}
-
-
-
-google.maps.event.addDomListener(window, 'load', initialize);
+// })();
 
   </script>
 
@@ -91,39 +116,20 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <div class="col-md-3 right-side" id="controls">
             <form id='map-choices-form'>
                 <label>
-                    Orientation<br>
-                    <input type="checkbox" name="orientation" value="Straight">Straight
-                    <input type="checkbox" name="orientation" value="Gay">Gay
-                    <input type="checkbox" name="orientation" value="Lesbian">Lesbian
-                    <input type="checkbox" name="orientation" value="Bisexual">Bisexual
-                    <input type="checkbox" name="orientation" value="Queer">Queer
-                    <input type="checkbox" name="orientation" value="Heteroflexible">Heteroflexible
-                    <input type="checkbox" name="orientation" value="Homoflexible">Homoflexible
-                    <input type="checkbox" name="orientation" value="Demisexual">Demisexual
-                    <input type="checkbox" name="orientation" value="Sapiosexual">Sapiosexual
-                    <input type="checkbox" name="orientation" value="Questioning">Questioning
+                    <h1>Orientation</h1>
+                    {% for orientation in orientations %}
+                    <input type="checkbox" name="orientation" value="{{orientation.orientation}}">{{orientation.orientation}}
+                    {% endfor %}
+
                 </label><br>
                 <label>
-                    Gender<br>
-                    <input type="checkbox" name="gender" value="Woman">Woman
-                    <input type="checkbox" name="gender" value="Man">Man
-                    <input type="checkbox" name="gender" value="Transgender">Transgender
-                    <input type="checkbox" name="gender" value="Trans Woman">Trans Woman
-                    <input type="checkbox" name="gender" value="Trans Man">Trans Man
-                    <input type="checkbox" name="gender" value="Transfeminine">Transfeminine
-                    <input type="checkbox" name="gender" value="Transmasculine">Transmasculine
-                    <input type="checkbox" name="gender" value="Androgynous">Androgynous
-                    <input type="checkbox" name="gender" value="Two Spirit">Two Spirit
-                    <input type="checkbox" name="gender" value="Cis Man">Cis Man
-                    <input type="checkbox" name="gender" value="Gender Nonconforming">Gender Nonconforming
-                    <input type="checkbox" name="gender" value="Genderfluid">Genderfluid
-                    <input type="checkbox" name="gender" value="Genderqueer">Genderqueer
-                    <input type="checkbox" name="gender" value="Non-binary">Non-binary
-                    <input type="checkbox" name="gender" value="Agender">Agender
-                    <input type="checkbox" name="gender" value="Other">Other
+                    <h1>Gender</h1>
+                    {% for gender in genders %}
+                    <input type="checkbox" name="gender" value="{{gender.gender}}">{{gender.gender}}
+                    {% endfor %}
                 </label>
-                <label for="age">Age range:</label>
-                     <input type="text" id="age" readonly>               
+                <label for="age"><h1>Age range:</label>
+                     <input type="text" id="age" readonly></h1>              
                         <div id="slider-range"></div>
                  <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
                 <input type="submit" value="submit">
@@ -133,6 +139,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="myModalLabel">Modal title</h4></div><div class="modal-body">TEST</div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>
+
+
+
+
+
 
 
 
@@ -150,7 +163,7 @@ function formSubmission(evt){
         "age": $("#age").val()
     };
 
-    $.get("/map-json", inputs, addMarkers);
+    $.get("/map.json", inputs, addMarkers);
 }
 
 $("#map-choices-form").on('submit', formSubmission);
@@ -172,5 +185,17 @@ $(function() {
   });
 
 $('#loading').hide();
+// $('#myModal').modal();
+
+// $('#myModal').on('shown.bs.modal', function () {
+//   $('#myInput').focus()
+// })
+// $('#myModal').modal('show');     
+// $('#myModal').on('show.bs.modal', function (e) {
+//   if (!data) return e.preventDefault() // stops modal from being shown
+// })
+// $('#myModal').on('shown.bs.modal', function () {
+  // $('#myInput').focus()
+
   </script>
 {% endblock %}
