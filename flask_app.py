@@ -206,13 +206,14 @@ def map_html_json():
 
     print "html is", html
     
-    short_list, long_list = re.findall(r'<div hidden>(.*?)</div>', html)
-    
-    print "short list is", short_list
-    print "long list is", long_list
-    profiles = {"short_list": short_list, "long_list": long_list}
+    if "hidden" in html:
+        short_list, long_list = re.findall(r'<div hidden>(.*?)</div>', html)
+        
+        print "short list is", short_list
+        print "long list is", long_list
+        profiles = {"short_list": short_list, "long_list": long_list}
 
-    return jsonify(profiles)
+        return jsonify(profiles)
 
 @app.route("/send-message.json", methods=["POST"])
 def send_messages_map():
@@ -226,9 +227,11 @@ def send_messages_map():
     message = request.form.get("message")
     print "recipients", recipients
     print "recipient_list", recipient_list
+    print "message is", message
 
     username = session["screenname"]
     password = session["password"]
+    print "username is", username
 
     send_message_map(username, password, recipient_list, message)
 

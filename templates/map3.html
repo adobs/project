@@ -72,7 +72,6 @@
             radius: count * 50
             });
 
-            //fix labels on buttons
             var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Message Profiles in '+location+'</button><p><span id="count">'+count+'</span> occurences of '+adjective+'</p><div hidden>'+profiles+'</div><div hidden>'+profile_list+'</div><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal2">Message Profiles with '+adjective+'</button></div>';
 
             var marker = new MarkerWithLabel({
@@ -159,13 +158,13 @@
           <div class="modal-body">To:<div id="add-long-count"></div>
           <form id="long-list-form">
             <label>
-              <input type="text" id="message" placeholder="Type your message...">
+              <input type="text" id="message-long" placeholder="Type your message...">
             </label>
-            <!-- <input type="submit" value="send"> -->
+            <input type="submit" value="send" id="long-button" class="btn btn-default">
           </form>
           </div>
           <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button id="long-button" type="button" class="btn btn-primary">Send</button>
+          <!-- <button id="long-button" type="button" class="btn btn-primary">Send</button> -->
         </div>
       </div>
     </div>
@@ -181,13 +180,13 @@
           <div class="modal-body">To:<div id="add-short-count"></div>
           <form id="short-list-form">
             <label>
-              <input type="text" id="message" placeholder="Type your message...">
+              <input name="message" type="text" id="message-short" placeholder="Type your message...">
             </label>
-            <input type="submit" value="send">
+            <input type="submit" id="short-button" value="send" class="btn btn-default">
           </form>
           </div>
           <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Send</button>
+          <!-- <button type="button" class="btn btn-primary">Send</button> -->
         </div>
       </div>
     </div>
@@ -247,11 +246,12 @@ $('#loading').hide();
 ////////////////////////STUCK HERE
 function messageShortSubmission(evt){
   evt.preventDefault();
-  // $("#message").hide();
-  // $("#add-short-count").hide();
-  var recipients = $("#add-short-count").val();
-  var message = $("#message").val();
+  var recipients = $("#add-short-count").html();
+  var message = $("#message-short").val();
 
+  console.log("Recipients is "+recipients)
+  console.log("Message is "+message)
+  
   var sendShortInputs = {
     "recipients": recipients,
     "message": message
@@ -260,14 +260,15 @@ function messageShortSubmission(evt){
   $.post("/send-message.json", sendShortInputs, function(data){console.log("finished short sub");});
 }
 
-$("#short-button").on('click', messageShortSubmission);
+$("#short-list-form").on('submit', messageShortSubmission);
 
 function messageLongSubmission(evt){
   evt.preventDefault();
-  // $("#message").hide();
-  // $("#add-long-count").hide();
-  var recipients = $("#add-long-count").val();
-  var message = $("#message").val();
+  var recipients = $("#add-long-count").html();
+  var message = $("#message-long").val();
+
+  console.log("Recipients is "+recipients)
+  console.log("Message is "+message)
 
   var sendLongInputs = {
     "recipients": recipients,
@@ -277,7 +278,7 @@ function messageLongSubmission(evt){
   $.post("/send-message.json", sendLongInputs, function(data){console.log("finished long sub");});
 }
 
-$("#long-button").on('click', messageLongSubmission);
+$("#long-list-form").on('submit', messageLongSubmission);
 
 
   </script>
