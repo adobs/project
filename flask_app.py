@@ -9,6 +9,7 @@ import re
 from calculate_word_count import calculate_word_count
 from datetime import datetime
 from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
+from send_message_map import send_message_map
 
 app = Flask(__name__)
 
@@ -171,7 +172,7 @@ def map_json():
 
         # wrap into a function, get_joined_adjectives()
         print "location is", location
-        adjective_list, population = get_joined_adjectives(orientation_list, gender_list, age_list, location)
+        adjective_list, profile_list, profile_adjective_dictionary, population = get_joined_adjectives(orientation_list, gender_list, age_list, location)
         print "adjective list is", adjective_list
 
         latitude, longitude = get_lat_long(location)
@@ -179,9 +180,10 @@ def map_json():
         if adjective_list:
 
             adjective, count = calculate_word_count(adjective_list)
-            
+            profiles = profile_adjective_dictionary[adjective]
+            print "profiles", profiles
             compiled[location] = {}
-            compiled[location] = add_adjective_to_compiled(compiled, location, latitude, longitude, population, adjective, count)
+            compiled[location] = add_adjective_to_compiled(compiled, location, latitude, longitude, population, adjective, count, profile_list, profiles)
  
 
             i+=1
@@ -191,15 +193,46 @@ def map_json():
         else:
             compiled[location]= {}
             compiled[location] = add_nothing_to_compiled(compiled, location, latitude, longitude)
-            
+    
     return jsonify(compiled)
 
 
-@app.route("/modal")
-def modal():
+@app.route("/map-html.json", methods=["POST"])
+def map_html_json():
     """Map page."""
+    html = request.form.get("html")
 
-    return render_template("modal.html")
+    # <div hidden>Cmurph111,LizStormborn,AliceRose516,ArtsyDelight</div><div hidden>LizStormborn,Cmurph111,chibichaan,AliceRose516,smartsweesinger,ArtsyDelight,sunmusic89,b3liz3an_qu33n,jeeLi</div><
+
+    print "html is", html
+    
+    short_list, long_list = re.findall(r'<div hidden>(.*?)</div>', html)
+    
+    print "short list is", short_list
+    print "long list is", long_list
+    profiles = {"short_list": short_list, "long_list": long_list}
+
+    return jsonify(profiles)
+
+@app.route("/send-message.json", methods=["POST"])
+def send_messages_map():
+    """Send message."""
+    
+    # check to see that user is logged in
+    # check that I am getting correct inputs
+        
+    recipients = request.form.get("recipients")
+    recipient_list = recipients.split(",")
+    message = request.form.get("message")
+    print "recipients", recipients
+    print "recipient_list", recipient_list
+
+    username = session["screenname"]
+    password = session["password"]
+
+    send_message_map(username, password, recipient_list, message)
+
+    return "hello"
 
 if __name__ == "__main__":
     app.debug = True

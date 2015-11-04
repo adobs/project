@@ -16,7 +16,9 @@
     $('#myModal').modal()
 
     </script>
+{% endblock %}
 
+{% block content %}
 
     <script>
 // (function () {
@@ -32,6 +34,12 @@
               infoWindow.close();
               infoWindow.setContent(html);
               infoWindow.open(map, marker);
+              console.log("inside bind infos");
+
+          var htmlInput = {
+            "html": html
+          }
+            $.post("/map-html.json", htmlInput, addToModal);
           });
     }
 
@@ -45,8 +53,11 @@
         var longitude = dictionary[entry]['lng'];
         var adjective = dictionary[entry]['adj'];
         var count = dictionary[entry]['count'];
-        var population = dictionary[entry]['population']
+        var population = dictionary[entry]['population'];
         var location = dictionary[entry]['location'];
+        var profile_list = dictionary[entry]['profile_list'];
+        var profiles = dictionary[entry]['profiles']
+
 
 
         if (adjective != ""){
@@ -61,9 +72,9 @@
             radius: count * 50
             });
 
+            //fix labels on buttons
+            var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">Message Profiles in '+location+'</button><p><span id="count">'+count+'</span> occurences of '+adjective+'</p><div hidden>'+profiles+'</div><div hidden>'+profile_list+'</div><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal2">Message Profiles with '+adjective+'</button></div>';
 
-            var html = '<div id="content"><p>'+population+' profiles in '+location+'</p><p>matching your search</p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Launch demo modal</button><p>'+count+' occurences of '+adjective+'</p></div>';
-            
             var marker = new MarkerWithLabel({
               position: {lat: latitude, lng: longitude},
               labelContent: adjective,
@@ -102,14 +113,12 @@
 
 
     google.maps.event.addDomListener(window, 'load', initialize);
-
+    
 // })();
 
   </script>
 
-{% endblock %}
 
-{% block content %}
 <div class="container-fluid" id="whole-page">
     <div class="row" id="page">
         <div class="col-md-9 left-side" id="map"></div>
@@ -134,15 +143,55 @@
                  <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
                 <input type="submit" value="submit">
             </form>
-
-
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"><div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="myModalLabel">Modal title</h4></div><div class="modal-body">TEST</div><div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Save changes</button></div></div></div></div>
 
 
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="myModalLabel">Send Messages</h4></div>
+          <div class="modal-body">To:<div id="add-long-count"></div>
+          <form id="long-list-form">
+            <label>
+              <input type="text" id="message" placeholder="Type your message...">
+            </label>
+            <!-- <input type="submit" value="send"> -->
+          </form>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button id="long-button" type="button" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button><h4 class="modal-title" id="myModalLabel2">Send Messages</h4></div>
+          <div class="modal-body">To:<div id="add-short-count"></div>
+          <form id="short-list-form">
+            <label>
+              <input type="text" id="message" placeholder="Type your message...">
+            </label>
+            <input type="submit" value="send">
+          </form>
+          </div>
+          <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -152,21 +201,13 @@
 
 <script>
 
-function formSubmission(evt){
-    evt.preventDefault();
-    $("#loading").show();
-    console.log("formSubmission");
 
-    var inputs = {
-        "orientation": ($('input[name="orientation"]:checked').serialize()),
-        "gender": ($('input[name="gender"]:checked').serialize()),
-        "age": $("#age").val()
-    };
 
-    $.get("/map.json", inputs, addMarkers);
+
+function addToModal(data){
+  $("#add-short-count").html(data.short_list)
+  $("#add-long-count").html(data.long_list)
 }
-
-$("#map-choices-form").on('submit', formSubmission);
 
 
 // slider
@@ -184,18 +225,60 @@ $(function() {
       " - " + $( "#slider-range" ).slider( "values", 1 ) );
   });
 
-$('#loading').hide();
-// $('#myModal').modal();
+function formSubmission(evt){
+    evt.preventDefault();
+    $("#loading").show();
+    console.log("formSubmission");
 
-// $('#myModal').on('shown.bs.modal', function () {
-//   $('#myInput').focus()
-// })
-// $('#myModal').modal('show');     
-// $('#myModal').on('show.bs.modal', function (e) {
-//   if (!data) return e.preventDefault() // stops modal from being shown
-// })
-// $('#myModal').on('shown.bs.modal', function () {
-  // $('#myInput').focus()
+    var inputs = {
+        "orientation": ($('input[name="orientation"]:checked').serialize()),
+        "gender": ($('input[name="gender"]:checked').serialize()),
+        "age": $("#age").val()
+    };
+
+    $.get("/map.json", inputs, addMarkers);
+}
+
+$("#map-choices-form").on('submit', formSubmission);
+
+//keep loading gif hidding
+$('#loading').hide();
+
+////////////////////////STUCK HERE
+function messageShortSubmission(evt){
+  evt.preventDefault();
+  // $("#message").hide();
+  // $("#add-short-count").hide();
+  var recipients = $("#add-short-count").val();
+  var message = $("#message").val();
+
+  var sendShortInputs = {
+    "recipients": recipients,
+    "message": message
+  };
+
+  $.post("/send-message.json", sendShortInputs, function(data){console.log("finished short sub");});
+}
+
+$("#short-button").on('click', messageShortSubmission);
+
+function messageLongSubmission(evt){
+  evt.preventDefault();
+  // $("#message").hide();
+  // $("#add-long-count").hide();
+  var recipients = $("#add-long-count").val();
+  var message = $("#message").val();
+
+  var sendLongInputs = {
+    "recipients": recipients,
+    "message": message
+  };
+
+  $.post("/send-message.json", sendLongInputs, function(data){console.log("finished long sub");});
+}
+
+$("#long-button").on('click', messageLongSubmission);
+
 
   </script>
 {% endblock %}
