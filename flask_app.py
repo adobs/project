@@ -237,6 +237,11 @@ def send_messages_map():
 
     return "hello"
 
+@app.route("/d3page")
+def d3_page():
+
+    return render_template("force_map_d3.html")
+
 if __name__ == "__main__":
     app.debug = True
     connect_to_db(app)
