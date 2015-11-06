@@ -45,7 +45,6 @@
 
     // Adds a marker to the map.
     function addMarkers(dictionary){
-      $('#loading').hide();
 
       for(entry in dictionary){
 
@@ -69,7 +68,7 @@
             fillOpacity: 0.35,
             map: map,
             center: {lat: latitude, lng: longitude},
-            radius: count * 50
+            radius: 500* Math.log(count)
             });
 
 
@@ -98,13 +97,15 @@
             var marker = new google.maps.Marker({
               position: {lat: latitude, lng: longitude},
               label: adjective,
-              map: map
+              map: map,
+              animation: google.maps.Animation.DROP
             });
         }
 
         bindInfoWindow(marker, map, infoWindow, html);
       }
 
+      $('#loading').hide();
     }
 
 
@@ -137,22 +138,22 @@
                     <!-- HTML to write -->
                     <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many orientations you would like to filter on">Orientation</a></h1>
                     {% for orientation in orientations %}
-                    <input type="checkbox" name="orientation" value="{{orientation.orientation}}">{{orientation.orientation}}
+                    <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked>{{orientation.orientation}}
                     {% endfor %}
 
                 </label><br>
                 <label>
                     <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many genders you would like to filter on">Gender</a></h1>
                     {% for gender in genders %}
-                    <input type="checkbox" name="gender" value="{{gender.gender}}">{{gender.gender}}
+                    <input type="checkbox" name="gender" value="{{gender.gender}}" checked>{{gender.gender}}
                     {% endfor %}
                 </label>
                 <label for="age"><h1><a href="#" data-toggle="tooltip-orientation" title="Select the age range you would like to filter on">Age range:</a>
                 </label>
-                     <input type="text" id="age" readonly></h1>              
+                     <input type="text" id="age" readonly name="age"></h1>              
                         <div id="slider-range"></div>
                  <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
-                <input type="submit" value="submit">
+                <!-- <input type="submit" value="submit"> -->
             </form>
         </div>
     </div>
@@ -275,24 +276,62 @@ $(function() {
       " - " + $( "#slider-range" ).slider( "values", 1 ) );
   });
 
-function formSubmission(evt){
-    evt.preventDefault();
-    $("#loading").show();
-    console.log("formSubmission");
 
-    var inputs = {
-        "orientation": ($('input[name="orientation"]:checked').serialize()),
-        "gender": ($('input[name="gender"]:checked').serialize()),
-        "age": $("#age").val()
-    };
+$('input[name="orientation"]').change(function(){
+        $('#loading').show();
+        console.log("here in orientation");
+        var orientationInputs = {
+          "orientation": ($('input[name="orientation"]:checked').serialize()),
+          "gender": ($('input[name="gender"]:checked').serialize()),
+          "age": $("#age").val()        
+        };
+        
+        $.get("/map-markers.json", orientationInputs, addMarkers);
+    });
 
-    $.get("/map.json", inputs, addMarkers);
-}
+$('input[name="gender"]').change(function(){
+        $('#loading').show();
 
-$("#map-choices-form").on('submit', formSubmission);
+        var genderInputs = {
+          "orientation": ($('input[name="orientation"]:checked').serialize()),
+          "gender": ($('input[name="gender"]:checked').serialize()),
+          "age": $("#age").val()        
+        };
+        
+        $.get("/map-markers.json", genderInputs, addMarkers);
+    });
+
+//////////////this is not right
+$('input[name="age"]').change(function(){
+        $('#loading').show();
+
+        var ageInputs = {
+          "orientation": ($('input[name="orientation"]:checked').serialize()),
+          "gender": ($('input[name="gender"]:checked').serialize()),
+          "age": $("#age").val()        
+        };
+        
+        $.get("/map-markers.json", ageInputs, addMarkers);
+    });
+
+// function formSubmission(evt){
+//     evt.preventDefault();
+//     $("#loading").show();
+//     console.log("formSubmission");
+
+//     var inputs = {
+//         "orientation": ($('input[name="orientation"]:checked').serialize()),
+//         "gender": ($('input[name="gender"]:checked').serialize()),
+//         "age": $("#age").val()
+//     };
+
+//     $.get("/map.json", inputs, addMarkers);
+// }
+
+// $("#map-choices-form").on('submit', formSubmission);
 
 //keep loading gif hidding
-$('#loading').hide();
+// $('#loading').hide();
 
 ////////////////////////STUCK HERE
 function messageShortSubmission(evt){
@@ -333,6 +372,14 @@ $("#long-list-form").on('submit', messageLongSubmission);
 
 $( document ).ready(function() {
     $('#pageModal').modal();
+    var genderInputs = {
+          "orientation": ($('input[name="orientation"]:checked').serialize()),
+          "gender": ($('input[name="gender"]:checked').serialize()),
+          "age": $("#age").val()        
+        };
+        
+    $.get("/map-markers.json", genderInputs, addMarkers);
+
 });
 
   </script>

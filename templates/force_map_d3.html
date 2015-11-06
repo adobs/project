@@ -1,27 +1,13 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+{% block title%}Home{% endblock %}
 
-<!-- IMPORTANT: To render this graph, you must run a server
-                locally and access this file via localhost. -->
-
-<!-- In your terminal, change into the demo directory and run
-     this command:
-
-       python -m SimpleHTTPServer 5000
-
-     Then, go to localhost:5000/force_layout_example.html -->
-
-<html>
-<head>
-
-</head>
-
-<body>
+{% block content %}
 
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
 
 
-d3.csv("force_chart_csv.csv", makeForceGraph);
+d3.csv("force_chart_short.csv", makeForceGraph);
 
 function makeForceGraph(error, links) {
 
@@ -48,7 +34,7 @@ function makeForceGraph(error, links) {
                   .nodes(d3.values(nodes))
                   .links(links)
                   .size([width, height])
-                  .linkDistance(50)
+                  .linkDistance(800)
                   .charge(-200)
                   .on("tick", tick)
                   .start();
@@ -98,5 +84,4 @@ function makeForceGraph(error, links) {
 }
 
 </script>
-</body>
-</html>
+{% endblock %}

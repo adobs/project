@@ -16,19 +16,19 @@ def get_joined_adjectives(orientation_list, gender_list, age_list, location):
     # diagnose how many queries are being run, think about dynamically loading these tables.  dynamic vs lazy.
     # large JSON file of datapoints
 
-    adjective_object_list = db.session.query(Adjective.adjective, Profile.username).join(Profile).join(
-                            UsernameOrientation).join(UsernameGender).filter(
-                            UsernameOrientation.orientation.in_(orientation_list)).filter(
-                            UsernameGender.gender.in_(gender_list)).filter(
-                            Profile.age >= int(age_list[0])).filter(
-                            Profile.age <= int(age_list[1])).filter(
-                            Profile.location == location).all()
+    # adjective_object_list = db.session.query(Adjective.adjective, Profile.username).join(Profile).join(
+    #                         UsernameOrientation).join(UsernameGender).filter(
+    #                         UsernameOrientation.orientation.in_(orientation_list)).filter(
+    #                         UsernameGender.gender.in_(gender_list)).filter(
+    #                         Profile.age >= int(age_list[0])).filter(
+    #                         Profile.age <= int(age_list[1])).filter(
+    #                         Profile.location == location).all()
     
     #make all connections dynamic...load = dynamic to the profile table
     #create index for all of your tables
     # go into psql , create index for each table
     print "beginning of get_joined_adjectives function"
-    # adjective_object_list = (Adjective.query.options((db.joinedload('profile')).(db.joinedload('usernameorientations')))).all()
+    adjective_object_list = (Adjective.query.options(db.joinedload('Profile'))).limit(10).all()
     print "\nin get joined adjectives function"
     print "adjective_object_list is", adjective_object_list
     

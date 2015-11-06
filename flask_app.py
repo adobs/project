@@ -142,58 +142,97 @@ def map():
 
     return render_template("map3.html", orientations=orientations, genders=genders)
 
-@app.route("/map.json")
-def map_json():
+
+@app.route("/map-markers.json")
+def map_markers_json():
     """Map page."""
+
+    print "pre query"
 
     #put this section into a function
     # make this a new object, return the object
     orientation = request.args.get("orientation")
     orientation = re.sub('orientation=','',orientation)
     orientation_list = re.split('&',orientation)
+    orientation_tuple=tuple(orientation_list)
     gender = request.args.get("gender")
     gender = re.sub('gender=','',gender)
     gender = re.sub('\+',' ',gender)
     gender_list = re.split('&',gender)
+    gender_tuple = tuple(gender_list)
     age = request.args.get("age")
     age_list = re.split(' \- ',age)
 
-    locations = db.session.query(Location.location).all()
+    age_min, age_max = age_list
 
+
+    QUERY = """SELECT Profiles.username, Profiles.location, Adjectives.adjective, Locations.latitude, Locations.longitude  
+                FROM Profiles JOIN Adjectives ON Profiles.username=Adjectives.username 
+                JOIN Locations ON Profiles.location=Locations.location
+                WHERE Profiles.username IN
+                    (SELECT P.username FROM Profiles AS P 
+                    JOIN Usernameorientations AS UO on P.username = UO.username 
+                    JOIN Usernamegenders AS UG on UO.username = UG.username 
+                    WHERE UO.Orientation in :orientation_list 
+                    AND UG.Gender in :gender_list 
+                    AND P.Age BETWEEN :age_min AND :age_max)"""
+
+    cursor = db.session.execute(QUERY, {'orientation_list': orientation_tuple, 'gender_list': gender_tuple, 'age_min': age_min, 'age_max': age_max})
+
+    results = cursor.fetchall()
 
     compiled = {}
-    i = 0
-    for location in locations:
 
-        location = location[0]
-        #returns a list of tuples
-        # cache and pre-fetch
-        # asynchronous -- twisted
+    word_count = {}
 
-        # wrap into a function, get_joined_adjectives()
-        print "location is", location
-        adjective_list, profile_list, profile_adjective_dictionary, population = get_joined_adjectives(orientation_list, gender_list, age_list, location)
-        print "adjective list is", adjective_list
+    print results
+    for result in results:
+        username, location, adjective, latitude, longitude = result
 
-        latitude, longitude = get_lat_long(location)
-        
-        if adjective_list:
+        # get list of words by location
+        word_count[location] = word_count.get(location,{})
+        word_count[location]["word"] = word_count[location].get("word",[])
+        word_count[location]["profile_list"] = word_count[location].get("profile_list",[])
+        word_count[location]["word"].append(adjective)
+        word_count[location]["profile_list"].append(username)
 
-            adjective, count = calculate_word_count(adjective_list)
-            profiles = profile_adjective_dictionary[adjective]
-            print "profiles", profiles
-            compiled[location] = {}
-            compiled[location] = add_adjective_to_compiled(compiled, location, latitude, longitude, population, adjective, count, profile_list, profiles)
- 
 
-            i+=1
-            if i % 10 == 0:
-                print i, datetime.utcnow()
+        compiled[location] = compiled.get(location, {})
+        compiled[location]['lat'] = float(latitude)
+        compiled[location]['lng'] = float(longitude)
+        compiled[location]['location'] = location
 
-        else:
-            compiled[location]= {}
-            compiled[location] = add_nothing_to_compiled(compiled, location, latitude, longitude)
+
     
+    for location in word_count:
+        unique_profiles = list(set(word_count[location]["profile_list"]))
+        population = len(unique_profiles)
+        word_list = word_count[location]["word"]
+        most_common_adjective, most_common_count = calculate_word_count(word_list)        
+
+        profile_index =[]
+
+        for i, word in enumerate(word_count[location]["word"]):
+            if word == most_common_adjective:
+                profile_index.append(i)
+
+                # print "word is ", word
+                # print "i is", i
+                # print "lenth is", len(word_count[location]["profile_list"])
+
+        profiles = []
+        for item in profile_index:
+            profiles.append(word_count[location]["profile_list"][item])
+
+        profiles = list(set(profiles))
+
+        compiled[location]['adj'] = most_common_adjective
+        compiled[location]['count'] = most_common_count
+        compiled[location]['profile_list'] = unique_profiles
+        compiled[location]['profiles']=profiles
+        compiled[location]['population'] = population
+
+    print "\n!!!! length of word count", len(word_count)
     return jsonify(compiled)
 
 
@@ -211,9 +250,15 @@ def map_html_json():
         
         print "short list is", short_list
         print "long list is", long_list
+        short_list = short_list.split(",")
+        short_list = (", ").join(short_list)
+        long_list = long_list.split(",")
+        long_list = (", ").join(long_list)
         profiles = {"short_list": short_list, "long_list": long_list}
 
         return jsonify(profiles)
+
+    return ""
 
 @app.route("/send-message.json", methods=["POST"])
 def send_messages_map():
@@ -240,7 +285,7 @@ def send_messages_map():
 @app.route("/d3page")
 def d3_page():
 
-    return render_template("force_map_d3.html")
+    return render_template("force_layout_advanced.html")
 
 if __name__ == "__main__":
     app.debug = True

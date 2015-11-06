@@ -56,7 +56,7 @@ class Adjective(db.Model):
     username = db.Column(db.Text, db.ForeignKey('profiles.username'), nullable=False)
     adjective = db.Column(db.Text)
 
-    profile = db.relationship('Profile', backref=db.backref('adjectives', lazy='dynamic'))
+    profile = db.relationship('Profile', backref=db.backref('adjectives'))
 
 
 class Orientation(db.Model):
