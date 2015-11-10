@@ -36,14 +36,13 @@ def queries():
         db.session.add(new_adjective)
         db.session.commit()
 
-def convert_into_unique():
+# def convert_into_unique():
 
-    words = db.session.query(Adjective).all()
+#     words = db.session.query(Adjective).all()
 
-    for word in words:
-        word.adjectives = list(set(word.adjectives)) 
-
-        db.session.commit()
+#     for word in words:
+#         word.adjectives = list(set(word.adjectives)) 
+#         db.session.commit()
 
 
 if __name__ == "__main__":

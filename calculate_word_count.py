@@ -1,5 +1,11 @@
 import operator
 def calculate_word_count(word_list):
+    """Calculates count of most common word in a list of words
+
+        >>> calculate_word_count(["happy","sad","happy","cool","new"])
+        ['happy', 2]
+
+    """
 
     counting_dictionary = {}
 

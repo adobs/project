@@ -23,53 +23,75 @@
 
 <style>
 
-      html, body {
-        height: 100%;
-        margin: 0; 
-        padding: 0;
-      }
-      #map {
-        height: 100%;
-      }
-      .labels {
-         color: white;
-         background-color: red;
-         font-family: "Lucida Grande", "Arial", sans-serif;
-         border: solid black 2px;
-         font-size: 10px;
-         text-align: center;
-         width: 30px;     
-         /*white-space: nowrap;*/
-       }
-      #controls{
-        background-color: #7da5ea;
-        height: 100%;
-      }
-      #page{
-        height: 100%;
-      }
-      #whole-page{
-        height: 100%;
-      }
-     line{
-      stroke: #999;
-      stroke-width: 1px;
-      }
+  line {
+  stroke: #999;
+  stroke-width: 1px;
+}
 
-    circle {
-      fill: #ccc;
-      stroke: #fff;
-      stroke-width: 1.5px;
-    }
+circle {
+  fill: #ccc;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
 
-    text {
-      fill: #000;
-      font: 10px sans-serif;
-      pointer-events: none;
-    }
+text {
+  fill: #000;
+  font: 10px sans-serif;
+  pointer-events: none;
+}
+html, body {
+  height: 100%;
+  margin: 0; 
+  padding: 0;
+}
+#map {
+  height: 100%;
+}
+.labels {
+   color: white;
+   background-color: red;
+   font-family: "Lucida Grande", "Arial", sans-serif;
+   border: solid black 2px;
+   font-size: 10px;
+   text-align: center;
+   width: 30px;     
+   white-space: wrap;
+ }
+#controls{
+  background-color: #7da5ea;
+  height: 100%;
+}
+#page{
+  height: 100%;
+}
+#whole-page{
+  height: 100%;
+}
+
+#content h1{
+  font-size: 1.1em;
+  font-weight: normal;
+  margin-bottom: 0px;
+  margin-top: 10px;
+  margin-right: 0;
+  margin-left: 0,
+
+}
+#content h2{
+  font-size: 1.1em;
+  font-weight: normal;
+  margin-top: 0px;
+  margin-bottom: 5px;
+  margin-right: 0;
+  margin-left: 0,
+
+}
+ul
+{
+    list-style-type: none;
+}
          
  </style>
-    </style>
 {% block head %}{% endblock %}
 </head>
 <body>

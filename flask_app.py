@@ -1,15 +1,18 @@
 from flask import Flask, request, render_template, redirect, flash, session, jsonify
 from jinja2 import StrictUndefined
-from model import Profile, Adjective, Gender, Orientation, UsernameOrientation, UsernameGender, Location, db, connect_to_db
+from model import Profile, Adjective, Gender, Orientation, UsernameGender, Location, db, connect_to_db
 # from flask_debugtoolbar import DebugToolbarExtension
 from selenium_okc import create_new_user
 from sending_a_message import send_message
 from signing_in import is_signed_in
 import re
-from calculate_word_count import calculate_word_count
-from datetime import datetime
-from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
-from send_message_map import send_message_map
+# from calculate_word_count import calculate_word_count
+# from datetime import datetime
+# from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
+from map_helper import get_compiled
+from send_message_map import send
+from create_json_for_d3_hierarchical import create_json
+import json
 
 app = Flask(__name__)
 
@@ -122,8 +125,6 @@ def bot():
     message = request.form.get("message")
     num = int(request.form.get("num"))
 
-    print session["screenname"]
-    print session["password"]
 
     result = send_message(session["screenname"], session["password"], minimum_age, maximum_age, location, radius, gentation, message, num)
     
@@ -137,17 +138,15 @@ def bot():
 def map():
     """Map page."""
 
-    orientations = db.session.query(Orientation).all()
-    genders = db.session.query(Gender).all()
+    orientations = db.session.query(Orientation).order_by(Orientation.orientation).all()
+    genders = db.session.query(Gender).order_by(Gender.gender).all()
 
     return render_template("map3.html", orientations=orientations, genders=genders)
 
 
-@app.route("/map-markers.json")
-def map_markers_json():
+@app.route("/map-checked.json")
+def map_checked_json():
     """Map page."""
-
-    print "pre query"
 
     #put this section into a function
     # make this a new object, return the object
@@ -165,127 +164,84 @@ def map_markers_json():
 
     age_min, age_max = age_list
 
+    logged_in = "False"
+    # if logged in
+    if session.get("screenname"):
+        logged_in = "True"
 
-    QUERY = """SELECT Profiles.username, Profiles.location, Adjectives.adjective, Locations.latitude, Locations.longitude  
-                FROM Profiles JOIN Adjectives ON Profiles.username=Adjectives.username 
-                JOIN Locations ON Profiles.location=Locations.location
-                WHERE Profiles.username IN
-                    (SELECT P.username FROM Profiles AS P 
-                    JOIN Usernameorientations AS UO on P.username = UO.username 
-                    JOIN Usernamegenders AS UG on UO.username = UG.username 
-                    WHERE UO.Orientation in :orientation_list 
-                    AND UG.Gender in :gender_list 
-                    AND P.Age BETWEEN :age_min AND :age_max)"""
 
-    cursor = db.session.execute(QUERY, {'orientation_list': orientation_tuple, 'gender_list': gender_tuple, 'age_min': age_min, 'age_max': age_max})
+    # users = db.session.query(Profile.username).filter(
+    #     Profile.orientation.in_(orientation_tuple)).filter(
+    #     Profile.gender.in_(gender_tuple)).filter(
+    #     Profile.age >= age_min).filter(Profile.age <= age_max)
 
+
+    # results = db.session.query(Adjective.username, Profile.location, 
+    #                            Adjective.adjective, Location.latitude, 
+    #                            Location.longitude).join(Profile).join(
+    #                            Location).filter(Adjective.username.in_(users)).all()
+
+    QUERY = """SELECT A.Username, P.location, A.adjective, L.latitude, L.longitude 
+               FROM Adjectives AS A JOIN Profiles AS P ON P.username=A.username 
+               JOIN Locations AS L on P.Location = L.Location 
+               WHERE A.Username IN ( 
+                SELECT Username FROM Profiles 
+                WHERE Age BETWEEN :age_min 
+                AND :age_max AND Username 
+                IN (
+                    SELECT Username FROM Usernameorientations 
+                    WHERE Orientation IN :orientation_tuple 
+                    AND Username IN (
+                        SELECT Username FROM Usernamegenders 
+                        WHERE Gender IN :gender_tuple)))
+            """
+
+    cursor = db.session.execute(QUERY, {"age_min": age_min, 
+                    "age_max": age_max, "orientation_tuple": orientation_tuple, "gender_tuple": gender_tuple})
+    
     results = cursor.fetchall()
 
-    compiled = {}
-
-    word_count = {}
-
-    print results
-    for result in results:
-        username, location, adjective, latitude, longitude = result
-
-        # get list of words by location
-        word_count[location] = word_count.get(location,{})
-        word_count[location]["word"] = word_count[location].get("word",[])
-        word_count[location]["profile_list"] = word_count[location].get("profile_list",[])
-        word_count[location]["word"].append(adjective)
-        word_count[location]["profile_list"].append(username)
-
-
-        compiled[location] = compiled.get(location, {})
-        compiled[location]['lat'] = float(latitude)
-        compiled[location]['lng'] = float(longitude)
-        compiled[location]['location'] = location
-
-
+    print "results is,", results
     
-    for location in word_count:
-        unique_profiles = list(set(word_count[location]["profile_list"]))
-        population = len(unique_profiles)
-        word_list = word_count[location]["word"]
-        most_common_adjective, most_common_count = calculate_word_count(word_list)        
-
-        profile_index =[]
-
-        for i, word in enumerate(word_count[location]["word"]):
-            if word == most_common_adjective:
-                profile_index.append(i)
-
-                # print "word is ", word
-                # print "i is", i
-                # print "lenth is", len(word_count[location]["profile_list"])
-
-        profiles = []
-        for item in profile_index:
-            profiles.append(word_count[location]["profile_list"][item])
-
-        profiles = list(set(profiles))
-
-        compiled[location]['adj'] = most_common_adjective
-        compiled[location]['count'] = most_common_count
-        compiled[location]['profile_list'] = unique_profiles
-        compiled[location]['profiles']=profiles
-        compiled[location]['population'] = population
-
-    print "\n!!!! length of word count", len(word_count)
+    compiled = get_compiled(logged_in, results)
+    print "end of json"
     return jsonify(compiled)
 
 
-@app.route("/map-html.json", methods=["POST"])
-def map_html_json():
-    """Map page."""
-    html = request.form.get("html")
-
-    # <div hidden>Cmurph111,LizStormborn,AliceRose516,ArtsyDelight</div><div hidden>LizStormborn,Cmurph111,chibichaan,AliceRose516,smartsweesinger,ArtsyDelight,sunmusic89,b3liz3an_qu33n,jeeLi</div><
-
-    print "html is", html
-    
-    if "hidden" in html:
-        short_list, long_list = re.findall(r'<div hidden>(.*?)</div>', html)
-        
-        print "short list is", short_list
-        print "long list is", long_list
-        short_list = short_list.split(",")
-        short_list = (", ").join(short_list)
-        long_list = long_list.split(",")
-        long_list = (", ").join(long_list)
-        profiles = {"short_list": short_list, "long_list": long_list}
-
-        return jsonify(profiles)
-
-    return ""
 
 @app.route("/send-message.json", methods=["POST"])
 def send_messages_map():
-    """Send message."""
-    
-    # check to see that user is logged in
-    # check that I am getting correct inputs
-        
+    """Send message to OKCupid users."""
+
     recipients = request.form.get("recipients")
-    recipient_list = recipients.split(",")
+    recipient_list = recipients.split(", ")
     message = request.form.get("message")
-    print "recipients", recipients
-    print "recipient_list", recipient_list
-    print "message is", message
 
     username = session["screenname"]
     password = session["password"]
-    print "username is", username
 
-    send_message_map(username, password, recipient_list, message)
+    send(username, password, recipient_list, message)
 
     return "hello"
+
 
 @app.route("/d3page")
 def d3_page():
 
-    return render_template("force_layout_advanced.html")
+
+    return render_template("hierarchical_edge_building.html")
+
+
+@app.route("/sendjson")
+def send_json():
+
+    graph = json.dumps(create_json("quirky"))
+
+    print "json is", graph
+
+    return graph
+
+
 
 if __name__ == "__main__":
     app.debug = True

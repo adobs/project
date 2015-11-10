@@ -60,13 +60,17 @@ class Adjective(db.Model):
 
 
 class Orientation(db.Model):
+    """List of orientations in database"""
 
     __tablename__ = "orientations"
 
     orientation = db.Column(db.Text, primary_key=True)
 
 
+    profiles = db.relationship("Profile", secondary="usernameorientations", lazy="dynamic", backref=db.backref("orientations", lazy="dynamic"))
+
 class UsernameOrientation(db.Model):
+    """User matched up with their orientation"""
 
     __tablename__ = "usernameorientations"
 
@@ -74,18 +78,22 @@ class UsernameOrientation(db.Model):
     username = db.Column(db.Text, db.ForeignKey("profiles.username"), nullable=False)
     orientation = db.Column(db.Text, db.ForeignKey("orientations.orientation"), nullable=False)
 
-    orientations = db.relationship('Orientation', backref=db.backref("usernameorientations", lazy='dynamic'))
-    profile = db.relationship('Profile', backref=db.backref("usernameorientations",lazy='dynamic'))
+    # orientations = db.relationship('Orientation', backref=db.backref("usernameorientations", lazy='dynamic'))
+    # profile = db.relationship('Profile', backref=db.backref("usernameorientations",lazy='dynamic'))
 
 
 class Gender(db.Model):
+    """List of genders in database"""
 
     __tablename__ = "genders"
 
     gender = db.Column(db.Text, primary_key=True)
 
+    profiles = db.relationship("Profile", secondary="usernamegenders", lazy="dynamic", backref=db.backref("genders", lazy="dynamic"))
+
 
 class UsernameGender(db.Model):
+    """User matched up with their gender"""
 
     __tablename__ = "usernamegenders"
 
@@ -93,8 +101,8 @@ class UsernameGender(db.Model):
     username = db.Column(db.Text, db.ForeignKey('profiles.username'), nullable=False)
     gender = db.Column(db.Text, db.ForeignKey('genders.gender'), nullable=False)
 
-    genders = db.relationship('Gender', backref=db.backref('usernamegenders', lazy='dynamic'))
-    profile = db.relationship('Profile', backref=db.backref('usernamegenders', lazy='dynamic'))
+    # genders = db.relationship('Gender', backref=db.backref('usernamegenders', lazy='dynamic'))
+    # profile = db.relationship('Profile', backref=db.backref('usernamegenders', lazy='dynamic'))
 
 
 class Location(db.Model):
