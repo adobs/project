@@ -4,7 +4,8 @@
     var infoWindow = new google.maps.InfoWindow({
       width: 150
     });
-
+    var circles = [];
+    var markers = [];
 
     function getHtml(logged_in, population, location, long_profile_list, short_profile_list, count, adjective){
         if (logged_in==="True"){
@@ -39,6 +40,17 @@
         
         return html;
 
+    }
+
+    function removeAllCirclesAndMarkers() {
+        for (var i = 0; i < circles.length; i++) {
+            var circle = circles[i];
+            circle.setMap(null);
+        }
+        for (var j = 0; j < markers.length; j++) {
+            var marker = markers[j];
+            marker.setMap(null);
+        }
     }
 
     function createCircle(latitude, longitude, count){
@@ -83,7 +95,7 @@
         // have a key pointing to dictionary
         // have a key pointing to login
     function addMarkers(dictionary){
-
+        removeAllCirclesAndMarkers();
         for (var entry in dictionary["results"]){
             var html, cityCircle, marker;
             var latitude = dictionary["results"][entry]['lat'];
@@ -100,8 +112,9 @@
                             short_profile_list, count, adjective);
 
             cityCircle = createCircle(latitude,longitude, count);
-
+            circles.push(createCircle(latitude,longitude, count));
             marker = createMarker(latitude, longitude, adjective);
+            markers.push(marker);
 
             bindInfoWindow(marker, map, infoWindow, html);
         }

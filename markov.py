@@ -1,26 +1,30 @@
 from model import db, connect_to_db
 from random import choice
 
-def get_input_text(orientation, gender, location, age, adjective_tuple):
+def get_input_text(orientation, gender, location, age_min, age_max, adjective_tuple):
     """Based on parameters, returns string of self summaries."""
-        # (SELECT A.username FROM Adjectives AS A 
-                    # WHERE A.Adjective IN :adjective_tuple
-                    # AND A.username IN 
+  
     text_string = ""
 
     QUERY = """SELECT P.self_summary from Profiles AS P
-                WHERE P.age = :age AND P.location = :location AND P.username IN
-            
+                WHERE P.age BETWEEN :age_min AND :age_max AND P.location = :location AND P.username IN
                         (SELECT UO.username FROM Usernameorientations AS UO
-                        WHERE UO.orientation=:orientation AND UO.username IN (
-                            SELECT UG.username FROM Usernamegenders AS UG
-                            WHERE UG.gender = :gender))
+                        WHERE UO.orientation=:orientation AND UO.username IN 
+                            (SELECT UG.username FROM Usernamegenders AS UG
+                            WHERE UG.gender = :gender and UG.username IN
+                                (SELECT OA.username FROM OldAdjectives AS OA 
+                                WHERE (:adjective_tuple) @> OA.adjectives)))
             """
     cursor = db.session.execute(QUERY, {"orientation": orientation, 
                                 "gender": gender, "location": location, 
-                                "age": age, "adjective_tuple": adjective_tuple})
-    
+                                "age_min": age_min, "age_max": age_max, "adjective_tuple": list(adjective_tuple)})
     results = cursor.fetchall()
+
+    db.session.query
+
+
+    # Oldadjective.username
+
     print "results is", results
     for result in results:
         text =result[0].encode("utf8")
@@ -67,12 +71,19 @@ def make_text(chains):
 
     n = len(n_gram)
 
-    while n_gram in chains:
-        value = choice(chains[n_gram])
-        list_of_text.append(value)
-        print "list of text is", list_of_text
-        n_gram = tuple(list_of_text[-1*n:])
-        print "ngram is", n_gram
+    while len(list_of_text)<200:
+        if n_gram in chains:
+            value = choice(chains[n_gram])
+            print 'choice is from', chains[n_gram]
+            list_of_text.append(value)
+            print "list of text is", list_of_text
+            n_gram = tuple(list_of_text[-1*n:])
+            print "ngram is", n_gram
+        else:
+            n_gram = choice(chains.keys())
+            while n_gram[0][0].islower():
+                n_gram = choice(chains.keys())
+
 
     text = (" ").join(list_of_text)
 

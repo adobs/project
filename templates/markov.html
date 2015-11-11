@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Profile Generator{% endblock %}
+{% block head %}
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+{% endblock %}
+{% block content %}
+<form id="markov-form">
+
+        <select name="orientation" id="orientation">
+            {% for orientation in orientations %}
+                <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
+            {% endfor %}
+        </select>
+         <select name="gender" id="gender">
+            {% for gender in genders %}
+                <option value="{{gender.gender}}">{{gender.gender}}</option>
+            {% endfor %}
+        </select>
+        <label for="age">
+            <a href="#" title="Select the age range">Age range:</a>
+                  
+        </label>
+        <input type="text" id="age" readonly name="age">
+        <div id="slider-range"></div>
+        
+        <div class="ui-widget">
+            <label for="location">Location: </label>
+        <input id="location">
+        </div>
+        
+        <div class="ui-widget">
+            <label for="location">Adjectives: </label>
+        <input id="adjective1" class="adjective">
+        </div>
+        
+        <div class="ui-widget">
+            <label> 
+        <input id="adjective2" class="adjective">
+            </label>
+        </div>
+        
+        <div class="ui-widget">
+            <label> 
+        <input id="adjective3" class="adjective">
+            </label>
+        </div>
+        
+        <div class="ui-widget">
+            <label> 
+        <input id="adjective4" class="adjective">
+            </label>
+        </div>
+        
+        <div class="ui-widget">
+            <label> 
+        <input id="adjective5" class="adjective">
+            </label>
+        </div>
+        <label>
+        Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
+        </label>
+        <input type="submit" value="Generate">
+
+</form>
+<div id="markov"></div>
+
+<script>
+
+    // slider
+    $(function() {
+        $( "#slider-range" ).slider({
+            range: true,
+            min: 18,
+            max: 98,
+            values: [ 20, 30 ],
+            slide: function( event, ui ) {
+                $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                }
+            });
+        $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+
+    //location autofill
+    $(function() {
+        var availableTags = [];
+            {% for location in locations %}
+            availableTags.push("{{location.location}}");
+            console.log(availableTags)
+            {% endfor %}
+    $( "#location" ).autocomplete({
+      source: availableTags
+    });
+  });
+
+
+    //adjective autofill
+    $(function() {
+        var adjectiveTags = [];
+            {% for adjective in adjective_generator %}
+                adjectiveTags.push("{{adjective}}");
+           
+            {% endfor %}
+    $( ".adjective" ).autocomplete({
+      source: adjectiveTags
+    });
+  });
+
+
+
+
+    function displayMarkov(data){
+        $("#markov").html(data)
+    }
+
+    function execute(evt){
+        evt.preventDefault();
+        var inputs = {
+            "orientation": $("#orientation").val(),
+            "gender": $("#gender").val(),
+            "age": $("#age").val(),
+            "location": $("#location").val(),
+            "randomness": $("#randomness").val(),
+            "adjective1": $("#adjective1").val(),
+            "adjective2": $("#adjective2").val(),
+            "adjective3": $("#adjective3").val(),
+            "adjective4": $("#adjective4").val(),
+            "adjective5": $("#adjective5").val()
+
+        }
+
+        $.get("/markov.json", inputs, displayMarkov)
+    }
+    $("#markov-form").on("submit", execute)
+</script>
+{% endblock %}

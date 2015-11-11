@@ -12,6 +12,7 @@ import re
 from map_helper import get_compiled
 from send_message_map import send
 from create_json_for_d3_hierarchical import create_json
+from markov import get_input_text, make_chains, make_text
 import json
 
 app = Flask(__name__)
@@ -240,6 +241,46 @@ def send_json():
 
     return graph
 
+@app.route("/markov")
+def markov():
+
+    orientations = db.session.query(Orientation).order_by(Orientation.orientation).all()
+    genders = db.session.query(Gender).order_by(Gender.gender).all()
+    locations = db.session.query(Location).all()
+    adjectives = db.session.query(Adjective).distinct(Adjective.adjective).order_by(Adjective.adjective).all()
+    
+    def adjectiveg(adjectives):
+        for adjective in adjectives:
+            yield adjective.adjective
+
+    adjective_generator= adjectiveg(adjectives)
+
+    return render_template("markov.html", orientations=orientations, genders=genders, locations=locations, adjective_generator=adjective_generator)
+
+
+@app.route("/markov.json")
+def markov_json():
+    
+    orientation = request.args.get("orientation")
+    gender = request.args.get("gender")
+    age = request.args.get("age")
+    age_list = re.split(' \- ',age)
+    age_min, age_max = age_list
+    location = request.args.get("location")
+    n = -1*(int(request.args.get("randomness"))-6)
+    adjective1 = request.args.get("adjective1")
+    adjective2 = request.args.get("adjective2")
+    adjective3 = request.args.get("adjective3")
+    adjective4 = request.args.get("adjective4")
+    adjective5 = request.args.get("adjective5")
+
+    adjective_tuple = (adjective1, adjective2, adjective3, adjective4, adjective5)
+    
+    text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_tuple)
+    chains = make_chains(text_string, n)
+    text = make_text(chains)
+
+    return text
 
 
 if __name__ == "__main__":
