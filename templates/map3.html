@@ -84,24 +84,75 @@
 
 
 
-<!-- Modal -->
-<div class="modal fade" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<!-- First Modal -->
+<div class="modal" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">About Maps Page</h4>
+        <h4 class="modal-title" id="myModalLabel">Tutorial About Maps Page</h4>
       </div>
       <div class="modal-body">
-        <p>This page maps common adjectives in a given location.  It allows you to filter on orientation, gender, and age.</p>
-        <p>It will show you, by location, what the most common adjectives are people use to describe themselves based on the filters you set.</p>
-        <p>To get started, select:</p>
-        <ul>
-          <li>orientation</li>
-          <li>gender</li>
-          <li>age</li>
-        </ul>
-        ...and submit!
+        <h1>Adjective Map</h1>
+        <h2>According to OKCupid data, how do people describe themselves?</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-dismiss="modal" data-target="#orientation-modal">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- First Modal -->
+<div class="modal" id="orientation-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Tutorial About Maps Page</h4>
+      </div>
+      <div class="modal-body">
+        <h1>Orientation</h1>
+        <h2>Click on the <b>orientations</b> you would like to see represented...</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-dismiss="modal" data-target="#gender-modal">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Second Modal -->
+<div class="modal" id="gender-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Tutorial About Maps Page</h4>
+      </div>
+      <div class="modal-body">
+        <h1>Gender</h1>
+        <h2>Click on the <b>genders</b> you would like to see represented...</h2>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-dismiss="modal" data-target="#age-modal">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Third Modal -->
+<div class="modal" id="age-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Tutorial About Maps Page</h4>
+      </div>
+      <div class="modal-body">
+        <h1>Age</h1>
+        <h2>Select the <b>age range</b> you would like to see represented...</h2>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Begin!</button>
@@ -110,7 +161,6 @@
   </div>
 </div>
 
-
-
 <script src="../static/js/map.js"></script>
+<script src="../static/js/calc-spec.js"></script>
 {% endblock %}

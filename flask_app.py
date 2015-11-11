@@ -170,38 +170,37 @@ def map_checked_json():
         logged_in = "True"
 
 
-    # users = db.session.query(Profile.username).filter(
-    #     Profile.orientation.in_(orientation_tuple)).filter(
-    #     Profile.gender.in_(gender_tuple)).filter(
-    #     Profile.age >= age_min).filter(Profile.age <= age_max)
+    users = db.session.query(Profile.username).filter(
+        Profile.orientation.in_(orientation_tuple)).filter(
+        Profile.gender.in_(gender_tuple)).filter(
+        Profile.age >= age_min).filter(Profile.age <= age_max)
 
 
-    # results = db.session.query(Adjective.username, Profile.location, 
-    #                            Adjective.adjective, Location.latitude, 
-    #                            Location.longitude).join(Profile).join(
-    #                            Location).filter(Adjective.username.in_(users)).all()
+    results = db.session.query(Adjective.username, Profile.location, 
+                               Adjective.adjective, Location.latitude, 
+                               Location.longitude).join(Profile).join(
+                               Location).filter(Adjective.username.in_(users)).all()
 
-    QUERY = """SELECT A.Username, P.location, A.adjective, L.latitude, L.longitude 
-               FROM Adjectives AS A JOIN Profiles AS P ON P.username=A.username 
-               JOIN Locations AS L on P.Location = L.Location 
-               WHERE A.Username IN ( 
-                SELECT Username FROM Profiles 
-                WHERE Age BETWEEN :age_min 
-                AND :age_max AND Username 
-                IN (
-                    SELECT Username FROM Usernameorientations 
-                    WHERE Orientation IN :orientation_tuple 
-                    AND Username IN (
-                        SELECT Username FROM Usernamegenders 
-                        WHERE Gender IN :gender_tuple)))
-            """
+    # QUERY = """SELECT A.Username, P.location, A.adjective
+    #            FROM Adjectives AS A JOIN Profiles AS P ON P.username=A.username 
+    #            WHERE A.Username IN ( 
+    #             SELECT Username FROM Profiles 
+    #             WHERE Age BETWEEN :age_min 
+    #             AND :age_max AND Username 
+    #             IN (
+    #                 SELECT Username FROM Usernameorientations 
+    #                 WHERE Orientation IN :orientation_tuple 
+    #                 AND Username IN (
+    #                     SELECT Username FROM Usernamegenders 
+    #                     WHERE Gender IN :gender_tuple)))
+    #         """
 
-    cursor = db.session.execute(QUERY, {"age_min": age_min, 
-                    "age_max": age_max, "orientation_tuple": orientation_tuple, "gender_tuple": gender_tuple})
+    # cursor = db.session.execute(QUERY, {"age_min": age_min, 
+    #                 "age_max": age_max, "orientation_tuple": orientation_tuple, "gender_tuple": gender_tuple})
     
-    results = cursor.fetchall()
+    # results = cursor.fetchall()
 
-    print "results is,", results
+    # print "results is,", results
     
     compiled = get_compiled(logged_in, results)
     print "end of json"
