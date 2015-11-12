@@ -20,10 +20,13 @@ okcupyd==1.0.0a2
 path.py==8.1.2
 pexpect==4.0.1
 pickleshare==0.5
+psycopg2==2.6.1
 ptyprocess==0.5
 PyVirtualDisplay==0.1.5
 ratelim==0.1.6
 requests==2.8.1
+scikit-learn==0.17
+scipy==0.16.1
 selenium==2.48.0
 simplegeneric==0.8.1
 simplejson==3.8.0

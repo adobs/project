@@ -251,9 +251,9 @@ def markov():
     
     def adjectiveg(adjectives):
         for adjective in adjectives:
-            yield adjective.adjective
+            yield adjective.adjective.strip("\"#$%&'()*+-/:;<=>@[\\]^_`{|}~1234567890")
 
-    adjective_generator= adjectiveg(adjectives)
+    adjective_generator = adjectiveg(adjectives)
 
     return render_template("markov.html", orientations=orientations, genders=genders, locations=locations, adjective_generator=adjective_generator)
 
@@ -267,21 +267,44 @@ def markov_json():
     age_list = re.split(' \- ',age)
     age_min, age_max = age_list
     location = request.args.get("location")
-    n = -1*(int(request.args.get("randomness"))-6)
+    # radius = request.args.get("radius")
+    n = int(request.args.get("randomness"))
     adjective1 = request.args.get("adjective1")
     adjective2 = request.args.get("adjective2")
     adjective3 = request.args.get("adjective3")
-    adjective4 = request.args.get("adjective4")
-    adjective5 = request.args.get("adjective5")
+    # adjective4 = request.args.get("adjective4")
+    # adjective5 = request.args.get("adjective5")
 
-    adjective_tuple = (adjective1, adjective2, adjective3, adjective4, adjective5)
+    adjective_list = [adjective1, adjective2, adjective3]
+
+    # location_list = get_list_of_locations(location, radius)
     
-    text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_tuple)
-    chains = make_chains(text_string, n)
-    text = make_text(chains)
+    text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_list)
+    
+    if text_string == "invalid search results":
+        return text_string
+    else:
+        chains = make_chains(text_string, n)
+        text = make_text(chains)
 
-    return text
+        return text
 
+@app.route("/markov-adjectives.json")
+def markov_adjective_json():
+    orientation = request.args.get("orientation")
+    gender = request.args.get("gender")
+    age = request.args.get("age")
+    age_list = re.split(' \- ',age)
+    age_min, age_max = age_list
+    location = request.args.get("location")
+
+    adjectives = db.session.query(Adjective.adjective.distinct()).join(Profile).filter(Profile.orientation.like(
+                    "%"+orientation+"%")).filter(Profile.location==location).filter(Profile.gender.like("%"+gender+"%")).filter(
+                    Profile.age>=age_min).filter(Profile.age<=age_max).order_by(Adjective.adjective).all()
+
+    adjective_list = [adjective[0] for adjective in adjectives]
+    print adjective_list
+    return json.dumps(adjective_list)
 
 if __name__ == "__main__":
     app.debug = True

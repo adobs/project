@@ -8,63 +8,74 @@
 {% block content %}
 <form id="markov-form">
 
-        <select name="orientation" id="orientation">
+        <select name="orientation" id="orientation" class="input">
             {% for orientation in orientations %}
                 <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
             {% endfor %}
         </select>
-         <select name="gender" id="gender">
+         <select name="gender" id="gender" class='input'>
             {% for gender in genders %}
                 <option value="{{gender.gender}}">{{gender.gender}}</option>
             {% endfor %}
         </select>
         <label for="age">
-            <a href="#" title="Select the age range">Age range:</a>
-                  
+            Age range:              
         </label>
-        <input type="text" id="age" readonly name="age">
-        <div id="slider-range"></div>
+        <input type="text" id="age" class="input" readonly name="age">
+        <div id="slider-range" class="input"></div>
         
-        <div class="ui-widget">
+        <div class="ui-widget input">
             <label for="location">Location: </label>
-        <input id="location">
+        <input type="text" id="location" class="input" value="San Francisco, CA" required>
         </div>
+
+<!--         <label oninput="amount.value=radius.value">
+        Radius (miles):<input type="range" id="radius" name="radius" min="0" max="100">
+        <output name="amount" for="radius">0</output>
+        </label> -->
+
+        <label>
+        <select name="adjective1" id="adjective1" class = "adjective">
+            <option value="adjective1" >No adjectives available</option>
+        </select>
+        </label>
         
-        <div class="ui-widget">
+        <label>
+        <select name="adjective2" id="adjective2" class = "adjective">
+            <option value="adjective2">No adjectives available</option>
+        </select>
+        </label>
+
+        <label>
+        <select name="adjective3" id="adjective3" class = "adjective">
+            <option value="adjective3">No adjectives available</option>
+        </select>
+        </label>
+
+        <!-- <div class="ui-widget">
             <label for="location">Adjectives: </label>
-        <input id="adjective1" class="adjective">
+        <input id="adjective1" class="adjective" required>
         </div>
         
         <div class="ui-widget">
             <label> 
-        <input id="adjective2" class="adjective">
+        <input id="adjective2" class="adjective" required>
             </label>
         </div>
         
         <div class="ui-widget">
             <label> 
-        <input id="adjective3" class="adjective">
+        <input id="adjective3" class="adjective" required>
             </label>
         </div>
-        
-        <div class="ui-widget">
-            <label> 
-        <input id="adjective4" class="adjective">
-            </label>
-        </div>
-        
-        <div class="ui-widget">
-            <label> 
-        <input id="adjective5" class="adjective">
-            </label>
-        </div>
+     -->
         <label>
         Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
         </label>
         <input type="submit" value="Generate">
-
 </form>
 <div id="markov"></div>
+         <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
 
 <script>
 
@@ -88,7 +99,6 @@
         var availableTags = [];
             {% for location in locations %}
             availableTags.push("{{location.location}}");
-            console.log(availableTags)
             {% endfor %}
     $( "#location" ).autocomplete({
       source: availableTags
@@ -96,23 +106,52 @@
   });
 
 
-    //adjective autofill
-    $(function() {
-        var adjectiveTags = [];
-            {% for adjective in adjective_generator %}
-                adjectiveTags.push("{{adjective}}");
+  //   //adjective autofill
+  //   $(function() {
+  //       var adjectiveTags = [];
+  //           {% for adjective in adjective_generator %}
+  //               adjectiveTags.push("{{adjective}}");
            
-            {% endfor %}
-    $( ".adjective" ).autocomplete({
-      source: adjectiveTags
-    });
-  });
+  //           {% endfor %}
+  //   $( ".adjective" ).autocomplete({
+  //     source: adjectiveTags
+  //   });
+  // });
 
+    function showAdjectives(data){
+        var options = $.parseJSON(data);
+        console.log("options is "+options);
+        $('.adjective').empty();
+        if (options != ""){
+            console.log("in full adjectives list")
+            $.each(options, function(i, p) {
+            $('.adjective').append($('<option></option>').val(p).html(p));
+            });
+        }else{
+            console.log("empty adjective list")
+            $('.adjective').append($('<option></option>').val("No adjectives available").html("No adjectives available"));
+        }
+    }
+
+    $('.input').on('change slidechange keypress', function (event) {
+        console.log("change observed")        
+        var adjectiveInputs = {
+            "orientation": $("#orientation").val(),
+            "gender": $("#gender").val(),
+            "age": $("#age").val(),
+            "location": $("#location").val(),
+        }
+        $.get("/markov-adjectives.json", adjectiveInputs, showAdjectives)
+    });
 
 
 
     function displayMarkov(data){
-        $("#markov").html(data)
+        $("#markov").html(data);
+        if(data!='invalid search results'){
+            $("#add-btn").removeAttr('disabled');
+        }
+
     }
 
     function execute(evt){
@@ -122,12 +161,11 @@
             "gender": $("#gender").val(),
             "age": $("#age").val(),
             "location": $("#location").val(),
+            // "radius": $("#radius").val(),
             "randomness": $("#randomness").val(),
             "adjective1": $("#adjective1").val(),
             "adjective2": $("#adjective2").val(),
-            "adjective3": $("#adjective3").val(),
-            "adjective4": $("#adjective4").val(),
-            "adjective5": $("#adjective5").val()
+            "adjective3": $("#adjective3").val()
 
         }
 
