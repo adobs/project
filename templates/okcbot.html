@@ -18,8 +18,10 @@ Seeking
         <option value="girls who like girls">girls who like girls</option>
         <option value="both who like bi girls">both who like bi girls</option>
     </select><br>
-Location
-    <label><input name="location" type="text" placeholder="Location" id="location" required></label><br>
+    <div class="ui-widget input">
+        <label for="location">Location </label>
+    <input type="text" id="location" class="input" placeholder="location" required>
+    </div>
 Radius (miles)
     <label><input name="radius" type="text" placeholder="Radius" id="radius" required></label><br>
 Number of people to message
@@ -64,6 +66,17 @@ function checkStatus(evt){
 
     $.post('/okcbot', formInputs, printStatus);
 }
+
+//location autofill
+$(function() {
+    var availableTags = [];
+        {% for location in locations %}
+        availableTags.push("{{location.location}}");
+        {% endfor %}
+$( "#location" ).autocomplete({
+  source: availableTags
+});
+});
 
 $('#loading').hide();
 $("#okcbot-form").on('submit', checkStatus);

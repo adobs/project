@@ -73,9 +73,10 @@
         Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
         </label>
         <input type="submit" value="Generate">
-</form>
-<div id="markov"></div>
-         <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
+    </form>
+    <div id="markov"></div>
+     <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
+     <div id="status"></div>
 
 <script>
 
@@ -118,12 +119,25 @@
   //   });
   // });
 
+    function status(data){
+        $("#status").html("Updated!")
+    }
+
+    function addToProfile(evt){
+        var text= {
+            "text": $("#markov").html()
+        }
+        $.post("/add-to-profile.json", text, status);
+    }
+
+    $("#add-btn").on("click", addToProfile)
+    
     function showAdjectives(data){
         var options = $.parseJSON(data);
         console.log("options is "+options);
         $('.adjective').empty();
         if (options != ""){
-            console.log("in full adjectives list")
+            console.log("in full adjectives list");
             $.each(options, function(i, p) {
             $('.adjective').append($('<option></option>').val(p).html(p));
             });
@@ -172,5 +186,7 @@
         $.get("/markov.json", inputs, displayMarkov)
     }
     $("#markov-form").on("submit", execute)
+
 </script>
+
 {% endblock %}

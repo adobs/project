@@ -1,11 +1,13 @@
-from flask import Flask, request, render_template, redirect, flash, session, jsonify
+from flask import Flask, request, render_template, redirect, flash, session, jsonify, g
 from jinja2 import StrictUndefined
-from model import Profile, Adjective, Gender, Orientation, UsernameGender, Location, db, connect_to_db
+from model import Profile, Adjective, Gender, Orientation, Location, db, connect_to_db
 # from flask_debugtoolbar import DebugToolbarExtension
 from selenium_okc import create_new_user
 from sending_a_message import send_message
 from signing_in import is_signed_in
 import re
+from okcupyd.session import Session
+from okcupyd.user import User
 # from calculate_word_count import calculate_word_count
 # from datetime import datetime
 # from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
@@ -23,6 +25,12 @@ app.secret_key = "ABC"
 # Normally, if you use an undefined variable in Jinja2, it fails silently.
 # This is horrible. Fix this so that, instead, it raises an error.
 app.jinja_env.undefined = StrictUndefined
+
+JS_TESTING_MODE = False
+
+@app.before_request
+def add_tests():
+    g.jasmine_tests = JS_TESTING_MODE
 
 @app.route("/")
 def home():
@@ -108,8 +116,9 @@ def logout():
 def bot_form():
     """Input text for bot to send"""
 
+    locations = db.session.query(Location).all()
 
-    return render_template("okcbot.html")
+    return render_template("okcbot.html", locations=locations)
 
 
 
@@ -279,7 +288,7 @@ def markov_json():
 
     # location_list = get_list_of_locations(location, radius)
     
-    text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_list)
+    text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_list, n)
     
     if text_string == "invalid search results":
         return text_string
@@ -303,12 +312,27 @@ def markov_adjective_json():
                     Profile.age>=age_min).filter(Profile.age<=age_max).order_by(Adjective.adjective).all()
 
     adjective_list = [adjective[0] for adjective in adjectives]
-    print adjective_list
     return json.dumps(adjective_list)
+
+@app.route("/add-to-profile.json", methods=["POST"])
+def add_to_profile_json():
+
+    text = request.form.get("text")
+
+    screenname = session["screenname"]
+    password = session["password"]
+    session_ = Session.login(screenname, password)
+    user = User(session=session_)
+    user.profile.essays.self_summary = text
+
+    return "success"
 
 if __name__ == "__main__":
     app.debug = True
     connect_to_db(app)
 
     # DebugToolbarExtension(app)
-    app.run()
+    app.run() 
+    import sys
+    if sys.argv[-1] == "jstest":
+        JS_TESTING_MODE = True

@@ -25,7 +25,7 @@ from random import choice
 
 #     return location
 
-def get_input_text(orientation, gender, location, age_min, age_max, adjective_list):
+def get_input_text(orientation, gender, location, age_min, age_max, adjective_list, n):
     """Based on parameters, returns string of self summaries."""
   
     text_string = ""
@@ -60,10 +60,11 @@ def get_input_text(orientation, gender, location, age_min, age_max, adjective_li
             print "text is", text
             text_string += text+" "
     print "COUNT IS", i
-    if text_string:
-        return text_string
-    else: 
+    print "text string is", text_string
+    if len(text_string.split(" ")) <= n + 1:
         return "invalid search results"
+    else:
+        return text_string
 
 def make_chains(text_string, n):
     """Takes input text as string; returns dictionary of markov chains.

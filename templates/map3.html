@@ -72,8 +72,12 @@
             <label>
               <input type="text" id="message" placeholder="Type your message...">
             </label>
-            <input type="submit" value="send" class="btn btn-default">
+            <input type="submit" value="Send" class="btn btn-default"> 
+            <div id="loading-2">
+                <img id="loading-img" src="../static/gif/loading.gif">
+            </div>
           </form>
+          <div id="sent"></div>
           </div>
           <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
@@ -162,5 +166,5 @@
 </div>
 
 <script src="../static/js/map.js"></script>
-<script src="../static/js/calc-spec.js"></script>
+<!-- <script src="../static/js/calc-spec.js"></script> -->
 {% endblock %}

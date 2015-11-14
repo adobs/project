@@ -96,6 +96,7 @@
         // have a key pointing to login
     function addMarkers(dictionary){
         removeAllCirclesAndMarkers();
+        console.log("addMarkers");
         for (var entry in dictionary["results"]){
             var html, cityCircle, marker;
             var latitude = dictionary["results"][entry]['lat'];
@@ -140,6 +141,7 @@
 
     $('#orientation-hover').tooltip();
 
+    var ajaxRequest;
     function plotInputs(){
         var inputs = {
             "orientation": ($('input[name="orientation"]:checked').serialize()),
@@ -147,7 +149,7 @@
             "age": $("#age").val()
         };
 
-        $.get("/map-checked.json", inputs, addMarkers);
+        ajaxRequest = $.get("/map-checked.json", inputs, addMarkers);
 
     }
 
@@ -168,6 +170,7 @@
 
 
     $('#map-choices-form').on('change slidechange', function (event) {
+        ajaxRequest.abort();
         event.stopPropagation();
         $('#loading').show();
         plotInputs();
@@ -181,8 +184,17 @@
         $("#add-recipients").html(recipients);
     });
 
+    function sent(data){
+        $("#sent").html("Sent!");
+        $("#message-form").trigger("reset");
+
+        $('#loading-2').hide();
+    }
+
     function messageSubmission(evt){
         evt.preventDefault();
+
+        $('#loading-2').show();
 
         var recipients = $("#add-recipients").html();
         var message = $("#message").val();
@@ -192,8 +204,7 @@
             "message": message
         };
 
-        $.post("/send-message.json", sendInputs, function(data){
-            console.log("finished short sub");});
+        $.post("/send-message.json", sendInputs, sent);
     }
 
     $("#message-form").on('submit', messageSubmission);
@@ -204,6 +215,8 @@
         plotInputs();
 
     });
+
+    $('#loading-2').hide();
 
 })();
 

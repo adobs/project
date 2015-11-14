@@ -1,0 +1,106 @@
+
+<!-- IMPORTANT: To render this graph, you must run a server
+                locally and access this file via localhost. -->
+
+<!-- In your terminal, change into the demo directory and run
+     this command:
+
+       python -m SimpleHTTPServer 5000
+
+     Then, go to localhost:5000/force_layout_advanced.html -->
+
+<!-- <html> -->
+<!-- <head> -->
+    <!-- <link href="static/css/style.css" rel="stylesheet"> -->
+<!-- </head> -->
+
+<!-- <body> -->
+
+<!-- <script src="http://d3js.org/d3.v3.js"></script> -->
+<!DOCTYPE html>
+    <html>
+      <head>
+        <title>Force-Directed Layout</title>
+        <script type="text/javascript" src="http://d3js.org/d3.v3.js"></script>
+        <style type="text/css">
+    
+    div.node {
+      border-radius: 6px;
+      width: 12px;
+      height: 12px;
+      margin: -6px 0 0 -6px;
+      position: absolute;
+    }
+    
+    div.link {
+      position: absolute;
+      border-bottom: solid #999 1px;
+      height: 0;
+      -webkit-transform-origin: 0 0;
+      -moz-transform-origin: 0 0;
+      -ms-transform-origin: 0 0;
+      -o-transform-origin: 0 0;
+      transform-origin: 0 0;
+    }
+    
+        </style>
+      </head>
+      <body>
+      <div id="chart"></div>
+        <script type="text/javascript">
+    
+    var width = 960,
+        height = 500;
+    
+    var color = d3.scale.category20();
+    
+    var force = d3.layout.force()
+        .charge(-120)
+        .linkDistance(30)
+        .size([width, height]);
+    
+    var svg = d3.select("#chart").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    
+    d3.json("/sendjson", function(json) {
+      force
+          .nodes(json.nodes)
+          .links(json.links)
+          .start();
+    
+      var link = svg.selectAll("line.link")
+          .data(json.links)
+        .enter().append("line")
+          .attr("class", "link")
+          .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+    
+      var node = svg.selectAll("circle.node")
+          .data(json.nodes)
+        .enter().append("circle")
+          .attr("class", "node")
+          .attr("r", 5)
+          .style("fill", function(d) { return color(d.group); })
+          .call(force.drag);
+    
+      node.append("title")
+          .text(function(d) { return d.name; });
+    
+      force.on("tick", function() {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+    
+        node.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+      });
+    });
+    
+        </script>
+      </body>
+    </html>
+
+
+
+
