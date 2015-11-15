@@ -11,7 +11,6 @@ from model import Profile, Adjective, Gender, Orientation, Location, db, connect
 from flask_app import app
 from random import sample
 
-
 def clean(dirty_list):
     print "dirty list is", dirty_list
     clean_list = []
@@ -21,7 +20,7 @@ def clean(dirty_list):
         word = word.strip("\n\t1234567890!@#$%^&*()-=+{}[]/\\'\"<>?.,:;~`").replace("\n", " ")
         clean_string += word+" "
 
-    print "clean string is", clean_string
+    # print "clean string is", clean_string
 
     clean_list.extend(clean_string.split(" "))
 
@@ -36,8 +35,7 @@ def get_words(profile, threshold):
         Returns a randomly generate list of features.
     """
    
-    text_tuples = db.session.query(profile).all()
-
+    text_tuples = db.session.query(profile).limit(30).all()
     print "text_tuples is", text_tuples
     # returns a list of tuples
     words_and_count = {}
@@ -48,6 +46,7 @@ def get_words(profile, threshold):
     for text in text_tuples:
         print "text is ", text
         text_word_list.extend(text[0].split(" "))
+        print "text wor list is", text_word_list
         # print "text word list", text_word_list
     
     clean_list = clean(text_word_list)
@@ -82,8 +81,11 @@ def convert(features, text_list):
     boolean_input = []
 
     for text in text_list:
+        print "text in text list is", text
+        # import pdb; pdb.set_trace()
+
         user = []
-        clean_list = clean([text])
+        clean_list = clean(text.split(" "))
         for feature in features:
             if feature in clean_list:
                 user.append(1)
@@ -189,8 +191,8 @@ def mean_shift_predict(boolean_input_array, ms):
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
 
-    # print "unique labels:", labels_unique
-    # print "labels:", labels
+    print "unique labels:", labels_unique
+    print "labels:", labels
     print "number of estimated clusters : %d" % n_clusters_
 
     # import matplotlib.pyplot as plt
@@ -237,10 +239,15 @@ def parse_all_data(n):
     profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).all()
 
     print "1"
-    features_self_summary = get_words(Profile.self_summary, 100)
-    features_message_me_if = get_words(Profile.message_me_if, 100)
+    features_self_summary = get_words(Profile.self_summary, 1000)
+    features_message_me_if = get_words(Profile.message_me_if, 1000)
+
+
     print "2"
     text_list_self_summary_train = sample([item[1] for item in profile_section], n)
+    # import pdb; pdb.set_trace()
+
+    print "text_list_self_summary_train", text_list_self_summary_train
     text_list_message_me_if_train = sample([item[2] for item in profile_section], n)
     print "3"
     boolean_input_array_self_summary_train = convert(features_self_summary, text_list_self_summary_train)
@@ -259,22 +266,26 @@ def parse_all_data(n):
 
         # functions to attain labels for self_summary
         sample_list_self_summary = [item[1] for item in sample_list]
+        print "sample list ", sample_list_self_summary
         boolean_input_array_self_summary = convert(features_self_summary, sample_list_self_summary)
         labels_self_summary = mean_shift_predict(boolean_input_array_self_summary, ms_trained_object_self_summary)
 
 
         # functions to attain labels for message_me_if
         sample_list_message_me_if = [item[2] for item in sample_list]
+        print "sample message is", sample_list_message_me_if
+        #
         boolean_input_array_message_me_if = convert(features_message_me_if, sample_list_message_me_if)
         labels_message_me_if = mean_shift_predict(boolean_input_array_message_me_if, ms_trained_object_message_me_if)
 
         zipped =  zip(usernames, labels_self_summary, labels_message_me_if)
         to_input = list(zipped)
+        print "to input :", to_input
+        for entry in to_input:
+            for username, self_summary_label, message_me_if_label in entry:
+                new_input = MeanShift(username=username, self_summary_label=self_summary_label, message_me_if_label=message_me_if_label)
 
-        for username, self_summary_label, message_me_if_label in to_input:
-            new_input = MeanShift(username=username, self_summary_label=self_summary_label, message_me_if_label=message_me_if_label)
-
-            db.session.add(new_input)
+                db.session.add(new_input)
 
         i+=1
 
@@ -283,4 +294,4 @@ def parse_all_data(n):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    parse_all_data(1000)
+    parse_all_data(3000)
