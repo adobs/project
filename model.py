@@ -33,7 +33,16 @@ class Profile(db.Model):
     private_admission = db.Column(db.Text, nullable=True)
     message_me_if = db.Column(db.Text, nullable=True)
 
+class MeanShift(db.Model):
+    """Mean shift algortithm resulting labels for user"""
 
+    __tablename__ = "meanshifts"
+
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
+    self_summary_label = db.Column(db.Integer, nullable=True)
+    message_me_if_label = db.Column(db.Integer, nullable=True)
+
+    profile = db.relationship('Profile', backref=db.backref('meanshifts'))
 
 class OldAdjective(db.Model):
     """List of adjectives per user"""

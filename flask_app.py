@@ -13,7 +13,7 @@ from okcupyd.user import User
 # from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
 from map_helper import get_compiled
 from send_message_map import send
-from create_json_for_d3_hierarchical import create_json
+# from create_json_for_d3_hierarchical import create_json
 from markov import get_input_text, make_chains, make_text
 import json
 
