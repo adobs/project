@@ -6,77 +6,127 @@
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 {% endblock %}
 {% block content %}
-<form id="markov-form">
+<div class="container-fluid">
+    <div class="row">
+        <div class='col-md-8 col-md-offset-2 col-xs-12'>
+            <section><h1>Generate your own self-summary!</h1><p>Select the orientation, gender, age range, and location that matches you.</p><p>Our program searches all profiles that match your parameters, and provides a list of adjectives you can choose from that best describe yourself!</p><p>When done, click 'Generate' for your own customized self summary!</p><p>When you're happy with the text, click to have your profile updated with your great new self summary!</p> 
+            </section>
+            <hr></hr>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+    <div class="row">
+        <div class='col-md-6 col-md-offset-2 col-xs-12'>
+            <table class="table">
+                <form id="markov-form">
+                    <div class="form-group">
+                        <tr>
+                            <td>
+                                <label for='orientation'>Orientation: </label>
+                                <select name="orientation" id="orientation" class="input">
+                                    {% for orientation in orientations %}
+                                        <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                 <label for='gender'>Gender: </label>
+                                 <select name="gender" id="gender" class='input'>
+                                    {% for gender in genders %}
+                                        <option value="{{gender.gender}}">{{gender.gender}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="age">
+                                    Age range:              
+                                </label>
+                                <input type="text" id="age" class="input" name="age">
+                                <div id="slider-range" class="input"></div>
+                            </td>
+                            <td>
+                                <div class="ui-widget input">
+                                    <label for="location">Location: </label>
+                                <input type="text" id="location" class="input" value="San Francisco, CA" required>
+                                </div>
+                            </td>
+                        </tr>
 
-        <select name="orientation" id="orientation" class="input">
-            {% for orientation in orientations %}
-                <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
-            {% endfor %}
-        </select>
-         <select name="gender" id="gender" class='input'>
-            {% for gender in genders %}
-                <option value="{{gender.gender}}">{{gender.gender}}</option>
-            {% endfor %}
-        </select>
-        <label for="age">
-            Age range:              
-        </label>
-        <input type="text" id="age" class="input" readonly name="age">
-        <div id="slider-range" class="input"></div>
-        
-        <div class="ui-widget input">
-            <label for="location">Location: </label>
-        <input type="text" id="location" class="input" value="San Francisco, CA" required>
-        </div>
+                    <!--         <label oninput="amount.value=radius.value">
+                            Radius (miles):<input type="range" id="radius" name="radius" min="0" max="100">
+                            <output name="amount" for="radius">0</output>
+                            </label> -->
+                        <tr>
+                            <td>
+                                <label for='adjective1'>Select Adjectives:</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select name="adjective1" id="adjective1" class = "adjective">
+                                    <option value="adjective1" >No adjectives available</option>
+                                </select>
+                            </td>
+                            <td>
+                                <label for='adjective2'></label>
+                                <select name="adjective2" id="adjective2" class = "adjective">
+                                    <option value="adjective2">No adjectives available</option>
+                                </select>
+                            </td>
+                            <td><label for='adjective3'></label><select name="adjective3" id="adjective3" class = "adjective"><option value="adjective3">No adjectives available</option></select>
+                            </td>
+                        <tr>
+                            <td>
+                                <!-- <div class="ui-widget">
+                                    <label for="location">Adjectives: </label>
+                                <input id="adjective1" class="adjective" required>
+                                </div>
+                                
+                                <div class="ui-widget">
+                                    <label> 
+                                <input id="adjective2" class="adjective" required>
+                                    </label>
+                                </div>
+                                
+                                <div class="ui-widget">
+                                    <label> 
+                                <input id="adjective3" class="adjective" required>
+                                    </label>
+                                </div>
+                             -->
 
-<!--         <label oninput="amount.value=radius.value">
-        Radius (miles):<input type="range" id="radius" name="radius" min="0" max="100">
-        <output name="amount" for="radius">0</output>
-        </label> -->
+                                <label>
+                                Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="submit" value="Generate">
+                            </td>
+                    </div> <!-- end form group -->
+                </form>
+            </table>
+            <div id="markov"></div>
+        </div> <!-- close column -->
+        <div class='column-md-2 column-xs-12'>
+            <table>
+                <tr>
+                    <td>
+                        <div id="markov-status"><textarea class="form-control" id='markov-text' placeholder='Your text will appear here'></textarea></div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
+                    </td>
+                </tr>
+            </table>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
 
-        <label>
-        <select name="adjective1" id="adjective1" class = "adjective">
-            <option value="adjective1" >No adjectives available</option>
-        </select>
-        </label>
-        
-        <label>
-        <select name="adjective2" id="adjective2" class = "adjective">
-            <option value="adjective2">No adjectives available</option>
-        </select>
-        </label>
-
-        <label>
-        <select name="adjective3" id="adjective3" class = "adjective">
-            <option value="adjective3">No adjectives available</option>
-        </select>
-        </label>
-
-        <!-- <div class="ui-widget">
-            <label for="location">Adjectives: </label>
-        <input id="adjective1" class="adjective" required>
-        </div>
-        
-        <div class="ui-widget">
-            <label> 
-        <input id="adjective2" class="adjective" required>
-            </label>
-        </div>
-        
-        <div class="ui-widget">
-            <label> 
-        <input id="adjective3" class="adjective" required>
-            </label>
-        </div>
-     -->
-        <label>
-        Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
-        </label>
-        <input type="submit" value="Generate">
-    </form>
-    <div id="markov"></div>
-     <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
-     <div id="status"></div>
+</div> <!-- close container -->
 
 <script>
 
@@ -120,7 +170,7 @@
   // });
 
     function status(data){
-        $("#status").html("Updated!")
+        $("#markov-status").html("Updated!")
     }
 
     function addToProfile(evt){
@@ -164,6 +214,9 @@
         $("#markov").html(data);
         if(data!='invalid search results'){
             $("#add-btn").removeAttr('disabled');
+        }
+        else{
+            $("#markov").addClass("alert alert-danger").attr('role', 'alert');
         }
 
     }
