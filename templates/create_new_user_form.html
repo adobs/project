@@ -3,58 +3,97 @@
 
 {% block content %}
 
-<!-- change it so that when logging in again, div disappears -->
 
-
-<form id="new-user-form" action="/" method="POST">
-Sexual Orientation
-    <label><input type="radio" class="orientation" name="orientation" value="1" checked>Straight</label>
-    <label><input type="radio" class="orientation" name="orientation" value="2">Gay</label>
-    <label><input type="radio" class="orientation" name="orientation" value="3">Bisexual</label><br>
-Gender
-    <label><input type="radio" class="gender" name="gender" value="1" checked>Man</label>
-    <label><input type="radio" class="gender" name="gender" value="2">Woman</label><br>
-Birthday
-Birthmonth
-    <select name="birthmonth" id="birthmonth" required>
-        {% for month in months %}
-        <option value="{{ month }}">{{ month }}</option>
-        {% endfor %}
-    </select>
-
-Birthdate
-    <select name="birthdate" id="birthdate">
-        {% for day in days %}
-        <option value="{{ day }}">{{ day }}</option>
-        {% endfor %}
-    </select>
-
-Birthyear
-    <select name="birthyear" id="birthyear">
-        {% for year in years %}
-        <option value="{{ year }}">{{ year }}</option>
-        {% endfor %}
-    </select><br>
-
-Zip
-    <label name="zipcode">
-    <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required>
-    </label><br>
-
-Email
-    <label name="email"><input type="email" placeholder="Email" id="email" required></label><div id="email-status"></div><br>
-
-Username
-    <label name="screenname"><input type="text" maxlength="15" placeholder="Username" id="screenname" required></label><div id="screenname-status"></div><br>
-
-Password
-    <label name="password"><input type="password" placeholder="Password" id="password" required></label><div id="password-status"></div><br>
-
-    <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
-
-    <input id="submit-btn" type='submit' value="Register">
-
-</form>
+<div class="container-fluid">
+    <div class="row">
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <section><h1>Create an account!</h1><p>This will create a real account registered with OKCupid.</p>
+            </section>
+            <hr></hr>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+    <div class='row'>
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <table class='table'>
+                <form id="new-user-form" action="/" method="POST">
+                    <tr>
+                        <td>
+                            <label for='orientation'>Sexual Orientation</label><br>
+                            <input type="radio" class="orientation" name="orientation" value="1" checked>Straight
+                            <input type="radio" class="orientation" name="orientation" value="2">Gay
+                            <input type="radio" class="orientation" name="orientation" value="3">Bisexual
+                        </td>
+                        <td>
+                            <label for='gender'>Gender</label><br>
+                                <input type="radio" class="gender" name="gender" value="1" checked>Man
+                                <input type="radio" class="gender" name="gender" value="2">Woman
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for='birthmonth'>Birthmonth</label>
+                                <select name="birthmonth" id="birthmonth" required>
+                                    {% for month in months %}
+                                    <option value="{{ month }}">{{ month }}</option>
+                                    {% endfor %}
+                                </select>
+                        </td>
+                        <td>
+                            <label for='birthdate'>Birthdate</label>
+                                <select name="birthdate" id="birthdate">
+                                    {% for day in days %}
+                                    <option value="{{ day }}">{{ day }}</option>
+                                    {% endfor %}
+                                </select>
+                        </td>
+                        <td>
+                            <label for='birthyear'>Birthyear</label>
+                                <select name="birthyear" id="birthyear">
+                                    {% for year in years %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for="zipcode">Zip</label>
+                                <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for='email'>Email</label>
+                               <input type="email" placeholder="Email" id="email" required><div id="email-status"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for='screenname'>Username</label>
+                                <input type="text" maxlength="15" placeholder="Username" id="screenname" required><div id="screenname-status"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for='password'>Password</label>
+                                <input type="password" placeholder="Password" id="password" required><div id="password-status"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                                <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="submit-btn" type='submit' value="Register">
+                        </td>
+                    </tr>
+                </form>
+            </table>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+</div> <!-- close container -->
 <script>
     function printStatus(results){
         console.log("made it to print status");

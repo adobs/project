@@ -1,9 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
-from model import Profile, Adjective, db, connect_to_db
+from model import Profile, Adjective, OldAdjective, db, connect_to_db
 import nltk
-# nltk.download()
-import operator
-import geocoder
+nltk.download()
+# import operator
+# import geocoder
 #
 def queries():
     """Per a given location, add the most most common adjective to a database
@@ -25,13 +25,13 @@ def queries():
         tagged = nltk.pos_tag(tokens)
         print tagged
         for word, speech_part in tagged:
-            if speech_part == "ADJ" or speech_part == "JJ" and speech_part != "i":
-                adjectives.append(word)
+            if (speech_part == "ADJ" or speech_part == "JJ") and speech_part != "i":
+                adjectives.append(word.strip("\n\t1234567890!@#$%^&*()-=+{}[]/\\'\"<>?.,:;~`"))
                 print "#########WORD IS", word
 
         adjectives = list(set(adjectives))
 
-        new_adjective = Adjective(username=username, adjectives=adjectives)
+        new_adjective = OldAdjective(username=username, adjectives=adjectives)
 
         db.session.add(new_adjective)
         db.session.commit()
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     # db.create_all()
     connect_to_db(app)
     print "Connected to DB."
-    # queries()
+    queries()

@@ -17,8 +17,8 @@
 
 <div class="container-fluid" id="whole-page">
     <div class="row" id="page">
-        <div class="col-md-9 left-side" id="map"></div>
-        <div class="col-md-3 right-side" id="controls">
+        <div class="col-md-9 col-xs-12" id="map"></div>
+        <div class="col-md-3 col-xs-12" id="controls">
             <form id='map-choices-form'>
                 <label>
 
@@ -30,6 +30,9 @@
                                 <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked>{{orientation.orientation}}
                             </li>
                         {% endfor %}
+                            <li>
+                                <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked>Select All
+                            </li>
                     </ul>
                 </label><br>
                 <label>
@@ -40,6 +43,9 @@
                                 <input type="checkbox" name="gender" value="{{gender.gender}}" checked>{{gender.gender}}
                             </li>
                         {% endfor %}
+                        <li>
+                            <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked>Select All
+                        </li>
                     </ul>
                 </label>
                 <label for="age">
@@ -48,15 +54,15 @@
                     </h1>
                 </label>
                 <input type="text" id="age" readonly name="age">
-                <div id="slider-range"></div>
+                <div id="map-slider-range"></div>
                 <div id="loading">
                     <img id="loading-img" src="../static/gif/loading.gif">
                 </div>
                 <!-- <input type="submit" value="submit"> -->
             </form>
-        </div>
-    </div>
-</div>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+</div> <!-- close container -->
 
 
 
@@ -70,7 +76,7 @@
           <div class="modal-body">To:<div id="add-recipients"></div>
           <form id="message-form">
             <label>
-              <input type="text" id="message" placeholder="Type your message...">
+              <textarea id="message" placeholder="Type your message..."></textarea>
             </label>
             <input type="submit" value="Send" class="btn btn-default"> 
             <div id="loading-2">

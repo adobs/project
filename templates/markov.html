@@ -8,7 +8,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
-        <div class='col-md-8 col-md-offset-2 col-xs-12'>
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
             <section><h1>Generate your own self-summary!</h1><p>Select the orientation, gender, age range, and location that matches you.</p><p>Our program searches all profiles that match your parameters, and provides a list of adjectives you can choose from that best describe yourself!</p><p>When done, click 'Generate' for your own customized self summary!</p><p>When you're happy with the text, click to have your profile updated with your great new self summary!</p> 
             </section>
             <hr></hr>
@@ -21,7 +21,7 @@
                     <div class="form-group">
                         <tr>
                             <td>
-                                <label for='orientation'>Orientation: </label>
+                                <label for='orientation'>Orientation</label><br>
                                 <select name="orientation" id="orientation" class="input">
                                     {% for orientation in orientations %}
                                         <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
@@ -29,7 +29,7 @@
                                 </select>
                             </td>
                             <td>
-                                 <label for='gender'>Gender: </label>
+                                 <label for='gender'>Gender</label><br>
                                  <select name="gender" id="gender" class='input'>
                                     {% for gender in genders %}
                                         <option value="{{gender.gender}}">{{gender.gender}}</option>
@@ -40,26 +40,26 @@
                         <tr>
                             <td>
                                 <label for="age">
-                                    Age range:              
+                                    Age range              
                                 </label>
                                 <input type="text" id="age" class="input" name="age">
                                 <div id="slider-range" class="input"></div>
                             </td>
                             <td>
                                 <div class="ui-widget input">
-                                    <label for="location">Location: </label>
+                                    <label for="location">Location</label>
                                 <input type="text" id="location" class="input" value="San Francisco, CA" required>
                                 </div>
                             </td>
+                            <td>
+                                <label>
+                                Randomness<input type="range" id="randomness" name="randomness" min="2" max="5">
+                                </label>
+                            </td>
                         </tr>
-
-                    <!--         <label oninput="amount.value=radius.value">
-                            Radius (miles):<input type="range" id="radius" name="radius" min="0" max="100">
-                            <output name="amount" for="radius">0</output>
-                            </label> -->
                         <tr>
                             <td>
-                                <label for='adjective1'>Select Adjectives:</label>
+                                <label for='adjective1'>Select Adjectives</label>
                             </td>
                         </tr>
                         <tr>
@@ -78,33 +78,9 @@
                             </td>
                         <tr>
                             <td>
-                                <!-- <div class="ui-widget">
-                                    <label for="location">Adjectives: </label>
-                                <input id="adjective1" class="adjective" required>
-                                </div>
-                                
-                                <div class="ui-widget">
-                                    <label> 
-                                <input id="adjective2" class="adjective" required>
-                                    </label>
-                                </div>
-                                
-                                <div class="ui-widget">
-                                    <label> 
-                                <input id="adjective3" class="adjective" required>
-                                    </label>
-                                </div>
-                             -->
-
-                                <label>
-                                Randomness:<input type="range" id="randomness" name="randomness" min="2" max="5">
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
                                 <input type="submit" value="Generate">
                             </td>
+                        </tr>
                     </div> <!-- end form group -->
                 </form>
             </table>

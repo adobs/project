@@ -1,41 +1,90 @@
 {% extends "base.html" %}
-{% block title%}OKCBot{% endblock %}
+{% block title %}OKCBot{% endblock %}
+
+{% block  head %}
+<style>
+#message{
+    width: 500px;
+}
+
+</style>
+{% endblock %}
 
 {% block content %}
 
+<div class="container-fluid">
+    <div class="row">
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <section><h1>Be an OKCupid Bot!</h1><p>Select the people you want to send messages to.</p>
+            </section>
+            <hr></hr>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+    <div class="row">
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <table class="table">
+                <form method="POST" action="/" id="okcbot-form">
+                        <tr>
+                            <td>
+                                    <label for='minimum_age'>Minimum age to message</label><input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required>
+                            </td>
+                            <td>
+                                <label for='maximum_age'>Maximum age to message</label>
+                                    <input name="maximum_age" type="text" placeholder="Max age" id="maximum_age" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                    <div class="ui-widget input">
+                                        <label for="location">Location of recipients</label>
+                                    <input type="text" id="location" class="input" placeholder="Location" required>
+                                    </div>
+                            </td>
+                            <td>
+                                <label for='radius'>Radius (miles)</label><br>
+                                    <input name="radius" type="text" placeholder="Radius" id="radius" required>
+                            </td>
+                        </tr>
+                        <tr>    
+                            <td>
+                                <label for='gentation'>I am seeking to message</label>
+                                    <select name="gentation" id="gentation" required>
+                                        <option value="girls who like guys">girls who like guys</option>
+                                        <option value="guys who like guys">guys who like guys</option>
+                                        <option value="both who like bi guys">both who like bi guys</option>
+                                        <option value="guys who like girls">guys who like girls</option>
+                                        <option value="girls who like girls">girls who like girls</option>
+                                        <option value="both who like bi girls">both who like bi girls</option>
+                                    </select>
+                            </td>
+                            <td>
+                                <label for='num'>Number of people to message</label>
+                                   <input type="text" name="num" placeholder="Number of people" id="num" required>
+                            </td>
+                        <tr>
+                            <td colspan="2">
+                                <label for='message'>Message to send</label><br>
+                                   <textarea name="message" rows='7' placeholder="Message" id="message" required></textarea>
+                            </td> 
+                        </tr>
+                        <tr>    
+                            <td>
+                                 <div id="status"></div>
 
-<form method="POST" action="/" id="okcbot-form">
-Minimum Age
-    <label><input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required></label><br>
-Maximum Age
-    <label><input name="maximum_age" type="text" placeholder="Max age" id="maximum_age" required></label><br>
-Seeking
-    <select name="gentation" id="gentation" required>
-        <option value="girls who like guys">girls who like guys</option>
-        <option value="guys who like guys">guys who like guys</option>
-        <option value="both who like bi guys">both who like bi guys</option>
-        <option value="guys who like girls">guys who like girls</option>
-        <option value="girls who like girls">girls who like girls</option>
-        <option value="both who like bi girls">both who like bi girls</option>
-    </select><br>
-    <div class="ui-widget input">
-        <label for="location">Location </label>
-    <input type="text" id="location" class="input" placeholder="location" required>
-    </div>
-Radius (miles)
-    <label><input name="radius" type="text" placeholder="Radius" id="radius" required></label><br>
-Number of people to message
-   <label><input type="text" name="num" placeholder="Number" id="num" required></label><br>
-Message to send
-   <label><input type="text" name="message" placeholder="Message" id="message" required></label><br>
- 
- <div id="status"></div>
-
- <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
-
-<input id='submit-btn' type='submit' value="Send">
-</form>
-
+                                 <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input id='submit-btn' type='submit' value="Send">
+                            </td>
+                        </tr>
+                    </div> <!-- close form group -->
+                </form>
+            </table>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+</div> <!-- close container -->
 <script>
 
 function printStatus(results){

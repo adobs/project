@@ -155,7 +155,7 @@
 
     // slider
     $(function() {
-        $( "#slider-range" ).slider({
+        $( "#map-slider-range" ).slider({
             range: true,
             min: 18,
             max: 98,
@@ -164,8 +164,8 @@
                 $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 }
             });
-        $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
-          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+        $( "#age" ).val( $( "#map-slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#map-slider-range" ).slider( "values", 1 ) );
     });
 
 
@@ -176,7 +176,17 @@
         plotInputs();
     });
 
-     
+    //check all orientation checkboxes
+    $("#check-all-orientation").change(function () {
+        $("input[name='orientation']:checkbox").prop('checked', $(this).prop("checked"));
+    });
+
+    //check all gender checkboxes
+    $("#check-all-gender").change(function () {
+        $("input[name='gender']:checkbox").prop('checked', $(this).prop("checked"));
+    });
+
+    
 
     $('#myModal').on('shown.bs.modal', function (evt) {
         var recipients = $(evt.relatedTarget).data('recipients');

@@ -12,11 +12,13 @@ Jinja2==2.8
 logging==0.4.9.6
 lxml==3.5.0
 MarkupSafe==0.23
+nltk==3.1
 numpy==1.10.1
 okcupyd==1.0.0a2
 path.py==8.1.2
 pexpect==4.0.1
 pickleshare==0.5
+psycopg2==2.6.1
 ptyprocess==0.5
 PyVirtualDisplay==0.1.5
 requests==2.8.1
