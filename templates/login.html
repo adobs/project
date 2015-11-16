@@ -3,17 +3,47 @@
 
 {% block content %}
 
-<!-- change it so that when logging in again, div disappears -->
 
-<form id="login-form" method="POST" action="/">
-Username
-    <label><input name="screenname" type="text" placeholder="Username" id="screenname" required></label><br>
-Password
-    <label><input name="password" type="password" placeholder="Password" id="password" required></label><div id="login-status"></div>
 
-<input type='submit' value="Login">
-
-</form>
+<div class="container-fluid">
+    <div class="row">
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <section><h1>Login!</h1><p>Log in using your OKCupid account.</p>
+            </section>
+            <hr></hr>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+    <div class="row">
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
+            <table class="table">
+                <form id="login-form" method="POST" action="/">
+                    <tr>
+                        <td>
+                            <label for="screenname">Username</label>
+                            <input name="screenname" type="text" placeholder="Username" id="screenname" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label for ='password'>Password</label>
+                            <input name="password" type="password" placeholder="Password" id="password" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div id="login-status"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type='submit' value="Login">
+                        </td>
+                    </tr>
+                </form>
+            </table>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+</div> <!-- close container -->
 
 <script>
     function printStatus(results){
@@ -22,7 +52,7 @@ Password
             $('#login-form').submit();
              console.log(results);
         }else{
-            $("#login-status").html("Invalid username/password.")
+            $("#login-status").html("Invalid username/password.").attr("class","alert alert-danger").attr("role", "alert")
         }
     }
 

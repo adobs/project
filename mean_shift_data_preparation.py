@@ -49,8 +49,10 @@ def get_words(profile, threshold):
         # print "text wor list is", text_word_list
         # print "text word list", text_word_list
     
+    print "pre clean in get words"
     clean_list = clean(text_word_list)
-
+    print "post clean in get words"
+    
     for word in clean_list:
         words_and_count[word] = words_and_count.get(word,0)
         words_and_count[word] += 1
@@ -245,8 +247,8 @@ def parse_all_data(n):
     profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).all()
 
     print "1"
-    features_self_summary = get_words(Profile.self_summary, 1000)
-    features_message_me_if = get_words(Profile.message_me_if, 1000)
+    features_self_summary = get_words(Profile.self_summary, 500)
+    features_message_me_if = get_words(Profile.message_me_if, 500)
 
 
     text_list_self_summary_train = sample([item[1] for item in profile_section], n)
@@ -255,8 +257,8 @@ def parse_all_data(n):
     boolean_input_array_self_summary_train = convert(features_self_summary, text_list_self_summary_train)
     boolean_input_array_message_me_if_train = convert(features_message_me_if, text_list_message_me_if_train)
 
-    ms_trained_object_self_summary = mean_shift_train(boolean_input_array_self_summary_train, 6)
-    ms_trained_object_message_me_if = mean_shift_train(boolean_input_array_message_me_if_train, 6)
+    ms_trained_object_self_summary = mean_shift_train(boolean_input_array_self_summary_train, 12)
+    ms_trained_object_message_me_if = mean_shift_train(boolean_input_array_message_me_if_train, 12)
 
     i = 0
 
@@ -293,4 +295,4 @@ def parse_all_data(n):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    parse_all_data(10000)
+    parse_all_data(1000)
