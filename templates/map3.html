@@ -7,7 +7,11 @@
     <!-- Google Maps -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
   <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
-
+  <style>
+  table{
+    table-layout: fixed;
+  }
+  </style>
 
 {% endblock %}
 
@@ -19,47 +23,47 @@
     <div class="row" id="page">
         <div class="col-md-9 col-xs-12" id="map"></div>
         <div class="col-md-3 col-xs-12" id="controls">
-            <form id='map-choices-form'>
-                <label>
-
-                    <!-- HTML to write -->
-                    <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many orientations you would like to filter on">Orientation</a></h1>
-                    <ul>
-                        {% for orientation in orientations %}
+          <form id='map-choices-form'>
+            <table class="table">
+                <div class='form-group'>
+                  <tr>
+                    <td>
+                      <label for='orientation'>Orientation</label>
+                      <!-- <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many orientations you would like to filter on">Orientation</a></h1> -->
+                        <ul>
+                          {% for orientation in orientations %}
+                              <li>
+                                  <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked>{{orientation.orientation}}
+                              </li>
+                          {% endfor %}
+                              <li>
+                                  <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked>Select All
+                              </li>
+                        </ul>
+                      <label for="age">Age range</label>
+                      <input type="text" id="age" readonly name="age">
+                      <div id="map-slider-range"></div>
+                      <div id="loading">
+                          <img id="loading-img" src="../static/gif/loading.gif">
+                      </div>
+                    </td>
+                    <td>
+                      <label for='gender'>Gender</label>
+                        <ul>
+                            {% for gender in genders %}
+                                <li>
+                                    <input type="checkbox" name="gender" value="{{gender.gender}}" checked>{{gender.gender}}
+                                </li>
+                            {% endfor %}
                             <li>
-                                <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked>{{orientation.orientation}}
+                                <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked>Select All
                             </li>
-                        {% endfor %}
-                            <li>
-                                <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked>Select All
-                            </li>
-                    </ul>
-                </label><br>
-                <label>
-                    <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many genders you would like to filter on">Gender</a></h1>
-                    <ul>
-                        {% for gender in genders %}
-                            <li>
-                                <input type="checkbox" name="gender" value="{{gender.gender}}" checked>{{gender.gender}}
-                            </li>
-                        {% endfor %}
-                        <li>
-                            <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked>Select All
-                        </li>
-                    </ul>
-                </label>
-                <label for="age">
-                    <h1>
-                        <a href="#" data-toggle="tooltip-orientation" title="Select the age range you would like to filter on">Age range:</a>
-                    </h1>
-                </label>
-                <input type="text" id="age" readonly name="age">
-                <div id="map-slider-range"></div>
-                <div id="loading">
-                    <img id="loading-img" src="../static/gif/loading.gif">
-                </div>
-                <!-- <input type="submit" value="submit"> -->
-            </form>
+                        </ul>
+                    </td>
+                  </tr>
+                </div> <!-- close div class -->
+            </table>
+          </form>
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
@@ -103,7 +107,6 @@
         <h4 class="modal-title" id="myModalLabel">Tutorial About Maps Page</h4>
       </div>
       <div class="modal-body">
-        <h1>Adjective Map</h1>
         <h2>According to OKCupid data, how do people describe themselves?</h2>
       </div>
       <div class="modal-footer">

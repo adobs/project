@@ -2,14 +2,8 @@
 {% block title%}Home{% endblock %}
 
 {% block content %}
-
-{% if session.get("screenname") %}
-<a href="/logout">Logout</a><br>
-<a href="/okcbot">OKCupid Bot</a><br>
-{% else %}
-<a href="/login">Login</a><br>
-<a href="/new-user-form">Create New User</a><br>
-{% endif %}
-<a href="/map">Map</a>
+<div class="container-fluid" id="whole-page">
+    <div class="row">
+        <div class="col-xs-12"><img width="100%" src="../static/img/red_droid.jpg"></div>
 
 {% endblock %}

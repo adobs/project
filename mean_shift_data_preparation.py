@@ -28,14 +28,14 @@ def clean(dirty_list):
     return clean_list
 
 
-def get_words(profile, threshold):
+def get_words(profile, random_profiles_to_train, threshold):
     """Gets word (by parsing text) out of database based on random samples.
 
         Remove from list common words that appear above threshold (n) times.
         Returns a randomly generate list of features.
     """
    
-    text_tuples = db.session.query(profile).all()
+    text_tuples = db.session.query(profile).filter(Profile.username.in_(random_profiles_to_train)).all()
     # print "text_tuples is", text_tuples
     # returns a list of tuples
     words_and_count = {}
@@ -120,7 +120,7 @@ def mean_shift_train(boolean_input_array, bandwidth):
     
     # print "bandwith is", bandwidth
 
-    ms = MeanShift(bandwidth=bandwidth)
+    ms = MeanShift(bandwidth=bandwidth, cluster_all=False)
     ms.fit(X)
     labels = ms.labels_
     cluster_centers = ms.cluster_centers_
@@ -187,7 +187,7 @@ def mean_shift_predict(boolean_input_array, ms):
     
     # print "bandwith is", bandwidth
 
-    ms.fit_predict(X)
+    ms.predict(X)
 
     labels = ms.labels_
     # labels = ms.labels_
@@ -242,13 +242,14 @@ def mean_shift_predict(boolean_input_array, ms):
     return labels
 
 
-def parse_all_data(n):
+def parse_all_data(n, n_train, total_limit):
 
-    profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).all()
+    profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).limit(total_limit).all()
 
+    random_profiles_to_train = sample([item[0] for item in profile_section], n_train)
     print "1"
-    features_self_summary = get_words(Profile.self_summary, 500)
-    features_message_me_if = get_words(Profile.message_me_if, 500)
+    features_self_summary = get_words(Profile.self_summary, random_profiles_to_train,200)
+    features_message_me_if = get_words(Profile.message_me_if, random_profiles_to_train, 200)
 
 
     text_list_self_summary_train = sample([item[1] for item in profile_section], n)
@@ -257,8 +258,8 @@ def parse_all_data(n):
     boolean_input_array_self_summary_train = convert(features_self_summary, text_list_self_summary_train)
     boolean_input_array_message_me_if_train = convert(features_message_me_if, text_list_message_me_if_train)
 
-    ms_trained_object_self_summary = mean_shift_train(boolean_input_array_self_summary_train, 12)
-    ms_trained_object_message_me_if = mean_shift_train(boolean_input_array_message_me_if_train, 12)
+    ms_trained_object_self_summary = mean_shift_train(boolean_input_array_self_summary_train, 8)
+    ms_trained_object_message_me_if = mean_shift_train(boolean_input_array_message_me_if_train, 9)
 
     i = 0
 
@@ -287,7 +288,7 @@ def parse_all_data(n):
             db.session.add(new_input)
 
         print "just finished items", i*n, "to", (i+1)*n
-        print datetime.now()
+        print datetime.datetime.now()
         i+=1
     # import pdb; pdb.set_trace()
     db.session.commit()
@@ -295,4 +296,4 @@ def parse_all_data(n):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    parse_all_data(1000)
+    parse_all_data(1000, 500, 5000)

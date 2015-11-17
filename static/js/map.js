@@ -73,7 +73,8 @@
         labelContent: adjective,
         map: map,
         labelClass: "labels",
-        labelInBackground: false
+        labelInBackground: false,
+        // icon: '../img/heart-marker.png'
         // #TODO -- add animation to marker with label
         // animation: google.maps.Animation.DROP
 
@@ -139,7 +140,7 @@
     google.maps.event.addDomListener(window, 'load', initialize);
         
 
-    $('#orientation-hover').tooltip();
+    // $('#orientation-hover').tooltip();
 
     var ajaxRequest;
     function plotInputs(){
@@ -169,7 +170,7 @@
     });
 
 
-    $('#map-choices-form').on('change slidechange', function (event) {
+    $(' #map-choices-form').on('change slidechange', function (event) {
         ajaxRequest.abort();
         event.stopPropagation();
         $('#loading').show();

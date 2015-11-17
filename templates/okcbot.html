@@ -26,28 +26,29 @@
                 <form method="POST" action="/" id="okcbot-form">
                         <tr>
                             <td>
-                                    <label for='minimum_age'>Minimum age to message</label><input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required>
+                                <label for='minimum_age'>Minimum age to message</label><br>
+                                    <input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required>
                             </td>
                             <td>
-                                <label for='maximum_age'>Maximum age to message</label>
+                                <label for='maximum_age'>Maximum age to message</label><br>
                                     <input name="maximum_age" type="text" placeholder="Max age" id="maximum_age" required>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                     <div class="ui-widget input">
-                                        <label for="location">Location of recipients</label>
+                                        <label for="location">Location of recipients</label><br>
                                     <input type="text" id="location" class="input" placeholder="Location" required>
                                     </div>
                             </td>
                             <td>
                                 <label for='radius'>Radius (miles)</label><br>
-                                    <input name="radius" type="text" placeholder="Radius" id="radius" required>
+                                    <input name="radius" type="number" placeholder="Radius" id="radius" required>
                             </td>
                         </tr>
                         <tr>    
                             <td>
-                                <label for='gentation'>I am seeking to message</label>
+                                <label for='gentation'>I am seeking to message</label><br>
                                     <select name="gentation" id="gentation" required>
                                         <option value="girls who like guys">girls who like guys</option>
                                         <option value="guys who like guys">guys who like guys</option>
@@ -58,8 +59,8 @@
                                     </select>
                             </td>
                             <td>
-                                <label for='num'>Number of people to message</label>
-                                   <input type="text" name="num" placeholder="Number of people" id="num" required>
+                                <label for='num'>Number of people to message</label><br>
+                                   <input type="number" name="num" placeholder="Number of people" id="num" required>
                             </td>
                         <tr>
                             <td colspan="2">
@@ -122,7 +123,7 @@ $(function() {
         {% for location in locations %}
         availableTags.push("{{location.location}}");
         {% endfor %}
-$( "#location" ).autocomplete({
+$( "td #location" ).autocomplete({
   source: availableTags
 });
 });

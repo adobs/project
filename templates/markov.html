@@ -4,6 +4,11 @@
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <style>
+  #age{
+    border: none;
+  }
+  </style>
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
@@ -15,7 +20,7 @@
         </div> <!-- close column -->
     </div> <!-- close row -->
     <div class="row">
-        <div class='col-md-6 col-md-offset-2 col-xs-12'>
+        <div class='col-md-6 col-md-offset-3 col-xs-12'>
             <table class="table">
                 <form id="markov-form">
                     <div class="form-group">
@@ -23,6 +28,7 @@
                             <td>
                                 <label for='orientation'>Orientation</label><br>
                                 <select name="orientation" id="orientation" class="input">
+                                        <option value="please-select" selected disabled>Please select</option>
                                     {% for orientation in orientations %}
                                         <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
                                     {% endfor %}
@@ -31,6 +37,7 @@
                             <td>
                                  <label for='gender'>Gender</label><br>
                                  <select name="gender" id="gender" class='input'>
+                                    <option value="please-select" selected disabled>Please select</option>
                                     {% for gender in genders %}
                                         <option value="{{gender.gender}}">{{gender.gender}}</option>
                                     {% endfor %}
@@ -47,7 +54,7 @@
                             </td>
                             <td>
                                 <div class="ui-widget input">
-                                    <label for="location">Location</label>
+                                    <label for="location">Location</label><br>
                                 <input type="text" id="location" class="input" value="San Francisco, CA" required>
                                 </div>
                             </td>
@@ -83,14 +90,9 @@
                         </tr>
                     </div> <!-- end form group -->
                 </form>
-            </table>
-            <div id="markov"></div>
-        </div> <!-- close column -->
-        <div class='column-md-2 column-xs-12'>
-            <table>
                 <tr>
-                    <td>
-                        <div id="markov-status"><textarea class="form-control" id='markov-text' placeholder='Your text will appear here'></textarea></div>
+                    <td colspan='3'>
+                        <div id="markov"></div>
                     </td>
                 </tr>
                 <tr>
@@ -98,7 +100,15 @@
                         <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
                     </td>
                 </tr>
+                <tr>
+                    <td>
+                        <div id="markov-status"></div>
+                    </td>
+                </tr>
             </table>
+        </div> <!-- close column -->
+        
+
         </div> <!-- close column -->
     </div> <!-- close row -->
 
@@ -108,7 +118,7 @@
 
     // slider
     $(function() {
-        $( "#slider-range" ).slider({
+        $( "td #slider-range" ).slider({
             range: true,
             min: 18,
             max: 98,
@@ -117,8 +127,8 @@
                 $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 }
             });
-        $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
-          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+        $( "#age" ).val( $( "td #slider-range" ).slider( "values", 0 ) +
+          " - " + $( "td #slider-range" ).slider( "values", 1 ) );
     });
 
     //location autofill
@@ -127,7 +137,7 @@
             {% for location in locations %}
             availableTags.push("{{location.location}}");
             {% endfor %}
-    $( "#location" ).autocomplete({
+    $( "td #location" ).autocomplete({
       source: availableTags
     });
   });
@@ -190,6 +200,7 @@
         $("#markov").html(data);
         if(data!='invalid search results'){
             $("#add-btn").removeAttr('disabled');
+            $("#markov").removeClass("alert alert-danger").removeAttr('role', 'alert');
         }
         else{
             $("#markov").addClass("alert alert-danger").attr('role', 'alert');
