@@ -114,7 +114,7 @@
                             short_profile_list, count, adjective);
 
             cityCircle = createCircle(latitude,longitude, count);
-            circles.push(createCircle(latitude,longitude, count));
+            circles.push(cityCircle);
             marker = createMarker(latitude, longitude, adjective);
             markers.push(marker);
 

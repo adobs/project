@@ -44,6 +44,18 @@ class MeanShiftAlgo(db.Model):
 
     profile = db.relationship('Profile', backref=db.backref('meanshiftalgos'))
 
+class DbscanAlgo(db.Model):
+    """Mean shift algortithm resulting labels for user"""
+
+    __tablename__ = "dbscanalgos"
+
+    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
+    self_summary_label = db.Column(db.Integer, nullable=True)
+    message_me_if_label = db.Column(db.Integer, nullable=True)
+
+    profile = db.relationship('Profile', backref=db.backref('dbscanalgos'))
+    
+
 class OldAdjective(db.Model):
     """List of adjectives per user"""
 

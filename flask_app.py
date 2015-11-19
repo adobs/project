@@ -158,8 +158,6 @@ def map():
 def map_checked_json():
     """Map page."""
 
-    #put this section into a function
-    # make this a new object, return the object
     orientation = request.args.get("orientation")
     orientation = re.sub('orientation=','',orientation)
     orientation_list = re.split('&',orientation)
