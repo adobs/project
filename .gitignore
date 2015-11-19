@@ -4,3 +4,4 @@ env/
 adobs.pem
 secret.txt
 *.db
+*.sql

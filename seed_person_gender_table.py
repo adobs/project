@@ -54,6 +54,6 @@ if __name__ == "__main__":
 
      #create the database
     db.create_all()
-    # seed_gender_table()
+    seed_gender_table()
     seed_person_gender_table()
     # test_seed_call()

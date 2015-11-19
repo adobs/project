@@ -54,7 +54,7 @@ class DbscanAlgo(db.Model):
     message_me_if_label = db.Column(db.Integer, nullable=True)
 
     profile = db.relationship('Profile', backref=db.backref('dbscanalgos'))
-    
+
 
 class OldAdjective(db.Model):
     """List of adjectives per user"""
@@ -151,7 +151,7 @@ def connect_to_db(app):
     """Connect the database to our Flask app."""
 
     # Configure to use our SQLite database
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///profiles'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///profiles_final'
     db.app = app
     db.init_app(app)
 

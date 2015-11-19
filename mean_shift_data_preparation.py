@@ -380,12 +380,12 @@ def run_test_and_store(profile_section):
         if self_summary_label > 1 and message_me_if_label > 1:
             count_users_both_labels +=1
 
-        # db.session.add(nsew_input)
+        db.session.add(new_input)
 
     print datetime.datetime.now()
      
     print "how many users are non-zero for both labels:", count_users_both_labels
-    # db.session.commit()
+    db.session.commit()
     return count_users_both_labels, len(to_input)
 
 

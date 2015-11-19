@@ -55,6 +55,6 @@ if __name__ == "__main__":
 
      #create the database
     db.create_all()
-    # seed_orientation_table()
+    seed_orientation_table()
     seed_person_orientation_table()
     # test_seed_call()
