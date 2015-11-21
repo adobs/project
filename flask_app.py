@@ -236,7 +236,7 @@ def send_messages_map():
 def d3_page():
 
 
-    return render_template("hierarchical_edge_building.html")
+    return render_template("index.html")
 
 
 @app.route("/sendjson")

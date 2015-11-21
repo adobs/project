@@ -338,6 +338,23 @@ def test_data():
     print "SUCCESS - ALL USERS ARE LABELED"
     print "status: {}".format(float(count_users_both_labels)/len_to_input)
 
+def print_cluster_words():
+
+    ms_trained_object_self_summary = joblib.load('model_pkl/self_summary_pickle.pkl')
+    ms_trained_object_message_me_if = joblib.load('model_pkl/message_me_if_pickle.pkl')
+
+    features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
+    features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
+
+    self_summary_cluster_centers = ms_trained_object_self_summary.cluster_centers_
+    message_me_if_cluster_centers = ms_trained_object_message_me_if.cluster_centers_
+
+    zipped_self_summary = list(zip(features_self_summary, self_summary_cluster_centers))
+    zipped_message_me_if = list(zip(features_message_me_if, message_me_if_cluster_centers))
+
+    print "SELF SUMMARY: ", zipped_self_summary
+    print "MESSAGE ME IF: ", zipped_message_me_if
+
 
 def run_test_and_store(profile_section):
 
@@ -347,7 +364,9 @@ def run_test_and_store(profile_section):
     features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
     features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
 
+
     count_users_both_labels = 0
+
 
 
 
@@ -380,12 +399,12 @@ def run_test_and_store(profile_section):
         if self_summary_label > 1 and message_me_if_label > 1:
             count_users_both_labels +=1
 
-        db.session.add(new_input)
+        # db.session.add(new_input)
 
     print datetime.datetime.now()
      
     print "how many users are non-zero for both labels:", count_users_both_labels
-    db.session.commit()
+    # db.session.commit()
     return count_users_both_labels, len(to_input)
 
 
@@ -393,6 +412,7 @@ def run_test_and_store(profile_section):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    x = train_model_and_pickle(500)
+    # x = train_model_and_pickle(500)
 
-    test_data()
+    # test_data()
+    print_cluster_words()
