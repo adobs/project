@@ -44,6 +44,28 @@ class MeanShiftAlgo(db.Model):
 
     profile = db.relationship('Profile', backref=db.backref('meanshiftalgos'))
 
+class SelfSummaryLabel(db.Model):
+
+    __tablename__ = "selfsummarylables"
+
+    selfsummarylabel_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    self_summary_label = db.Column(db.Integer)
+    feature = db.Column(db.Text)
+
+
+
+class MessageMeIfLabel(db.Model):
+
+    __tablename__ = "messagemeiflabels"
+
+    messagemeiflabel_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    message_me_if_label = db.Column(db.Integer)
+    feature = db.Column(db.Text)
+
+
+
+
+
 class DbscanAlgo(db.Model):
     """Mean shift algortithm resulting labels for user"""
 

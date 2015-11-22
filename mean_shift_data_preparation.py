@@ -6,11 +6,12 @@
 import numpy as np
 from sklearn.cluster import MeanShift, estimate_bandwidth
 # from sklearn.datasets.samples_generator import make_blobs
-from model import Profile, Adjective, Gender, Orientation, Location, db, connect_to_db, MeanShiftAlgo
+from model import Profile, Adjective, Gender, Orientation, Location, db, connect_to_db, MeanShiftAlgo, SelfSummaryLabel, MessageMeIfLabel
 from flask_app import app
 from random import sample
 import datetime
 from sklearn.externals import joblib
+from nltk.corpus import stopwords
 
 def clean(dirty_list):
     # print "dirty list is", dirty_list
@@ -56,7 +57,10 @@ def get_words(profile, random_profiles_to_train, n_train):
     clean_list = clean(text_word_list)
     print "post clean in get words"
     
-    for word in clean_list:
+    filtered_words = [word for word in clean_list if word not in stopwords.words('english')]
+    
+    for word in filtered_words:
+
         words_and_count[word] = words_and_count.get(word,0)
         words_and_count[word] += 1
             # print "word is", word
@@ -257,7 +261,7 @@ def mean_shift_predict(boolean_input_array, ms):
     # for dimension in cluster_center:   # 2 variables, plotted as x/y.  or # n_features
     #    print "THIS DIMENSION,", dimension
 
-    return clusters_for_ea_sample
+    return clusters_for_ea_sample, cluster_centers
 
 
 def train_model_and_pickle(n_train):
@@ -338,22 +342,48 @@ def test_data():
     print "SUCCESS - ALL USERS ARE LABELED"
     print "status: {}".format(float(count_users_both_labels)/len_to_input)
 
-def print_cluster_words():
+# def print_cluster_words():
 
-    ms_trained_object_self_summary = joblib.load('model_pkl/self_summary_pickle.pkl')
-    ms_trained_object_message_me_if = joblib.load('model_pkl/message_me_if_pickle.pkl')
+#     ms_trained_object_self_summary = joblib.load('model_pkl/self_summary_pickle.pkl')
+#     ms_trained_object_message_me_if = joblib.load('model_pkl/message_me_if_pickle.pkl')
 
-    features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
-    features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
+#     self_summary_labels = ms_trained_object_self_summary.labels_
+#     message_me_if_labels = ms_trained_object_message_me_if.labels_
 
-    self_summary_cluster_centers = ms_trained_object_self_summary.cluster_centers_
-    message_me_if_cluster_centers = ms_trained_object_message_me_if.cluster_centers_
+#     features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
+#     features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
 
-    zipped_self_summary = list(zip(features_self_summary, self_summary_cluster_centers))
-    zipped_message_me_if = list(zip(features_message_me_if, message_me_if_cluster_centers))
+#     self_summary_cluster_centers = ms_trained_object_self_summary.cluster_centers_
+#     message_me_if_cluster_centers = ms_trained_object_message_me_if.cluster_centers_
 
-    print "SELF SUMMARY: ", zipped_self_summary
-    print "MESSAGE ME IF: ", zipped_message_me_if
+
+#     features_self_summary_list = []
+#     for i in range(len(list(self_summary_labels))):
+#         features_self_summary_list.append(features_self_summary)
+
+#     #     print "features list", features_self_summary_list
+#     # print "cluster centers[0]", self_summary_cluster_centers[0]
+#     # print "message_me_if_labels[0]", message_me_if_labels[0]
+
+#     features_message_me_if_list = []
+#     for i in range(len(list(message_me_if_labels))):
+#         features_message_me_if_list.append(features_message_me_if)
+
+#     self_summary_combined = zip(self_summary_labels, features_self_summary_list, self_summary_cluster_centers)
+#     message_me_if_combined = zip(message_me_if_labels, features_message_me_if_list, message_me_if_cluster_centers)
+
+#     for item in self_summary_combined:
+#         print "item", item
+#         new_self_summary = SelfSummaryLabel(self_summary_label=item[0][0], feature=item[1][0], cluster_center=item[2][0])
+#         db.session.add(new_self_summary)
+
+#     for item in message_me_if_combined:
+#         new_message_me_if = MessageMeIfLabel(message_me_if_label=item[0][0], feature=item[1][0], cluster_center=item[2][000])
+#         db.session.add(new_message_me_if)
+
+#     db.session.commit()
+ 
+        # print "MESSAGE ME IF: ", zipped_message_me_if
 
 
 def run_test_and_store(profile_section):
@@ -380,14 +410,43 @@ def run_test_and_store(profile_section):
     # functions to attain labels for self_summary
     sample_list_self_summary = [item[1] for item in sample_list]
     boolean_input_array_self_summary = convert(features_self_summary, sample_list_self_summary)
-    labels_self_summary = mean_shift_predict(boolean_input_array_self_summary, ms_trained_object_self_summary)
+    labels_self_summary, cluster_centers_self_summary = mean_shift_predict(boolean_input_array_self_summary, ms_trained_object_self_summary)
 
     # functions to attain labels for message_me_if
     sample_list_message_me_if = [item[2] for item in sample_list]
     print "preconvert"
     boolean_input_array_message_me_if = convert(features_message_me_if, sample_list_message_me_if)
     print "postconver"
-    labels_message_me_if = mean_shift_predict(boolean_input_array_message_me_if, ms_trained_object_message_me_if)
+    labels_message_me_if, cluster_centers_message_me_if = mean_shift_predict(boolean_input_array_message_me_if, ms_trained_object_message_me_if)
+
+ 
+
+        # for cluster in cluster_centers_self_summary:
+        #     print "cluster center is", cluster
+    self_summary_dict = {}
+    message_me_if_dict = {}    
+
+
+    for i in range(len(cluster_centers_self_summary)):
+        self_summary_dict[labels_self_summary[i]] = zip(features_self_summary, cluster_centers_self_summary[i])
+
+    print "self summary dict", self_summary_dict
+
+    for key, value in self_summary_dict.iteritems():
+        for feature, center in value:
+            if center == 1:
+                new_self_summary = SelfSummaryLabel(self_summary_label=key, feature=feature)
+                db.session.add(new_self_summary)
+
+    for i in range(len(cluster_centers_message_me_if)):
+        message_me_if_dict[labels_message_me_if[i]] = zip(features_message_me_if, cluster_centers_message_me_if[i])
+    
+    for key, value in message_me_if_dict.iteritems():
+        for feature, center in value:
+            if center == 1:
+                new_message_me_if = MessageMeIfLabel(message_me_if_label=key, feature=feature)
+                db.session.add(new_message_me_if)
+
 
     zipped =  zip(usernames, labels_self_summary, labels_message_me_if)
     to_input = list(zipped)
@@ -399,12 +458,12 @@ def run_test_and_store(profile_section):
         if self_summary_label > 1 and message_me_if_label > 1:
             count_users_both_labels +=1
 
-        # db.session.add(new_input)
+        db.session.add(new_input)
 
     print datetime.datetime.now()
      
     print "how many users are non-zero for both labels:", count_users_both_labels
-    # db.session.commit()
+    db.session.commit()
     return count_users_both_labels, len(to_input)
 
 
@@ -412,7 +471,7 @@ def run_test_and_store(profile_section):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    # x = train_model_and_pickle(500)
-
-    # test_data()
-    print_cluster_words()
+    train_model_and_pickle(500)
+    test_data()
+    # print_cluster_words()
+    # run_test_and_store()

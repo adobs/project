@@ -16,6 +16,7 @@ from send_message_map import send
 # from create_json_for_d3_hierarchical import create_json
 from markov import get_input_text, make_chains, make_text
 import json
+from create_word_chart import create_self_summary_chart, create_message_me_if_chart
 
 app = Flask(__name__)
 
@@ -236,7 +237,7 @@ def send_messages_map():
 def d3_page():
 
 
-    return render_template("index.html")
+    return render_template("sankey.html")
 
 
 @app.route("/sendjson")
@@ -324,6 +325,29 @@ def add_to_profile_json():
     user.profile.essays.self_summary = text
 
     return "success"
+
+@app.route("/source.json")
+def get_words_for_source():
+
+    source_label = request.args.get("source")
+
+    source = create_self_summary_chart(source_label)
+    return json.dumps(source)
+
+@app.route("/target.json")
+def get_words_for_target():
+
+    target_label = request.args.get("target")
+
+    target = create_message_me_if_chart(target_label)
+    return json.dumps(target)
+
+@app.route("/test")
+def sunburst():
+
+    return render_template("sunburst.html")
+
+
 
 if __name__ == "__main__":
     app.debug = True
