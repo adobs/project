@@ -127,15 +127,37 @@
 
     var map;
     function initialize() {
-        var lebanon = { lat: 39.8282, lng: -98.5795 };
+        var sanFrancisco = { lat: 37.7833, lng: -122.4167 };
         map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 4,
-            center: lebanon
+            zoom: 10,
+            center: sanFrancisco
         });
         // .setOptions({styles, styles})
         return map;
     }
 
+    // setTimeout( function(){
+    // google.maps.event.addListenerOnce(map.map, 'bounds_changed', function() {
+    //     console.log("map.getBounds()");
+    // });
+    // }, 3000);
+
+
+    // var bool=false;
+    // function getCoordinates(bool){
+    //     var NEprime;
+    //     if(bool===true){
+    //         google.maps.event.addListener(map, 'idle', function(){
+    //         console.log("in event get coordinates listener");
+    //         var NE= map.getBounds().getNorthEast().lat();
+    //         console.log("NE IS"+NE);
+    //         bool=false;
+    //                     });
+    //     }
+    // }
+
+    setTimeout(function(){
+    map.getBounds().getNorthEast().lat();map.getBounds().getSouthWest().lat();map.getBounds().getNorthEast().lng();map.getBounds().getSouthWest().lng();}, 1000);
 
     google.maps.event.addDomListener(window, 'load', initialize);
         
@@ -147,8 +169,14 @@
         var inputs = {
             "orientation": ($('input[name="orientation"]:checked').serialize()),
             "gender": ($('input[name="gender"]:checked').serialize()),
-            "age": $("#age").val()
+            "age": $("#age").val(),
+            "minimum_latitude": map.getBounds().getSouthWest().lat(),
+            "maximum_latitude": map.getBounds().getNorthEast().lat(),
+            "minimum_longitude": map.getBounds().getSouthWest().lng(),
+            "maximum_longitude": map.getBounds().getNorthEast().lng()
         };
+
+            // var latitude_max = getBoundsObject.getNorthEast().lat();
 
         ajaxRequest = $.get("/map-checked.json", inputs, addMarkers);
 
@@ -170,7 +198,8 @@
     });
 
 
-    $(' #map-choices-form').on('change slidechange', function (event) {
+    $(' #map-choices-form').on('submit', function (event) {
+        event.preventDefault();
         ajaxRequest.abort();
         event.stopPropagation();
         $('#loading').show();
@@ -223,11 +252,10 @@
 
     $(document).ready(function() {
         $('#pageModal').modal();
-        plotInputs();
+        setTimeout(plotInputs, 2000);
 
     });
 
     $('#loading-2').hide();
 
 })();
-

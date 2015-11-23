@@ -17,6 +17,9 @@ from send_message_map import send
 from markov import get_input_text, make_chains, make_text
 import json
 from create_word_chart import create_self_summary_chart, create_message_me_if_chart
+from networkxtest import miles_graph
+from sqlalchemy.sql import func 
+
 
 app = Flask(__name__)
 
@@ -173,6 +176,12 @@ def map_checked_json():
 
     age_min, age_max = age_list
 
+
+    minimum_latitude = float((request.args.get("minimum_latitude")).encode("utf-8"))
+    maximum_latitude = float((request.args.get("maximum_latitude")).encode('utf-8'))
+    maximum_longitude = float((request.args.get("maximum_longitude")).encode('utf-8'))
+    minimum_longitude = float((request.args.get('minimum_longitude')).encode('utf-8'))
+
     logged_in = "False"
     # if logged in
     if session.get("screenname"):
@@ -188,7 +197,9 @@ def map_checked_json():
     results = db.session.query(Adjective.username, Profile.location, 
                                Adjective.adjective, Location.latitude, 
                                Location.longitude).join(Profile).join(
-                               Location).filter(Adjective.username.in_(users)).all()
+                               Location).filter(Location.latitude >= minimum_latitude).filter(Location.latitude <= 
+                               maximum_latitude).filter(Location.longitude >= minimum_longitude).filter(Location.longitude <= 
+                               maximum_longitude).filter(Adjective.username.in_(users)).all()
 
     # QUERY = """SELECT A.Username, P.location, A.adjective
     #            FROM Adjectives AS A JOIN Profiles AS P ON P.username=A.username 
@@ -347,7 +358,16 @@ def sunburst():
 
     return render_template("sunburst.html")
 
+@app.route("/sunburst.json")
+def sunburst_route():
+    s = miles_graph()
 
+    return s
+
+@app.route("/idling.json")
+def idling():
+
+    return "hi"
 
 if __name__ == "__main__":
     app.debug = True

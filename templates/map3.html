@@ -2,15 +2,86 @@
 {% extends "base.html" %}
 {% block title %}Adjective Map{% endblock %}
 {% block head %}
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-    <meta charset="utf-8">
-    <!-- Google Maps -->
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<!-- Google Maps -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
   <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+  <!-- D3 -->
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+
   <style>
-  table{
-    table-layout: fixed;
-  }
+    table{
+      table-layout: fixed;
+    }
+
+    #orientation-form{
+        display: inline-block;
+    }
+    #age-form{
+        display: inline-block;
+    }
+    #gender-form{
+        display: inline-block;
+    }
+
+    path {
+      stroke: #fff;
+      fill-rule: evenodd;
+    }
+
+    .tool {
+      font-size: 14px;
+      font-family: Arial, sans-serif;
+    }
+    .notes a{color:#CC3300 !important;}
+    .notes a:visited{color:#CC3300 !important;}
+    .notes a:hover{color:#CC3300 !important;}
+    .notes footer {color:#CC3300 !important;}
+    .notes a {color:#CC3300 !important;}
+    .notes a:visited {color:#CC3300 !important;}
+    .notes a:hover {color:#CC3300 !important;}
+
+
+    ul.trial {
+        display:inline;
+        padding:0;
+        margin: 25px 20px;
+    }
+
+    ul.trial li {
+        display:inline;
+        padding:5px;
+        list-style-type:none;
+        margin:5px;
+        border: 1px solid #E2E2CE;
+    }
+
+    .highlight {
+        border: 1px solid #E2E2CE;
+        padding:5px;
+        margin:10px 25px;
+    }
+
+    footer, header {
+        background:#e2e2ce;
+        padding:5px;
+    }
+
+    div.offence_form {margin:10px;}
+
+    table.summary {
+        margin: 20px 10px;
+        border: 1px solid #e2e2ce;
+    }
+
+    table.summary th {
+        padding: 2px 4px;
+        background:#e2e2ce;
+    }
+    table.summary td {padding:3px 8px;}
+
+ 
   </style>
 
 {% endblock %}
@@ -24,12 +95,9 @@
         <div class="col-md-9 col-xs-12" id="map"></div>
         <div class="col-md-3 col-xs-12" id="controls">
           <form id='map-choices-form'>
-            <table class="table">
-                <div class='form-group'>
-                  <tr>
-                    <td>
+              <div class='form-group'>
+                  <div id="orientation-form">
                       <label for='orientation'>Orientation</label><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                      <!-- <h1><a href="#" data-toggle="tooltip-orientation" title="Select as many orientations you would like to filter on">Orientation</a></h1> -->
                         <ul>
                           {% for orientation in orientations %}
                               <li>
@@ -40,14 +108,8 @@
                                   <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked>Select All
                               </li>
                         </ul>
-                      <label for="age">Age range</label>
-                      <input type="text" id="age" readonly name="age">
-                      <div id="map-slider-range"></div>
-                      <div id="loading">
-                          <img id="loading-img" src="../static/gif/loading.gif">
-                      </div>
-                    </td>
-                    <td>
+                  </div><!--  close orientation div -->
+                  <div id="gender-form">
                       <label for='gender'>Gender</label>
                         <ul>
                             {% for gender in genders %}
@@ -59,11 +121,17 @@
                                 <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked>Select All
                             </li>
                         </ul>
-                    </td>
-                  </tr>
-                </div> <!-- close div class -->
-            </table>
+                  </div><!-- close gender div -->
+                  <div id="age-form">
+                      <label for="age">Age range</label>
+                      <input type="text" id="age" readonly name="age">
+                      <div id="map-slider-range"></div>
+                      <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+                  </div><!--  close age div -->
+                  <input type="submit" vaue="Submit!">
+              </div> <!-- close div class -->
           </form>
+          <div id="sunburst"></div><!--  class="text-center" -->
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
@@ -174,6 +242,116 @@
   </div>
 </div>
 
-<script src="../static/js/map.js"></script>
 <!-- <script src="../static/js/calc-spec.js"></script> -->
+<script>
+var margin = {top: 10, right: 10, bottom: 10, left: 10},
+  ww = document.getElementById("sunburst").clientWidth,
+  width = ww - margin.left - margin.right,
+  height = 500 - margin.top - margin.bottom,
+  radius = Math.min(width, height) / 2;
+
+var x = d3.scale.linear()
+  .range([0, 2 * Math.PI]);
+
+var y = d3.scale.sqrt()
+  .range([0, radius]);
+
+var color = d3.scale.category20c();
+
+var svg = d3.select("#sunburst").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height)
+  .append("g")
+  .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
+var partition = d3.layout.partition()
+  .value(function(d) {
+    return d.value;
+  });
+
+var arc = d3.svg.arc()
+  .startAngle(function(d) {
+    return Math.max(0, Math.min(2 * Math.PI, x(d.x)));
+  })
+  .endAngle(function(d) {
+    return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx)));
+  })
+  .innerRadius(function(d) {
+    return Math.max(0, y(d.y));
+  })
+  .outerRadius(function(d) {
+    return Math.max(0, y(d.y + d.dy));
+  });
+
+var tool = d3.select("#body")
+  .append("div")
+  .attr("class", "tool")
+  .style("position", "absolute")
+  .style("z-index", "10")
+  .style("opacity", 0);
+
+function format_number(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function format_name(d) {
+  var name = d.name;
+  return '<b>' + name + '</b><br> (' + format_number(d.value) + ')';
+}
+
+d3.json("https://s3-us-west-2.amazonaws.com/s.cdpn.io/65174/puncatdecgender.json", function(error, root) {
+
+  var path = svg.selectAll("path")
+    .data(partition.nodes(root))
+    .enter().append("path")
+    .attr("d", arc)
+    .style("fill", function(d) {
+      return color((d.children ? d : d.parent).name);
+    })
+    .on("click", click)
+    .on("mouseover", function(d) {
+      tool.html(function() {
+        var name = format_name(d);console.log("hovering!");
+        return name;
+      });
+      return tool.transition()
+        .duration(50)
+        .style("opacity", 0.9);
+    })
+    .on("mousemove", function(d) {
+      return tool
+        .style("top", (d3.event.pageY - 10) + "px")
+        .style("left", (d3.event.pageX + 10) + "px");
+    })
+    .on("mouseout", function() {
+      return tool.style("opacity", 0);
+    });
+
+  function click(d) {
+    path.transition()
+      .duration(750)
+      .attrTween("d", arcTween(d));
+  }
+});
+
+d3.select(self.frameElement).style("height", height + "px");
+
+// Interpolate the scales!
+function arcTween(d) {
+  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+    yd = d3.interpolate(y.domain(), [d.y, 1]),
+    yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+  return function(d, i) {
+    return i ? function(t) {
+      return arc(d);
+    } : function(t) {
+      x.domain(xd(t));
+      y.domain(yd(t)).range(yr(t));
+      return arc(d);
+    };
+  };
+}
+</script>
+
+<script src="../static/js/map.js"></script>
 {% endblock %}
