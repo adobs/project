@@ -48,41 +48,50 @@ def miles_graph():
 
     G.add_node(1) # root
     for gender, orientation, age in users:
+
         G.add_node(gender)
-        G.add_node(gender[0]+orientation)
-        G.add_node(gender[0]+orientation[0]+str(age))
+        G.add_node(gender+", "+orientation)
+        G.add_node(gender+", "+orientation+", "+str(age))
         G.add_edge(1, gender)
-        if G.has_edge(gender, gender[0]+orientation):
-            G[gender][gender[0]+orientation]['weight']+=1
-            if G.has_edge(gender[0]+orientation, gender[0]+orientation[0]+str(age)):
-                G[gender[0]+orientation][gender[0]+orientation[0]+str(age)]['weight']+=1
+        if G.has_edge(gender, gender+", "+orientation):
+            G[gender][gender+", "+orientation]['weight']+=1
+            if G.has_edge(gender+", "+orientation, gender+", "+orientation+", "+str(age)):
+                G[gender+", "+orientation][gender+", "+orientation+", "+str(age)]['weight']+=1
 
             else:
-                G.add_edge(gender[0]+orientation, gender[0]+orientation[0]+str(age), weight=1)
+                G.add_edge(gender+", "+orientation, gender+", "+orientation+", "+str(age), weight=1)
             # G[age][orientation]['weight']+=1
             # G[gender][orientation][age]['weight']+=1
         else:
             # G.add_edges(orientation, age, {'weight': 1})
-            G.add_edge(gender, gender[0]+orientation, weight= 1)
+            G.add_edge(gender, gender+", "+orientation, weight= 1)
 
         # print "edges", G.edges()
         # print "node", G.nodes()
     
-    print "g",G.nodes()
-    print G.edges()
+    # print "g",G.nodes()
+    # print G.edges()
 
     # G.add_node("gay")
     # G.add_node("woman")
-    print "num of nodes:", G.number_of_nodes()
+    # print "num of nodes:", G.number_of_nodes()
     # G.add_edge("gay","woman",{'weight':3.1415})
-    print "num of edges:", G.number_of_edges()
-    data = json_graph.tree_data(G,root=1)
-    # data = json_graph.node_link_data(G)
-    s = json.dumps(data)
-    print s
-    l=simpleNetworkx(G)
-    print l
-    return s
+    # print "num of edges:", G.number_of_edges()
+    # print "num of degree:", G.degree_iter() 
+    
+
+    graph_json = json_graph.node_link_data(G, 'weight')
+    graph_json=json.dumps(graph_json)
+
+    # graph_json = json.dumps(json_graph.tree_data(G, root=1))
+
+    # graph_json = json.dumps(json_graph.adjacency_data(G))
+
+    data = json_graph.node_link_data(G)
+    graph_json = json_graph.node_link_graph(data)
+
+    print graph_json
+    return graph_json
 
 if __name__ == '__main__':
     import networkx as nx
