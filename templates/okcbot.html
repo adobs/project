@@ -126,9 +126,9 @@ $(function() {
         {% for location in locations %}
         availableTags.push("{{location.location}}");
         {% endfor %}
-$( "td #location" ).autocomplete({
-  source: availableTags
-});
+    $( "td #location" ).autocomplete({
+        source: availableTags
+    });
 });
 
 $('#loading').hide();

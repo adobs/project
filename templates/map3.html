@@ -2,28 +2,80 @@
 {% extends "base.html" %}
 {% block title %}Adjective Map{% endblock %}
 {% block head %}
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
-<meta charset="utf-8">
-<!-- Google Maps -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
-  <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
-  <!-- D3 -->
-  <script src="http://d3js.org/d3.v3.min.js"></script>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
 
+    <!-- progress bar -->
+    
+    <!-- Google Maps -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyArY6jsEgpSky7AN31nasjreQ5HHPtmxx0&signed_in=true"></script>
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+    
+    <!-- D3 -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    
   <style>
     table{
       table-layout: fixed;
     }
 
+
     #orientation-form{
+        width: 175px;
+        height: 330px;
+        background: white;
+        position: absolute;
+        top: 150px;
+        left: 200px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
+    }   
+    #gender-form{
+        width: 175px;
+        height: 570px;
+        background: white;
+        position: absolute;
+        top: 150px;
+        left: 20px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
         display: inline-block;
     }
     #age-form{
+        width: 175px;
+        height: 60px;
+        background: white;
+        position: absolute;
+        top: 490px;
+        left: 200px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
         display: inline-block;
+    }   
+    #age{
+        width: 50px;
+        border: transparent;
     }
-    #gender-form{
-        display: inline-block;
+    #form-submit{
+        position: absolute;
+        top: 560px;
+        left: 200px;
+        /*width: 60px;*/
+        height: 30px;
     }
+    #loading{
+        width: 4000px;
+        margin: auto;
+    }
+
+    ul, li {
+        margin:0;
+        padding:0;
+    }
+
 
     path {
       stroke: #fff;
@@ -81,7 +133,8 @@
     }
     table.summary td {padding:3px 8px;}
 
- 
+    
+
   </style>
 
 {% endblock %}
@@ -92,12 +145,13 @@
 
 <div class="container-fluid" id="whole-page">
     <div class="row" id="page">
-        <div class="col-md-9 col-xs-12" id="map"></div>
-        <div class="col-md-3 col-xs-12" id="controls">
+      <div id="loading"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"></div>
+        <div class="col-md-12 col-xs-12" id="map"></div>
+        <!-- <div class="col-md-3 col-xs-12" id="controls"> -->
           <form id='map-choices-form'>
               <div class='form-group'>
                   <div id="orientation-form">
-                      <label for='orientation'>Orientation</label><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                      <label for='orientation'>Orientation <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
                         <ul>
                           {% for orientation in orientations %}
                               <li>
@@ -110,7 +164,7 @@
                         </ul>
                   </div><!--  close orientation div -->
                   <div id="gender-form">
-                      <label for='gender'>Gender</label>
+                      <label for='gender'>Gender <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
                         <ul>
                             {% for gender in genders %}
                                 <li>
@@ -123,16 +177,15 @@
                         </ul>
                   </div><!-- close gender div -->
                   <div id="age-form">
-                      <label for="age">Age range</label>
-                      <input type="text" id="age" readonly name="age">
+                      <label for="age">Age range </label>
+                      <input type="text" id="age" readonly name="age"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                       <div id="map-slider-range"></div>
-                      <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
                   </div><!--  close age div -->
-                  <input type="submit" vaue="Submit!">
+                  <input id="form-submit" type="submit" value="Submit">
               </div> <!-- close div class -->
           </form>
           <div id="sunburst"></div><!--  class="text-center" -->
-        </div> <!-- close column -->
+        <!-- </div> close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
 

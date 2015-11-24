@@ -1,3 +1,17 @@
+var map;
+
+function initialize() {
+    var styles = [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}];
+    var sanFrancisco = { lat: 37.7833, lng: -122.4167 };
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 10,
+        center: sanFrancisco
+    });
+    map.setOptions({styles, styles});
+    return map;
+}
+
+
 
 (function () {
 
@@ -122,25 +136,17 @@
         }
 
         $('#loading').hide();
+        $("#form-submit").val("Submit");
+
     }
 
 
-    var map;
-    function initialize() {
-        var sanFrancisco = { lat: 37.7833, lng: -122.4167 };
-        map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 10,
-            center: sanFrancisco
-        });
-        // .setOptions({styles, styles})
-        return map;
-    }
+    setTimeout( function(){
+    google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
+        $("#form-submit").val("Redo search in map");
 
-    // setTimeout( function(){
-    // google.maps.event.addListenerOnce(map.map, 'bounds_changed', function() {
-    //     console.log("map.getBounds()");
-    // });
-    // }, 3000);
+    });
+    }, 3000);
 
 
     // var bool=false;
@@ -156,24 +162,28 @@
     //     }
     // }
 
-    setTimeout(function(){
-    map.getBounds().getNorthEast().lat();map.getBounds().getSouthWest().lat();map.getBounds().getNorthEast().lng();map.getBounds().getSouthWest().lng();}, 1000);
+//     setTimeout(function(){
+//     map.getBounds().getNorthEast().lat();
+//     map.getBounds().getSouthWest().lat();
+//     map.getBounds().getNorthEast().lng();
+//     map.getBounds().getSouthWest().lng();
+// }, 1000);
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    // google.maps.event.addDomListener(window, 'load', initialize);
         
 
     // $('#orientation-hover').tooltip();
 
     var ajaxRequest;
-    function plotInputs(){
+    function plotInputs(chart){
         var inputs = {
             "orientation": ($('input[name="orientation"]:checked').serialize()),
             "gender": ($('input[name="gender"]:checked').serialize()),
             "age": $("#age").val(),
-            "minimum_latitude": map.getBounds().getSouthWest().lat(),
-            "maximum_latitude": map.getBounds().getNorthEast().lat(),
-            "minimum_longitude": map.getBounds().getSouthWest().lng(),
-            "maximum_longitude": map.getBounds().getNorthEast().lng()
+            "minimum_latitude": chart.getBounds().getSouthWest().lat(),
+            "maximum_latitude": chart.getBounds().getNorthEast().lat(),
+            "minimum_longitude": chart.getBounds().getSouthWest().lng(),
+            "maximum_longitude": chart.getBounds().getNorthEast().lng()
         };
 
             // var latitude_max = getBoundsObject.getNorthEast().lat();
@@ -181,14 +191,13 @@
         ajaxRequest = $.get("/map-checked.json", inputs, addMarkers);
 
     }
-
     // slider
     $(function() {
         $( "#map-slider-range" ).slider({
             range: true,
             min: 18,
             max: 98,
-            values: [ 20, 30 ],
+            values: [ 18, 30 ],
             slide: function( event, ui ) {
                 $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
                 }
@@ -203,8 +212,10 @@
         ajaxRequest.abort();
         event.stopPropagation();
         $('#loading').show();
-        plotInputs();
+        plotInputs(map);
     });
+
+
 
     //check all orientation checkboxes
     $("#check-all-orientation").change(function () {
@@ -252,10 +263,14 @@
 
     $(document).ready(function() {
         $('#pageModal').modal();
-        setTimeout(plotInputs, 2000);
-
-    });
+        var chart = initialize();
+        // plotInputs(chart);
+        setTimeout(function(){
+            plotInputs(chart);
+        }, 2000);
 
     $('#loading-2').hide();
+    
+    });
 
 })();

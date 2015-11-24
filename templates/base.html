@@ -24,6 +24,7 @@
 
 
 <style>
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
 
   line {
   stroke: #999;
@@ -71,16 +72,26 @@ table td {
 .alert {
   display:block;
 }
+
+
+
 .labels {
-   color: white;
-   background-color: red;
-   font-family: "Lucida Grande", "Arial", sans-serif;
-   border: solid black 2px;
-   font-size: 10px;
-   text-align: center;
-   width: 30px;     
-   white-space: wrap;
- }
+  color: #fff;
+  background: #b30000; /* Old browsers */
+  background: -moz-linear-gradient(-45deg, #b30000 0%, #ff1a1a 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(-45deg, #b30000 0%,#ff1a1a 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(135deg, #b30000 0%,#ff1a1a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b30000', endColorstr='#ff1a1a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+  border-radius: 5px;
+  font-family: "Open Sans", "Arial", sans-serif;
+  text-transform: uppercase;
+  padding: 3px 6px 3px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  /*max-width: 50px;*/
+  text-align: center;
+  white-space: wrap;
+}
 #controls{
   height: 100%;
 }
