@@ -1,13 +1,13 @@
 var map;
 
 function initialize() {
-    var styles = [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}];
+    // var styles = [{"featureType":"landscape","stylers":[{"saturation":-100},{"lightness":65},{"visibility":"on"}]},{"featureType":"poi","stylers":[{"saturation":-100},{"lightness":51},{"visibility":"simplified"}]},{"featureType":"road.highway","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"road.arterial","stylers":[{"saturation":-100},{"lightness":30},{"visibility":"on"}]},{"featureType":"road.local","stylers":[{"saturation":-100},{"lightness":40},{"visibility":"on"}]},{"featureType":"transit","stylers":[{"saturation":-100},{"visibility":"simplified"}]},{"featureType":"administrative.province","stylers":[{"visibility":"off"}]},{"featureType":"water","elementType":"labels","stylers":[{"visibility":"on"},{"lightness":-25},{"saturation":-100}]},{"featureType":"water","elementType":"geometry","stylers":[{"hue":"#ffff00"},{"lightness":-25},{"saturation":-97}]}];
     var sanFrancisco = { lat: 37.7833, lng: -122.4167 };
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10,
         center: sanFrancisco
     });
-    map.setOptions({styles, styles});
+    // map.setOptions({styles, styles});
     return map;
 }
 
@@ -80,13 +80,17 @@ function initialize() {
     }
 
     function createMarker(latitude, longitude, adjective){
+        var adjLength = adjective.length ;
+        console.log("adj len is"+adjLength);
         marker = new MarkerWithLabel({
         position: {lat: latitude, lng: longitude},
         labelContent: adjective,
         map: map,
         labelClass: "labels",
         labelInBackground: false,
-        icon: '/static/img/heart-marker.png'
+        labelAnchor: new google.maps.Point((adjLength+1)*3, 0),
+        labelStyle: {opacity: 0.75},
+        icon: '/static/img/heart-marker-transparent.png'
         // #TODO -- add animation to marker with label
         // animation: google.maps.Animation.DROP
 
@@ -134,6 +138,9 @@ function initialize() {
         }
 
         $('#loading').hide();
+        $('#loading-spin').hide();
+        $("#form-submit").show();
+
         $("#form-submit").val("Submit");
 
     }
@@ -205,6 +212,9 @@ function initialize() {
         ajaxRequest.abort();
         event.stopPropagation();
         $('#loading').show();
+        $('#loading-spin').show();
+        $("#form-submit").hide();
+
         plotInputs(map);
     });
 
@@ -268,7 +278,7 @@ function initialize() {
         });
 
     $('#loading-2').hide();
-    
+    $('#loading-spin').hide();
     });
 
 })();

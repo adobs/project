@@ -71,11 +71,19 @@
         margin: auto;
     }
 
-    ul, li {
+    ul {
         margin:0;
         padding:0;
     }
+    li{
+      margin-right: 0;
+    }
 
+    #loading-spin{
+      position: absolute;
+      left: 200px;
+      top: 560px;
+    }
 
     path {
       stroke: #fff;
@@ -133,7 +141,9 @@
     }
     table.summary td {padding:3px 8px;}
 
-    
+    h2, p{
+      background: white;
+    }
 
   </style>
 
@@ -151,37 +161,38 @@
           <form id='map-choices-form'>
               <div class='form-group'>
                   <div id="orientation-form">
-                      <label for='orientation'>Orientation <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
+                      <label for='orientation'>Orientation <span  data-toggle="tooltip" title="Select the orientations to be represented on the map, then click submit" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
                         <ul>
                           {% for orientation in orientations %}
                               <li>
-                                  <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked>{{orientation.orientation}}
+                                  <input type="checkbox" name="orientation" value="{{orientation.orientation}}" checked> &nbsp; {{orientation.orientation}}
                               </li>
                           {% endfor %}
                               <li>
-                                  <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked>Select All
+                                  <input type="checkbox" id="check-all-orientation" name="orientation" value="select-all" checked> &nbsp; Select All
                               </li>
                         </ul>
                   </div><!--  close orientation div -->
                   <div id="gender-form">
-                      <label for='gender'>Gender <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
+                      <label for='gender'>Gender <span data-toggle="tooltip" title="Select the genders to be represented on the map, then click submit" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></label>
                         <ul>
                             {% for gender in genders %}
                                 <li>
-                                    <input type="checkbox" name="gender" value="{{gender.gender}}" checked>{{gender.gender}}
+                                    <input type="checkbox" name="gender" value="{{gender.gender}}" checked> &nbsp; {{gender.gender}}
                                 </li>
                             {% endfor %}
                             <li>
-                                <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked>Select All
+                                <input type="checkbox" id="check-all-gender" name="gender" value="select-all" checked> &nbsp; Select All
                             </li>
                         </ul>
                   </div><!-- close gender div -->
                   <div id="age-form">
-                      <label for="age">Age range </label>
-                      <input type="text" id="age" readonly name="age"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                      <label for="age">Age range</label>
+                      <input type="text" id="age" readonly name="age"><span data-toggle="tooltip" title="Select the age range to be represented on the map, then click submit" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
                       <div id="map-slider-range"></div>
                   </div><!--  close age div -->
                   <input id="form-submit" type="submit" value="Submit">
+                  <div id="loading-spin"><img src="../static/gif/loading.gif"></div>
               </div> <!-- close div class -->
           </form>
           <div id="sunburst"></div><!--  class="text-center" -->

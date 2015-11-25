@@ -25,10 +25,16 @@
 <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'> <!-- for navbar and headers -->
 <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'> <!-- for majority of content -->
 
+<!-- favicon -->
+<link rel="icon" type="image/png"  href="/static/img/favicon.ico">
 <style>
+
 body {
+  background-image: url(../static/img/nice_snow_@2X.png)
+}
+body, h2, p {
   font-family: 'Lato', sans-serif;
-  /*background-image: url(../static/img/building)*/
+
 }
 
 .ui-menu-item {
@@ -38,9 +44,7 @@ body {
 h1{
   font-family: 'PT Mono', ;
 }
-h2, p{
-  font-family: 'Lato', sans-serif;
-}
+
 
   line {
   stroke: #999;
@@ -93,7 +97,7 @@ table td {
 
 .labels {
   color: #fff;
-  background: #b30000; /* Old browsers */
+  background: #BF1E2D; /* Old browsers */
   background: -moz-linear-gradient(-45deg, #b30000 0%, #ff1a1a 100%); /* FF3.6-15 */
   background: -webkit-linear-gradient(-45deg, #b30000 0%,#ff1a1a 100%); /* Chrome10-25,Safari5.1-6 */
   background: linear-gradient(135deg, #b30000 0%,#ff1a1a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
@@ -144,6 +148,11 @@ ul
 .navfont{
   font-family: 'PT Mono', ;
 }
+
+#logo{
+  height: 100%;
+  width: auto;
+}
         
  </style>
 {% block head %}{% endblock %}
@@ -160,7 +169,7 @@ ul
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">OKC+</a>
+      <a class="navbar-brand" href="/"><img class="img-responsive" src="/static/img/ok+logo.png" id="logo"></a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -206,7 +215,7 @@ ul
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Analytics <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/map">Adjective Map</a></li>
-            <li><a href="/d3page">Sankey Profile</a></li>
+            <li><a href="/sankey">Sankey Profile</a></li>
             <li><a href="#">Something else here</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">Separated link</a></li>

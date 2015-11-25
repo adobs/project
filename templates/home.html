@@ -1,9 +1,26 @@
 {% extends "base.html" %}
+
 {% block title%}Home{% endblock %}
 
+{% block head %} 
+<style>
+#logo{
+    text-align: center;
+}
+</style>
+
+{% endblock %}
+
 {% block content %}
+
 <div class="container-fluid" id="whole-page">
     <div class="row">
-        <div class="col-xs-12"><img width="100%" src="../static/img/red_droid.jpg"></div>
+        <div class="col-xs-12">
+            <div id="logo">
+                <img src="../static/img/ok+logo.png">
+            </div> <!-- close logo -->
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+</div> <!-- close container -->
 
 {% endblock %}

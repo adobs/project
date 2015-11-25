@@ -244,7 +244,7 @@ def send_messages_map():
     return "hello"
 
 
-@app.route("/d3page")
+@app.route("/sankey")
 def d3_page():
 
 

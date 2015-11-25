@@ -10,6 +10,19 @@ table{
   table-layout: fixed;
 }
 
+.shadow {
+    -webkit-box-shadow: inset 0px -34px 54px -56px rgba(0,0,0,0.19);
+    -moz-box-shadow: inset 0px -34px 54px -56px rgba(0,0,0,0.19);
+    box-shadow: inset 0px -34px 54px -56px rgba(0,0,0,0.19);
+    border-left: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 2px solid #DE7A83;
+    padding: 5px 10px;
+    border-radius: 4px;
+
+}
+
 </style>
 {% endblock %}
 
@@ -30,29 +43,29 @@ table{
                         <tr>
                             <td>
                                 <label for='minimum_age'>Minimum age to message</label><br>
-                                    <input name="minimum_age" type="text" placeholder="Min age" id="minimum_age" required>
+                                    <input class="shadow" name="minimum_age" type="number" placeholder="Min age" id="minimum_age" required>
                             </td>
                             <td>
                                 <label for='maximum_age'>Maximum age to message</label><br>
-                                    <input name="maximum_age" type="text" placeholder="Max age" id="maximum_age" required>
+                                    <input class="shadow" name="maximum_age" type="number" placeholder="Max age" id="maximum_age" required>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                     <div class="input">
                                         <label for="location">Location of recipients</label><br>
-                                    <input type="text" id="location" class="input" placeholder="Location" required>
+                                    <input class="shadow" type="text" id="location" class="input" placeholder="Location" required>
                                     </div>
                             </td>
                             <td>
                                 <label for='radius'>Radius (miles)</label><br>
-                                    <input name="radius" type="number" placeholder="Radius" id="radius" required>
+                                    <input class="shadow" name="radius" type="number" placeholder="Radius" id="radius" required>
                             </td>
                         </tr>
                         <tr>    
                             <td>
                                 <label for='gentation'>I am seeking to message</label><br>
-                                    <select name="gentation" id="gentation" required>
+                                    <select class="shadow" name="gentation" id="gentation" required>
                                         <option value="girls who like guys">girls who like guys</option>
                                         <option value="guys who like guys">guys who like guys</option>
                                         <option value="both who like bi guys">both who like bi guys</option>
@@ -63,12 +76,12 @@ table{
                             </td>
                             <td>
                                 <label for='num'>Number of people to message</label><br>
-                                   <input type="number" name="num" placeholder="Number of people" id="num" required>
+                                   <input class="shadow" type="number" name="num" placeholder="Number of people" id="num" required>
                             </td>
                         <tr>
                             <td colspan="2">
                                 <label for='message'>Message to send</label><br>
-                                   <textarea name="message" rows='7' placeholder="Message" id="message" required></textarea>
+                                   <textarea class="shadow" name="message" rows='7' placeholder="Message" id="message" required></textarea>
                             </td> 
                         </tr>
                         <tr>    
