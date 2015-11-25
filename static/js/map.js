@@ -86,7 +86,7 @@ function initialize() {
         map: map,
         labelClass: "labels",
         labelInBackground: false,
-        // icon: '../img/heart-marker.png'
+        icon: '/static/img/heart-marker.png'
         // #TODO -- add animation to marker with label
         // animation: google.maps.Animation.DROP
 
@@ -139,12 +139,7 @@ function initialize() {
     }
 
 
-    setTimeout( function(){
-    google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
-        $("#form-submit").val("Redo search in map");
-
-    });
-    }, 3000);
+   
 
 
     // var bool=false;
@@ -263,9 +258,14 @@ function initialize() {
         $('#pageModal').modal();
         var chart = initialize();
         // plotInputs(chart);
-        setTimeout(function(){
+        google.maps.event.addListenerOnce(map, 'bounds_changed', function() {
             plotInputs(chart);
-        }, 2000);
+        });
+
+        google.maps.event.addListener(map, 'bounds_changed', function() {
+        $("#form-submit").val("Redo search in map");
+
+        });
 
     $('#loading-2').hide();
     

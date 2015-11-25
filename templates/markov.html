@@ -56,7 +56,7 @@
                                 <div id="slider-range" class="input"></div>
                             </td>
                             <td>
-                                <div class="ui-widget input">
+                                <div class="input">
                                     <label for="location">Location</label><br>
                                 <input type="text" id="location" class="input" value="San Francisco, CA" required>
                                 </div>
@@ -144,19 +144,6 @@
       source: availableTags
     });
   });
-
-
-  //   //adjective autofill
-  //   $(function() {
-  //       var adjectiveTags = [];
-  //           {% for adjective in adjective_generator %}
-  //               adjectiveTags.push("{{adjective}}");
-           
-  //           {% endfor %}
-  //   $( ".adjective" ).autocomplete({
-  //     source: adjectiveTags
-  //   });
-  // });
 
     function status(data){
         $("#markov-status").html("Updated!")

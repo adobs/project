@@ -17,7 +17,7 @@ from send_message_map import send
 from markov import get_input_text, make_chains, make_text
 import json
 from create_word_chart import create_self_summary_chart, create_message_me_if_chart
-from networkxtest import miles_graph
+# from networkxtest import miles_graph
 from sqlalchemy.sql import func 
 
 

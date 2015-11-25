@@ -25,12 +25,13 @@
   stroke-opacity: .5;
 }
 #chart{
-    height: 300px;
+    /*height: 300px;*/
     width: 100%;
+    text-align: center;
     /*border: solid black 3px;*/
 }
 
-.words{
+.words_container li {
     width: 80px;
     height: 100%;
     display: inline-block;
@@ -48,8 +49,8 @@ li{
 }
 
 .words_container{
-    width: 480px;
-    height: 700px;
+    /*width: 480px;*/
+    /*height: 700px;*/
     margin: 0 auto;
     /*border: solid black 3px;*/
 }
@@ -72,12 +73,14 @@ li{
             <div id="self_summary_header" class="header"><h2>"Self Summary" Cluster Words</h2><p><i>Hover over chart to reveal</i></p></div>
             <div>
                 <div id ="self_summary_words_container" class ="words_container">
-                    <div id="self_summary_words1" class="words"></div>
+                    <ul>
+                    <!-- <div id="self_summary_words1" class="words"></div>
                     <div id="self_summary_words2" class="words"></div>
                     <div id="self_summary_words3" class="words"></div>
                     <div id="self_summary_words4" class="words"></div>
                     <div id="self_summary_words5" class="words"></div>
-                    <div id="self_summary_words6" class="words"></div>
+                    <div id="self_summary_words6" class="words"></div> -->
+                    </ul>
                 </div><!-- close words container -->
             </div>
         </div> <!-- close column -->
@@ -120,30 +123,33 @@ function addSource(data){
     
     var n = (options.length/6);
 
+    var container = $('#self_summary_words_container ul');
+    container.empty()
     for (var j = 0; j < options.length; j++){
 
-        if (j <= n) {
-            $('#self_summary_words1').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else if ((n < j) && (j <= (2*n))) {
-            $('#self_summary_words2').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else if ((2*n) < j && j <= (3*n)) {  
-            $('#self_summary_words3').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else if ((3*n) < j && j <= (4*n)) {
-            $('#self_summary_words4').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else if (((4*n) < j) && (j <= (5*n))) {
-            $('#self_summary_words5').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else if (((5*n) < j) && (j <= (6*n))) {
-            console.log("Got to last")
-            $('#self_summary_words6').append($('<li></li>').val(options[j]).html(options[j]));
-        }
-        else {
-            console.log("GOT TO ELSE")
-        }
+        // if (j <= n) {
+        //     $('#self_summary_words1').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else if ((n < j) && (j <= (2*n))) {
+        //     $('#self_summary_words2').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else if ((2*n) < j && j <= (3*n)) {  
+        //     $('#self_summary_words3').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else if ((3*n) < j && j <= (4*n)) {
+        //     $('#self_summary_words4').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else if (((4*n) < j) && (j <= (5*n))) {
+        //     $('#self_summary_words5').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else if (((5*n) < j) && (j <= (6*n))) {
+        //     console.log("Got to last")
+        //     $('#self_summary_words6').append($('<li></li>').val(options[j]).html(options[j]));
+        // }
+        // else {
+        //     console.log("GOT TO ELSE")
+        // }
+        container.append($('<li></li>').val(options[j]).html(options[j]));
     }
 
 }
