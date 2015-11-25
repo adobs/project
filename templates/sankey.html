@@ -26,18 +26,33 @@
 }
 #chart{
     height: 300px;
-    width: 500px;
+    width: 100%;
     /*border: solid black 3px;*/
 }
 
 .words{
-    width: 100px;
+    width: 80px;
     height: 100%;
-    border: solid black;
-    display: block-inline;
+    display: inline-block;
     float: left;
+    font-size: .8em;
+    text-align: center;
 }
 
+li{
+    list-style-type: none; 
+}
+
+.header{
+    text-align: center;    
+}
+
+.words_container{
+    width: 480px;
+    height: 700px;
+    margin: 0 auto;
+    /*border: solid black 3px;*/
+}
 
 </style>
 {% endblock %}
@@ -51,21 +66,36 @@
             <hr></hr>
         </div> <!-- close column -->
     </div> <!-- close row -->
+
     <div class="row">
-        <div class="col-md-3 col-xs-12">
-            <div id="self_summary_words1" class="words"></div>
-            <div id="self_summary_words2" class="words"></div>
-            <div id="self_summary_words3" class="words"></div>
-            <div id="self_summary_words4" class="words"></div>
+        <div class="col-md-4 col-xs-12">
+            <div id="self_summary_header" class="header"><h2>"Self Summary" Cluster Words</h2><p><i>Hover over chart to reveal</i></p></div>
+            <div>
+                <div id ="self_summary_words_container" class ="words_container">
+                    <div id="self_summary_words1" class="words"></div>
+                    <div id="self_summary_words2" class="words"></div>
+                    <div id="self_summary_words3" class="words"></div>
+                    <div id="self_summary_words4" class="words"></div>
+                    <div id="self_summary_words5" class="words"></div>
+                    <div id="self_summary_words6" class="words"></div>
+                </div><!-- close words container -->
+            </div>
         </div> <!-- close column -->
 
-        <div class="col-md-6 col-xs-12">
+        <div class="col-md-4 col-xs-12">
             <div id="chart"></div>
-   
-      
         </div> <!-- close column -->
-        <div class="col-md-3 col-xs-12">
-            <div id="message_me_if_words" class="words"></div>
+
+        <div class="col-md-4 col-xs-12">
+            <div id="message_me_if_header" class="header"><h2>"Message Me If" Cluster Words</h2><p><i>Hover over chart to reveal</i></p></div>
+            <div id="message_me_if_words1" class="words"></div>
+            <div id="message_me_if_words2" class="words"></div>
+            <div id="message_me_if_words3" class="words"></div>
+            <div id="message_me_if_words4" class="words"></div>
+            <div id="message_me_if_words5" class="words"></div>
+            <div id="message_me_if_words6" class="words"></div>
+            <div id="message_me_if_words7" class="words"></div>
+
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
@@ -78,11 +108,17 @@
 <script>
 
 function addSource(data){
+    $("#self_summary_words1").html(""); 
+    $("#self_summary_words2").html(""); 
+    $("#self_summary_words3").html(""); 
+    $("#self_summary_words4").html("");
+    $("#self_summary_words5").html(""); 
+    $("#self_summary_words6").html(""); 
     // var wordcloud = require('wordcloud');
     // console.log("source is "+ data
     var options = $.parseJSON(data);
     
-    var n = (options.length/4);
+    var n = (options.length/6);
 
     for (var j = 0; j < options.length; j++){
 
@@ -95,57 +131,73 @@ function addSource(data){
         else if ((2*n) < j && j <= (3*n)) {  
             $('#self_summary_words3').append($('<li></li>').val(options[j]).html(options[j]));
         }
-        else if ((3*n) < j) {
+        else if ((3*n) < j && j <= (4*n)) {
             $('#self_summary_words4').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if (((4*n) < j) && (j <= (5*n))) {
+            $('#self_summary_words5').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if (((5*n) < j) && (j <= (6*n))) {
+            console.log("Got to last")
+            $('#self_summary_words6').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else {
+            console.log("GOT TO ELSE")
         }
     }
 
-    // $.each(options, function(i, p) {
-    //     var n = i/4;
-    //     if(i<=n){
-    //         $('#self_summary_words1').append($('<li></li>').val(p).html(p));
-    //     }
-        // else if(n<i<=2n){
-        //     $('#self_summary_words2').append($('<li></li>').val(p).html(p));
-        // }
-        // else if(2n<i<=3n){
-        //     $('#self_summary_words3').append($('<li></li>').val(p).html(p));
-
-        // }
-        // else if(3n<i){
-        //     $('#self_summary_words4').append($('<li></li>').val(p).html(p));
-
-        // }
-    // });
-    // for(var i=0; i < options.length; i+3){
-    //     $('#self_summary_words1').append($('<li></li>').val(options[i]).html(options[i]));
-    // }
-    // for(var i=1; i < options.length; i+3){
-    //     $('#self_summary_words2').append($('<li></li>').val(options[i]).html(options[i]));
-    //     console.log("i is "+i)
-    // }
-    // for(var i=2; i < options.length; i+3){
-    //     $('#self_summary_words3').append($('<li></li>').val(options[i]).html(options[i]));
-    // }
-    // $("#self_summary_words").html("<ul><li>options</li><li>option2></li></ul>");
-    // WordCloud(document.getElementById('self_summary_words'), { list: data } );
 }
 
 function addTarget(data){
-    var source = [];
+    $("#message_me_if_words1").html("")
+    $("#message_me_if_words2").html("")
+    $("#message_me_if_words3").html("")
+    $("#message_me_if_words4").html("")
+    $("#message_me_if_words5").html("")
+    $("#message_me_if_words6").html("")
     var options = $.parseJSON(data);
+    var n = (options.length/6);
+
+    for (var j = 0; j < options.length; j++){
+
+        if (j <= n) {
+            $('#message_me_if_words1').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if ((n < j) && (j <= (2*n))) {
+            $('#message_me_if_words2').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if ((2*n) < j && j <= (3*n)) {  
+            $('#message_me_if_words3').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if ((3*n) < j && j <= (4*n)) {
+            $('#message_me_if_words4').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if (4*n < j && j <= 5*n) {
+            $('#message_me_if_words5').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+        else if (5*n < j) {
+            $('#message_me_if_words6').append($('<li></li>').val(options[j]).html(options[j]));
+        }
+    }
 
 }
 
 
 function hideWords(){
+
     $("#self_summary_words1").html(""); 
     $("#self_summary_words2").html(""); 
     $("#self_summary_words3").html(""); 
-    $("#self_summary_words4").html(""); 
+    $("#self_summary_words4").html("");
+    $("#self_summary_words5").html(""); 
+    $("#self_summary_words6").html(""); 
+
     $("#message_me_if_words1").html("")
     $("#message_me_if_words2").html("")
     $("#message_me_if_words3").html("")
+    $("#message_me_if_words4").html("")
+    $("#message_me_if_words5").html("")
+    $("#message_me_if_words6").html("")
 
 }
 

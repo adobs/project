@@ -26,14 +26,13 @@ function initialize() {
 
             html =
                 '<div id="content">' +
-                '<h1>There are <b>' + population + '</b> profiles in ' + location + '</h1>' +
-                '<h2>matching your search</h2>'+
+                '<p>There are <b>' + population + '</b> profiles in ' + location + '<br>matching your search</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" '+
                     'data-toggle="modal" data-target="#myModal" '+
                     'data-recipients="'+ long_profile_list +'">'+
                     'Message Profiles in '+ location +'</button>'+
-                '<h1>The most commonly used adjective is <b>' + adjective + '</b></h1>'+
-                '<h2>('+count+' occurences)</h2>'+
+                '<p>The most commonly used adjective is <b>' + adjective + '</b>'+
+                '<br>('+count+' occurences)</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" '+
                     'data-toggle="modal" data-target="#myModal"'+
                     'data-recipients="'+short_profile_list +
@@ -42,12 +41,11 @@ function initialize() {
 
             html =
                 '<div id="content">'+
-                '<h1>There are <b>' + population + '</b> profiles in ' + location + '</h1>'+
-                '<h2>matching your search</h2>'+
+                '<p>There are <b>' + population + '</b> profiles in ' + location + '<br>matching your search</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" disabled>'+
                     'Login to Message Profiles in ' + location + '</button>' +
-                '<h1>The most commonly used adjective is <b>' + adjective + '</b></h1>'+
-                '<h2>('+count+' occurences)</h2>'+
+                '<p>The most commonly used adjective is <b>' + adjective + '</b>'+
+                '<br>('+count+' occurences)<p>'+
                 '<button type="button" class="btn btn-primary btn-sm" disabled>'+
                 'Login to Message Profiles with ' + adjective + '</button></div>';
           }

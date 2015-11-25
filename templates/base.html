@@ -21,10 +21,21 @@
 
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-
+<!-- google fonts -->
+<link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'> <!-- for navbar and headers -->
+<link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'> <!-- for majority of content -->
 
 <style>
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,700);
+body{
+  font-family: 'Lato', sans-serif;
+  /*background-image: url(../static/img/building)*/
+}
+h1{
+  font-family: 'PT Mono', ;
+}
+h2, p{
+  font-family: 'Lato', sans-serif;
+}
 
   line {
   stroke: #999;
@@ -83,9 +94,9 @@ table td {
   background: linear-gradient(135deg, #b30000 0%,#ff1a1a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b30000', endColorstr='#ff1a1a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
   border-radius: 5px;
-  font-family: "Open Sans", "Arial", sans-serif;
+/*  font-family: "Open Sans", "Arial", sans-serif;
   text-transform: uppercase;
-  padding: 3px 6px 3px 6px;
+*/  padding: 3px 6px 3px 6px;
   font-size: 10px;
   font-weight: 700;
   /*max-width: 50px;*/
@@ -124,7 +135,11 @@ ul
 {
     list-style-type: none;
 }
-         
+
+.navfont{
+  font-family: 'PT Mono', ;
+}
+        
  </style>
 {% block head %}{% endblock %}
 </head>
@@ -171,7 +186,7 @@ ul
       <ul class="nav navbar-nav navbar-right">
         
         {% if session.get("screenname") %}
-        <li class="dropdown">
+        <li class="dropdown navfont">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">OKCBot <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/okcbot">Messaging Bot</a></li>
@@ -182,7 +197,7 @@ ul
           </ul>
         </li>
         {% endif %}
-        <li class="dropdown">
+        <li class="dropdown navfont">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Analytics <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/map">Adjective Map</a></li>
@@ -193,10 +208,10 @@ ul
           </ul>
         </li>
         {% if session.get("screenname") %}        
-        <li><a href="/logout">Logout</a></li>
+        <li class="navfont"><a href="/logout">Logout</a></li>
         {% else %}
-        <li><a href="/login">Login</a></li>
-        <li><a href="/new-user-form">Create New User</a></li>
+        <li class="navfont"><a href="/login">Login</a></li>
+        <li class="navfont"><a href="/new-user-form">Create New User</a></li>
         {% endif %}
       </ul>
     </div><!-- /.navbar-collapse -->
