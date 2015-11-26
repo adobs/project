@@ -27,8 +27,8 @@ def get_compiled(logged_in, results):
         compiled["results"][location]['lng'] = float(longitude)
         compiled["results"][location]['location'] = location
 
+    #broken up into a separate function 
 
-    
     for location in word_count:
         unique_profiles = list(set(word_count[location]["profile_list"]))
         population = len(unique_profiles)

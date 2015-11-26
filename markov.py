@@ -39,11 +39,11 @@ def get_input_text(orientation, gender, location, age_min, age_max, adjective_li
                             (SELECT UG.username FROM Usernamegenders AS UG
                             WHERE UG.gender = :gender and UG.username IN
                                 (SELECT OA.username FROM OldAdjectives AS OA 
-                                WHERE (:adjective_list) @> OA.adjectives)))
+                                WHERE (:adjective_one) @> OA.adjectives OR :adjective_two @> OA.adjectives OR :adjective_three @> OA.adjectives)))
             """
     cursor = db.session.execute(QUERY, {"orientation": orientation, 
                                 "gender": gender, "location": location, 
-                                "age_min": age_min, "age_max": age_max, "adjective_list": adjective_list})
+                                "age_min": age_min, "age_max": age_max, "adjective_one": [adjective_list[0]], "adjective_two": [adjective_list[1]], "adjective_three": [adjective_list[2]]})
     results = cursor.fetchall()
 
 

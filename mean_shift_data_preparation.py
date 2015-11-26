@@ -1,4 +1,4 @@
-# take text data per user, and parse on each word. list of words.
+    # take text data per user, and parse on each word. list of words.
 # unique set(list of words).
 # remove from set any words that are in your common_words
 # convert into a list of booleans:
@@ -471,7 +471,7 @@ def run_test_and_store(profile_section):
 if __name__ == "__main__":
     connect_to_db(app)
     
-    train_model_and_pickle(500)
+    # train_model_and_pickle(500)
     test_data()
     # print_cluster_words()
     # run_test_and_store()

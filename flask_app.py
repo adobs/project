@@ -16,7 +16,7 @@ from send_message_map import send
 # from create_json_for_d3_hierarchical import create_json
 from markov import get_input_text, make_chains, make_text
 import json
-from create_word_chart import create_self_summary_chart, create_message_me_if_chart
+from create_word_chart import create_self_summary_words, create_message_me_if_words, prepare_data
 # from networkxtest import miles_graph
 from sqlalchemy.sql import func 
 
@@ -201,26 +201,6 @@ def map_checked_json():
                                maximum_latitude).filter(Location.longitude >= minimum_longitude).filter(Location.longitude <= 
                                maximum_longitude).filter(Adjective.username.in_(users)).all()
 
-    # QUERY = """SELECT A.Username, P.location, A.adjective
-    #            FROM Adjectives AS A JOIN Profiles AS P ON P.username=A.username 
-    #            WHERE A.Username IN ( 
-    #             SELECT Username FROM Profiles 
-    #             WHERE Age BETWEEN :age_min 
-    #             AND :age_max AND Username 
-    #             IN (
-    #                 SELECT Username FROM Usernameorientations 
-    #                 WHERE Orientation IN :orientation_tuple 
-    #                 AND Username IN (
-    #                     SELECT Username FROM Usernamegenders 
-    #                     WHERE Gender IN :gender_tuple)))
-    #         """
-
-    # cursor = db.session.execute(QUERY, {"age_min": age_min, 
-    #                 "age_max": age_max, "orientation_tuple": orientation_tuple, "gender_tuple": gender_tuple})
-    
-    # results = cursor.fetchall()
-
-    # print "results is,", results
     
     compiled = get_compiled(logged_in, results)
     print "end of json"
@@ -286,18 +266,13 @@ def markov_json():
     age_list = re.split(' \- ',age)
     age_min, age_max = age_list
     location = request.args.get("location")
-    # radius = request.args.get("radius")
     n = int(request.args.get("randomness"))
     adjective1 = request.args.get("adjective1")
     adjective2 = request.args.get("adjective2")
     adjective3 = request.args.get("adjective3")
-    # adjective4 = request.args.get("adjective4")
-    # adjective5 = request.args.get("adjective5")
 
     adjective_list = [adjective1, adjective2, adjective3]
 
-    # location_list = get_list_of_locations(location, radius)
-    
     text_string = get_input_text(orientation, gender, location, age_min, age_max, adjective_list, n)
     
     if text_string == "invalid search results":
@@ -342,7 +317,7 @@ def get_words_for_source():
 
     source_label = request.args.get("source")
 
-    source = create_self_summary_chart(source_label)
+    source = create_self_summary_words(source_label)
     return json.dumps(source)
 
 @app.route("/target.json")
@@ -350,24 +325,48 @@ def get_words_for_target():
 
     target_label = request.args.get("target")
 
-    target = create_message_me_if_chart(target_label)
+    target = create_message_me_if_words(target_label)
     return json.dumps(target)
 
-@app.route("/test")
-def sunburst():
+@app.route("/source-chart.json")
+def get_stats_for_source_chart():
 
-    return render_template("sunburst.html")
+    source_label = request.args.get("source")
 
-@app.route("/sunburst.json")
-def sunburst_route():
-    s = miles_graph()
+    gender_element = request.args.get("genderElement")
+    gender = prepare_data(source_label, Profile.gender, "source")
+    orientation_element = request.args.get("orientationElement")
+    orientation = prepare_data(source_label, Profile.orientation, "source")
+    age_element = request.args.get('ageElement')
+    age = prepare_data(source_label, Profile.age, "source")
 
-    return s
+    stats = {"gender": {"identifier": gender_element, "dataPoints": gender}, 
+            "orientation": {"identifier": orientation_element, "dataPoints": orientation}, 
+            "age": {"identifier": age_element, "dataPoints": age}}
+    
+    return json.dumps(stats)
 
-@app.route("/idling.json")
-def idling():
+@app.route("/target-chart.json")
+def get_stats_for_target_chart():
 
-    return "hi"
+    print "at beginning of target"
+    target_label = request.args.get("target")
+
+    gender_element = request.args.get("genderElement")
+    gender = prepare_data(target_label, Profile.gender, "target")
+    orientation_element = request.args.get("orientationElement")
+    orientation = prepare_data(target_label, Profile.orientation, "target")
+    age_element = request.args.get('ageElement')
+    age = prepare_data(target_label, Profile.age, "target")
+
+    stats = {"gender": {"identifier": gender_element, "dataPoints": gender}, 
+            "orientation": {"identifier": orientation_element, "dataPoints": orientation}, 
+            "age": {"identifier": age_element, "dataPoints": age}}
+
+    print "stats are", stats
+    
+    return json.dumps(stats)
+
 
 if __name__ == "__main__":
     app.debug = True

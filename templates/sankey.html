@@ -3,7 +3,6 @@
 {% block title %}Sankey Chart{% endblock %}
 {% block head %}
 <style>
-
 .node rect {
   cursor: move;
   fill-opacity: .9;
@@ -24,24 +23,26 @@
 .link:hover {
   stroke-opacity: .5;
 }
+
 #chart{
-    /*height: 300px;*/
     width: 100%;
     text-align: center;
-    /*border: solid black 3px;*/
 }
 
+/*CSS for NON Chart Items*/
 .words_container li {
     width: 80px;
     height: 100%;
     display: inline-block;
     float: left;
-    font-size: .8em;
     text-align: center;
 }
 
 li{
     list-style-type: none; 
+}
+.words_container ul{
+    padding: 0;
 }
 
 .header{
@@ -53,6 +54,27 @@ li{
     /*height: 700px;*/
     margin: 0 auto;
     /*border: solid black 3px;*/
+}
+.words_container li.words_list{
+    width: 100%;
+    /*height: 10px;*/
+    font-size: 1em;
+}
+
+
+.chart-container {
+  display: flex; /* or inline-flex */
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center ;
+  text-align: center;
+}
+.pie-chart{
+    border: solid black 1px;
+}
+.chart{
+    height: auto;
 }
 
 </style>
@@ -70,79 +92,115 @@ li{
 
     <div class="row">
         <div class="col-md-4 col-xs-12">
-            <div id="self_summary_header" class="header"><h2>"Self Summary" Cluster Words</h2><p><i>Hover over chart to reveal</i></p></div>
-            <div>
+            <div id="self_summary_header" class="header"><h2>"Self Summary" Cluster</h2><p><i>Hover over chart to reveal</i></p></div>
                 <div id ="self_summary_words_container" class ="words_container">
                     <ul>
                     </ul>
-                </div><!-- close words container -->
-            </div>
-        </div> <!-- close column -->
+                </div><br><br><br><!-- close words container -->
+
+                <div id='self-summary-chart-container' class='chart-container'>
+                    <div id ="self-summary-gender" class="pie-chart">Gender
+                        <canvas id="self-summary-gender-chart" class='chart'></canvas>
+                    </div> <!-- close gender chart -->
+                    <div id ="self-summary-orientation" class="pie-chart">Orientation
+                        <canvas id="self-summary-orientation-chart" class='chart'></canvas>
+                    </div> <!-- close orientation chart -->
+                    <div id ="self-summary-age" class="pie-chart">Age
+                        <canvas id="self-summary-age-chart"></canvas>
+                    </div> <!-- close age chart -->
+                </div><!-- close chart container -->
+
+            </div><!-- close column -->
 
         <div class="col-md-4 col-xs-12">
             <div id="chart"></div>
         </div> <!-- close column -->
 
         <div class="col-md-4 col-xs-12">
-            <div id="message_me_if_header" class="header"><h2>"Message Me If" Cluster Words</h2><p><i>Hover over chart to reveal</i></p></div>
+            <div id="message_me_if_header" class="header"><h2>"Message Me If" Cluster</h2><p><i>Hover over chart to reveal</i></p></div>
             <div id ="message_me_if_words_container" class ="words_container">
                 <ul>
                 </ul>
-            </div>
+            </div><br><br><br><!-- close words container -->
+            <div id='message-me-if-chart-container' class='chart-container'>
+                <div id ="message-me-if-gender" class="pie-chart">Gender
+                    <canvas id="message-me-if-gender-chart" class='chart'></canvas>
+                </div> <!-- close gender chart -->
+                <div id ="message-me-if-orientation" class="pie-chart">Orientation
+                    <canvas id="message-me-if-orientation-chart" class='chart'></canvas>
+                </div> <!-- close orientation chart -->
+                <div id ="message-me-if-age" class="pie-chart">Age
+                    <canvas id="message-me-if-age-chart" class='chart'></canvas>
+                </div> <!-- close age chart -->
+            </div> <!-- close chart container -->
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
-<script src="http://d3js.org/d3.v3.min.js"></script>
-<!-- <script src="/static/js/dobs.js"></script> -->
 
-<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<!-- <script src='../static/js/wordcloud2.js'></script> -->
+<!-- D3 -->
+<script src="http://d3js.org/d3.v3.min.js"></script> 
+
+<!-- Jquery for D3 -->
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> 
+
+<!-- Chart -->
+<script src="/static/js/Chart.js"></script> 
+
+<!-- JS code for site -->
+<script src='/static/js/sankey.js'></script>
 
 <script>
-
 function addSource(data){
-
     var options = $.parseJSON(data);
-    
-    var container = $('#self_summary_words_container ul');
-    container.empty()
-    for (var j = 0; j < options.length; j++){
 
-        container.append($('<li></li>').val(options[j]).html(options[j]));
+    var container = $("#self_summary_words_container ul");
+    var container_expanded = $('#self_summary_words_container_expanded ul');
+    container.empty();
+    container_expanded.empty();
+
+
+    
+    // container.append($('<li></li>').val(options.unique[i]).html(options.unique[i]));
+    for (var i = 0; i < options.unique.length; i++){
+        console.log(options.unique[i]);
+        container.append($('<li></li>').val(options.unique[i]).html(options.unique[i]));
     }
 
 }
 
 function addTarget(data){
     
-    var options = $.parseJSON(data);
-    
-    var container = $('#message_me_if_words_container ul');
-    container.empty()
-    for (var j = 0; j < options.length; j++){
+        var options = $.parseJSON(data);
 
-        container.append($('<li></li>').val(options[j]).html(options[j]));
+        var container = $("#message_me_if_words_container ul");
+        container.empty();
+        
+        for (var i = 0; i < options.unique.length; i++){
+            console.log(options.unique[i]);
+            container.append($('<li></li>').val(options.unique[i]).html(options.unique[i]));
+        }
+
+
     }
 
-}
-
-
-function hideWords(){
-    
-    $('#self_summary_words_container ul').empty();
-    $('#message_me_if_words_container ul').empty();
-
-}
 
 function showWords(source, target){
     $.get("/source.json", {"source": source}, addSource);
-    $.get("/target.json", {"target": target}, addTarget);
+    $.get("/source-chart.json", {"source": source, "genderElement": 
+        "self-summary-gender-chart", "orientationElement": 
+        "self-summary-orientation-chart", "ageElement": 
+        "self-summary-age-chart"}, makeDoughnutChart)
 
+    $.get("/target.json", {"target": target}, addTarget);
+    $.get("/target-chart.json", {"target": target, "genderElement": 
+        "message-me-if-gender-chart", "orientationElement": 
+        "message-me-if-orientation-chart", "ageElement": 
+        "message-me-if-age-chart"}, makeDoughnutChart)
 }
+
 
 // begin d3
 var units = "people";
-
 // var margin = {
 //         top: 10,
 //         right: 10,
@@ -151,19 +209,15 @@ var units = "people";
 //     },
 //     width = 640 - margin.left - margin.right,
 //     height = 500 - margin.top - margin.bottom;
-
 var margin = {top: 10, right: 10, bottom: 10, left: 10},
 ww = document.getElementById("chart").clientWidth,
 width = ww - margin.left - margin.right,
 height = 500 - margin.top - margin.bottom;
-
-
 var formatNumber = d3.format(",.0f"), // zero decimal places
     format = function (d) {
         return formatNumber(d) + " " + units;
     },
     color = d3.scale.category20();
-
 // append the svg canvas to the page
 var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -171,22 +225,17 @@ var svg = d3.select("#chart").append("svg")
     .append("g")
     .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
-
 // Set the sankey diagram properties
 var sankey = d3sankey()
     .nodeWidth(17)
     .nodePadding(27)
     .size([width, height]);
-
 var path = sankey.link();
-
 // load the data
 var graph = getData();
-
 sankey.nodes(graph.nodes)
     .links(graph.links)
     .layout(32);
-
 // add in the links
 var link = svg.append("g").selectAll(".link")
     .data(graph.links)
@@ -197,20 +246,18 @@ var link = svg.append("g").selectAll(".link")
     .style("stroke", "black")
     .style("stroke-opacity", ".2")
     .on("mouseover", function(d) { d3.select(this).style("stroke-opacity", ".5"); showWords(d.source.name, d.target.name); } )
-    .on("mouseout", function() { d3.select(this).style("stroke-opacity", ".2"); hideWords();} )
+    .on("mouseout", function() { d3.select(this).style("stroke-opacity", ".2"); } )
     .style("stroke-width", function (d) {
         return Math.max(1, d.dy);
     })
     .sort(function (a, b) {
         return b.dy - a.dy;
     });
-
 // add the link titles
 link.append("title")
     .text(function (d) {
         return "cluster " + d.source.name + " → " + "cluster " +d.target.name + "\n" + format(d.value);
     });
-
 // add in the nodes
 var node = svg.append("g").selectAll(".node")
     .data(graph.nodes)
@@ -227,7 +274,6 @@ var node = svg.append("g").selectAll(".node")
         this.parentNode.appendChild(this);
     })
     .on("drag", dragmove));
-
 // add the rectangles for the nodes
 node.append("rect")
     .attr("height", function (d) {
@@ -246,7 +292,6 @@ node.append("rect")
     .text(function (d) {
         return d.name + "\n" + format(d.value);
     });
-
 // add in the title for the nodes
 node.append("text")
     .attr("x", -6)
@@ -265,7 +310,6 @@ node.append("text")
     })
     .attr("x", 6 + sankey.nodeWidth())
     .attr("text-anchor", "start");
-
 // the function for moving the nodes
 function dragmove(d) {
     d3.select(this).attr("transform",
@@ -275,17 +319,10 @@ function dragmove(d) {
     sankey.relayout();
     link.attr("d", path);
 };
-
-
-
 function getData() {
     return {"nodes": [{"node": 0, "name": 0}, {"node": 1, "name": 1}, {"node": 2, "name": 2}, {"node": 3, "name": 3}, {"node": 4, "name": 4}, {"node": 5, "name": 5}, {"node": 6, "name": 6}, {"node": 7, "name": 7}, {"node": 8, "name": 8}, {"node": 9, "name": 9}, {"node": 10, "name": 10}, {"node": 11, "name": 11}, {"node": 12, "name": 12}, {"node": 13, "name": 13}, {"node": 14, "name": 14}, {"node": 15, "name": 15}, {"node": 16, "name": 16}], "links": [{"source": 0, "target": 10, "value": 79}, {"source": 0, "target": 16, "value": 75}, {"source": 0, "target": 13, "value": 60}, {"source": 0, "target": 7, "value": 95}, {"source": 0, "target": 12, "value": 49}, {"source": 0, "target": 9, "value": 71}, {"source": 0, "target": 8, "value": 112}, {"source": 1, "target": 13, "value": 54}, {"source": 1, "target": 9, "value": 91}, {"source": 1, "target": 12, "value": 64}, {"source": 1, "target": 10, "value": 88}, {"source": 1, "target": 16, "value": 69}, {"source": 1, "target": 8, "value": 120}, {"source": 1, "target": 7, "value": 54}, {"source": 2, "target": 9, "value": 87}, {"source": 2, "target": 10, "value": 73}, {"source": 2, "target": 16, "value": 74}, {"source": 2, "target": 14, "value": 41}, {"source": 2, "target": 7, "value": 87}, {"source": 2, "target": 15, "value": 44}, {"source": 2, "target": 13, "value": 65}, {"source": 2, "target": 12, "value": 70}, {"source": 2, "target": 8, "value": 137}, {"source": 2, "target": 11, "value": 45}, {"source": 3, "target": 8, "value": 44}, {"source": 3, "target": 9, "value": 40}, {"source": 4, "target": 8, "value": 45}, {"source": 5, "target": 8, "value": 45}, {"source": 6, "target": 8, "value": 48}]}
     //this is the end of embedded data
     ;}
-
-
-
-
 function d3sankey() {
     var sankey = {},
         nodeWidth = 20,
@@ -293,37 +330,31 @@ function d3sankey() {
         size = [1, 1],
         nodes = [],
         links = [];
-
     sankey.nodeWidth = function (_) {
         if (!arguments.length) return nodeWidth;
         nodeWidth = +_;
         return sankey;
     };
-
     sankey.nodePadding = function (_) {
         if (!arguments.length) return nodePadding;
         nodePadding = +_;
         return sankey;
     };
-
     sankey.nodes = function (_) {
         if (!arguments.length) return nodes;
         nodes = _;
         return sankey;
     };
-
     sankey.links = function (_) {
         if (!arguments.length) return links;
         links = _;
         return sankey;
     };
-
     sankey.size = function (_) {
         if (!arguments.length) return size;
         size = _;
         return sankey;
     };
-
     sankey.layout = function (iterations) {
         computeNodeLinks();
         computeNodeValues();
@@ -332,15 +363,12 @@ function d3sankey() {
         computeLinkDepths();
         return sankey;
     };
-
     sankey.relayout = function () {
         computeLinkDepths();
         return sankey;
     };
-
     sankey.link = function () {
         var curvature = .5;
-
         function link(d) {
             var x0 = d.source.x + d.source.dx,
                 x1 = d.target.x,
@@ -351,16 +379,13 @@ function d3sankey() {
                 y1 = d.target.y + d.ty + d.dy / 2;
             return "M" + x0 + "," + y0 + "C" + x2 + "," + y0 + " " + x3 + "," + y1 + " " + x1 + "," + y1;
         }
-
         link.curvature = function (_) {
             if (!arguments.length) return curvature;
             curvature = +_;
             return link;
         };
-
         return link;
     };
-
     // Populate the sourceLinks and targetLinks for each node.
     // Also, if the source and target are not objects, assume they are indices.
     function computeNodeLinks() {
@@ -377,7 +402,6 @@ function d3sankey() {
             target.targetLinks.push(link);
         });
     }
-
     // Compute the value (size) of each node by summing the associated links.
     function computeNodeValues() {
         nodes.forEach(function (node) {
@@ -386,7 +410,6 @@ function d3sankey() {
             d3.sum(node.targetLinks, value));
         });
     }
-
     // Iteratively assign the breadth (x-position) for each node.
     // Nodes are assigned the maximum breadth of incoming neighbors plus one;
     // nodes with no incoming links are assigned breadth zero, while
@@ -395,7 +418,6 @@ function d3sankey() {
         var remainingNodes = nodes,
             nextNodes,
             x = 0;
-
         while (remainingNodes.length) {
             nextNodes = [];
             remainingNodes.forEach(function (node) {
@@ -408,12 +430,10 @@ function d3sankey() {
             remainingNodes = nextNodes;
             ++x;
         }
-
         //
         moveSinksRight(x);
         scaleNodeBreadths((size[0] - nodeWidth) / (x - 1));
     }
-
     function moveSourcesRight() {
         nodes.forEach(function (node) {
             if (!node.targetLinks.length) {
@@ -423,7 +443,6 @@ function d3sankey() {
             }
         });
     }
-
     function moveSinksRight(x) {
         nodes.forEach(function (node) {
             if (!node.sourceLinks.length) {
@@ -431,13 +450,11 @@ function d3sankey() {
             }
         });
     }
-
     function scaleNodeBreadths(kx) {
         nodes.forEach(function (node) {
             node.x *= kx;
         });
     }
-
     function computeNodeDepths(iterations) {
         var nodesByBreadth = d3.nest()
             .key(function (d) {
@@ -448,7 +465,6 @@ function d3sankey() {
             .map(function (d) {
             return d.values;
         });
-
         //
         initializeNodeDepth();
         resolveCollisions();
@@ -458,24 +474,20 @@ function d3sankey() {
             relaxLeftToRight(alpha);
             resolveCollisions();
         }
-
         function initializeNodeDepth() {
             var ky = d3.min(nodesByBreadth, function (nodes) {
                 return (size[1] - (nodes.length - 1) * nodePadding) / d3.sum(nodes, value);
             });
-
             nodesByBreadth.forEach(function (nodes) {
                 nodes.forEach(function (node, i) {
                     node.y = i;
                     node.dy = node.value * ky;
                 });
             });
-
             links.forEach(function (link) {
                 link.dy = link.value * ky;
             });
         }
-
         function relaxLeftToRight(alpha) {
             nodesByBreadth.forEach(function (nodes, breadth) {
                 nodes.forEach(function (node) {
@@ -485,12 +497,10 @@ function d3sankey() {
                     }
                 });
             });
-
             function weightedSource(link) {
                 return center(link.source) * link.value;
             }
         }
-
         function relaxRightToLeft(alpha) {
             nodesByBreadth.slice().reverse().forEach(function (nodes) {
                 nodes.forEach(function (node) {
@@ -500,12 +510,10 @@ function d3sankey() {
                     }
                 });
             });
-
             function weightedTarget(link) {
                 return center(link.target) * link.value;
             }
         }
-
         function resolveCollisions() {
             nodesByBreadth.forEach(function (nodes) {
                 var node,
@@ -513,7 +521,6 @@ function d3sankey() {
                 y0 = 0,
                     n = nodes.length,
                     i;
-
                 // Push any overlapping nodes down.
                 nodes.sort(ascendingDepth);
                 for (i = 0; i < n; ++i) {
@@ -522,12 +529,10 @@ function d3sankey() {
                     if (dy > 0) node.y += dy;
                     y0 = node.y + node.dy + nodePadding;
                 }
-
                 // If the bottommost node goes outside the bounds, push it back up.
                 dy = y0 - nodePadding - size[1];
                 if (dy > 0) {
                     y0 = node.y -= dy;
-
                     // Push any overlapping nodes back up.
                     for (i = n - 2; i >= 0; --i) {
                         node = nodes[i];
@@ -538,12 +543,10 @@ function d3sankey() {
                 }
             });
         }
-
         function ascendingDepth(a, b) {
             return a.y - b.y;
         }
     }
-
     function computeLinkDepths() {
         nodes.forEach(function (node) {
             node.sourceLinks.sort(ascendingTargetDepth);
@@ -561,28 +564,22 @@ function d3sankey() {
                 ty += link.dy;
             });
         });
-
         function ascendingSourceDepth(a, b) {
             return a.source.y - b.source.y;
         }
-
         function ascendingTargetDepth(a, b) {
             return a.target.y - b.target.y;
         }
     }
-
     function center(node) {
         return node.y + node.dy / 2;
     }
-
     function value(link) {
         return link.value;
     }
-
     return sankey;
 };
 // end of d3
-
 </script>
 
 {% endblock %}
