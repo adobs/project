@@ -3,23 +3,36 @@ import json
 from sqlalchemy.sql import func 
 
 def write_json():
-    queries = db.session.query(MeanShiftAlgo.self_summary_label, MeanShiftAlgo.message_me_if_label, func.count(MeanShiftAlgo.self_summary_label)).filter(MeanShiftAlgo.self_summary_label>0, MeanShiftAlgo.message_me_if_label > 0).group_by(MeanShiftAlgo.self_summary_label, MeanShiftAlgo.message_me_if_label).having(func.count(MeanShiftAlgo.self_summary_label)>=40).order_by(MeanShiftAlgo.self_summary_label).all()
+    queries = db.session.query(MeanShiftAlgo.self_summary_label, MeanShiftAlgo.message_me_if_label).filter(MeanShiftAlgo.self_summary_label>=0, MeanShiftAlgo.message_me_if_label >= 0).order_by(MeanShiftAlgo.self_summary_label).all()
 
-    self_summary_unique = set()
-    message_me_if_unique = set()
+    self_summary_unique_all = set()
+    message_me_if_unique_all = set()
 
 
     data = {"nodes":[], "links":[]}
 
-    # data = []
+
+
+
     
-    for self_summary_label, message_me_if_label, count in queries:
-        self_summary_unique.add(self_summary_label)
-        message_me_if_unique.add(message_me_if_label)
+    for self_summary_label, message_me_if_label in queries:
+        self_summary_unique_all.add(self_summary_label)
+        message_me_if_unique_all.add(message_me_if_label)
+
+    self_summary_unique = []
+    self_summary_unique_count = []
+    for self_summary in sorted(list(self_summary_unique_all)):
+        self_summary_unique.append(self_summary)
+        self_summary_unique_count.append(queries.count(self_summary))
+
+    message_me_if_unique = []
+    message_me_if_unique_count = []
+    for message_me_if in sorted(list(message_me_if_unique_all)):
+        message_me_if_unique.append(message_me_if)
+        message_me_if_unique_count.append(queries.count(message_me_if))
 
 
-    # convert self summaries to alphabet
-    # self_summary_new_label = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N"]
+    # convert 
     self_summary_new_label = range(len(self_summary_unique))
     message_me_if_new_label = range(len(self_summary_unique),len(self_summary_unique)+len(message_me_if_unique))
 
@@ -56,8 +69,8 @@ def write_json():
 
 
     # uncomment when writing to a file for a new json object
-    # with open('static/json/sankey_data.json', 'w') as outfile:
-    #     json.dump(data, outfile)
+    with open('static/json/sankey.json', 'w') as outfile:
+        json.dump(data, outfile)
     
     return self_summary_unique_list, self_summary_new_label, message_me_if_unique_list, message_me_if_new_label
 

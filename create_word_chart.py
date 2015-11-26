@@ -1,6 +1,7 @@
 from create_json_for_sankey import write_json
 from model import SelfSummaryLabel, MessageMeIfLabel, db, connect_to_db, MeanShiftAlgo, Profile
-import itertools
+from itertools import cycle
+
 
 def provide_label_sets():
     self_summary_unique_list = [1, 4, 6, 116, 162, 177, 190]
@@ -82,28 +83,30 @@ def create_message_me_if_words(label):
 
     return final
 
-def _color_generator():
+def _colors():
 
     colors = ["#37465D", "#F2F2F2", "#000000","#BF1E2D","#051A37"]
 
-    for color in colors*5:
-        yield color
+    color_cycle = cycle(colors)
 
+    return color_cycle
 
-def _highlight_generator():
+def _highlights():
     
     colors = ["#4E535D", "#F1F1F1", "#000000", "#BF4043", '#1A2537']
 
-    for color in colors*5:
-        yield color
+    highlight_cycle = cycle(colors)
+
+    return highlight_cycle
 
 
 def prepare_data(label, identifier, section):
 
     self_summary_unique_list, self_summary_new_label, message_me_if_unique_list, message_me_if_new_label = provide_label_sets()
     
-    color = _color_generator()
-    highlight = _highlight_generator()
+    color = _colors()
+    highlight = _highlights()
+
 
     data = []
     if section == "source":
@@ -117,9 +120,12 @@ def prepare_data(label, identifier, section):
         # cursor = db.session.execute(QUERY, {"identifier": identifier, "converted_label": converted_label})
 
         # results = cursor.fetchall()
-        query = db.session.query(identifier).join(MeanShiftAlgo, 
-                Profile.username==MeanShiftAlgo.username).filter(
-                MeanShiftAlgo.self_summary_label==converted_label).all()
+
+        subquery = db.session.query(MeanShiftAlgo.username).filter(
+                MeanShiftAlgo.self_summary_label==converted_label).group_by(MeanShiftAlgo.username)
+        
+        query = db.session.query(identifier).filter(Profile.username.in_(subquery)).all()
+        print "LENGTH OF QUERY IS ", len(query)
     
     else:
         converted_label = message_me_if_unique_list[message_me_if_new_label.index(int(label.encode('utf8')))]
@@ -131,9 +137,11 @@ def prepare_data(label, identifier, section):
 
     unique_identifier = set(query)
 
-    for item in unique_identifier:
+    entry = zip(unique_identifier, color, highlight)
+
+    for item, color, highlight in entry:
         count = query.count(item)
-        data.append({"value": count, "label": item[0], "color": color.next(), "highlight": highlight.next()})
+        data.append({"value": count, "label": item[0], "color": color, "highlight": highlight})
 
     return data
 
