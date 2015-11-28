@@ -334,16 +334,19 @@ def get_stats_for_source_chart():
     source_label = request.args.get("source")
 
     gender_element = request.args.get("genderElement")
-    gender = prepare_data(source_label, Profile.gender, "source")
+    gender_comment_element = request.args.get("genderCommentElement")
+    gender, gender_comment_info = prepare_data(source_label, Profile.gender, "source")
     orientation_element = request.args.get("orientationElement")
-    orientation = prepare_data(source_label, Profile.orientation, "source")
+    orientation_comment_element = request.args.get("orientationCommentElement")
+    orientation, orientation_comment_info = prepare_data(source_label, Profile.orientation, "source")
     age_element = request.args.get('ageElement')
-    age = prepare_data(source_label, Profile.age, "source")
+    age_comment_element = request.args.get("ageCommentElement")
+    age, age_comment_info = prepare_data(source_label, Profile.age, "source")
 
-    stats = {"gender": {"identifier": gender_element, "dataPoints": gender}, 
-            "orientation": {"identifier": orientation_element, "dataPoints": orientation}, 
-            "age": {"identifier": age_element, "dataPoints": age}}
-    
+    stats = {"gender": {"identifier": gender_element, "dataPoints": gender, "commentInfo": gender_comment_info, "commentElement": gender_comment_element}, 
+            "orientation": {"identifier": orientation_element, "dataPoints": orientation, "commentInfo":orientation_comment_info, "commentElement": orientation_comment_element}, 
+            "age": {"identifier": age_element, "dataPoints": age, "commentInfo": age_comment_info, "commentElement": age_comment_element}}
+
     return json.dumps(stats)
 
 @app.route("/target-chart.json")
@@ -353,17 +356,20 @@ def get_stats_for_target_chart():
     target_label = request.args.get("target")
 
     gender_element = request.args.get("genderElement")
-    gender = prepare_data(target_label, Profile.gender, "target")
+    gender_comment_element = request.args.get("genderCommentElement")
+    gender, gender_comment_info = prepare_data(target_label, Profile.gender, "target")
     orientation_element = request.args.get("orientationElement")
-    orientation = prepare_data(target_label, Profile.orientation, "target")
+    orientation_comment_element = request.args.get("orientationCommentElement")
+    orientation, orientation_comment_info = prepare_data(target_label, Profile.orientation, "target")
     age_element = request.args.get('ageElement')
-    age = prepare_data(target_label, Profile.age, "target")
+    age_comment_element = request.args.get("ageCommentElement")
+    age, age_comment_info = prepare_data(target_label, Profile.age, "target")
 
-    stats = {"gender": {"identifier": gender_element, "dataPoints": gender}, 
-            "orientation": {"identifier": orientation_element, "dataPoints": orientation}, 
-            "age": {"identifier": age_element, "dataPoints": age}}
+    stats = {"gender": {"identifier": gender_element, "dataPoints": gender, "commentInfo": gender_comment_info, "commentElement": gender_comment_element}, 
+            "orientation": {"identifier": orientation_element, "dataPoints": orientation, "commentInfo":orientation_comment_info, "commentElement": orientation_comment_element}, 
+            "age": {"identifier": age_element, "dataPoints": age, "commentInfo": age_comment_info, "commentElement": age_comment_element}}
 
-    print "stats are", stats
+    # print "stats are", stats
     
     return json.dumps(stats)
 

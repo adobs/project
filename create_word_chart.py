@@ -4,10 +4,12 @@ from itertools import cycle
 
 
 def provide_label_sets():
-    self_summary_unique_list = [1, 4, 6, 116, 162, 177, 190]
-    self_summary_new_label = [0, 1, 2, 3, 4, 5, 6] 
-    message_me_if_unique_list = [1, 2, 3, 4, 5, 6, 9, 10, 15, 17] 
-    message_me_if_new_label = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+
+
+    self_summary_unique_list = [0, 1, 4, 6, 126, 162, 177, 190, 396] 
+    self_summary_new_label = [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    message_me_if_unique_list = [0, 1, 2, 3, 4, 6, 9, 17]
+    message_me_if_new_label = [9, 10, 11, 12, 13, 14, 15, 16]
 
     return self_summary_unique_list, self_summary_new_label, message_me_if_unique_list, message_me_if_new_label
 
@@ -85,7 +87,7 @@ def create_message_me_if_words(label):
 
 def _colors():
 
-    colors = ["#37465D", "#F2F2F2", "#000000","#BF1E2D","#051A37"]
+    colors = ["#37465D", "#F2F2F2", "#000000","#bd1f2e","#051A37"]
 
     color_cycle = cycle(colors)
 
@@ -93,7 +95,7 @@ def _colors():
 
 def _highlights():
     
-    colors = ["#4E535D", "#F1F1F1", "#000000", "#BF4043", '#1A2537']
+    colors = ["#4E535D", "#F1F1F1", "#000000", "#bd1f2e", '#1A2537']
 
     highlight_cycle = cycle(colors)
 
@@ -112,38 +114,45 @@ def prepare_data(label, identifier, section):
     if section == "source":
         converted_label = self_summary_unique_list[self_summary_new_label.index(int(label.encode('utf8')))]
         
-        # QUERY = """SELECT :identifier
-        #         FROM Profiles as P JOIN MeanShiftAlgos AS M 
-        #         ON P.username=M.username 
-        #         WHERE M.self_summary_label=:converted_label"""
-
-        # cursor = db.session.execute(QUERY, {"identifier": identifier, "converted_label": converted_label})
-
-        # results = cursor.fetchall()
+        
 
         subquery = db.session.query(MeanShiftAlgo.username).filter(
-                MeanShiftAlgo.self_summary_label==converted_label).group_by(MeanShiftAlgo.username)
+                MeanShiftAlgo.self_summary_label==converted_label).filter(MeanShiftAlgo.message_me_if_label.in_(message_me_if_unique_list)).group_by(MeanShiftAlgo.username)
         
         query = db.session.query(identifier).filter(Profile.username.in_(subquery)).all()
-        print "LENGTH OF QUERY IS ", len(query)
     
     else:
         converted_label = message_me_if_unique_list[message_me_if_new_label.index(int(label.encode('utf8')))]
 
-        query = db.session.query(identifier).join(MeanShiftAlgo, 
-                Profile.username==MeanShiftAlgo.username).filter(
-                MeanShiftAlgo.message_me_if_label==converted_label).all()
+        subquery = db.session.query(MeanShiftAlgo.username).filter(
+                MeanShiftAlgo.message_me_if_label==converted_label).filter(MeanShiftAlgo.self_summary_label.in_(self_summary_unique_list)).group_by(MeanShiftAlgo.username)
+        
+        query = db.session.query(identifier).filter(Profile.username.in_(subquery)).all()
 
 
     unique_identifier = set(query)
 
     entry = zip(unique_identifier, color, highlight)
 
-    for item, color, highlight in entry:
-        count = query.count(item)
-        data.append({"value": count, "label": item[0], "color": color, "highlight": highlight})
+    comment_info = []
 
-    return data
+    for item, color, highlight in entry:
+        #get data into a percent
+        count = query.count(item)*100/float(len(query))
+        count = "{0:.1f}".format(count)
+        data.append({"value": count, "label": item[0], "color": color, "highlight": highlight})
+        print "label is", label
+        if identifier == Profile.gender:
+            if item[0]!='Man':
+                comment_info.append({"value": count, "label": item[0]})
+
+        if identifier == Profile.orientation:
+            if item[0]!='Straight':
+                comment_info.append({"value": count, 'label': item[0]})
+
+
+
+    return data, comment_info
 
 
 

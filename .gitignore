@@ -1,4 +1,5 @@
 profiles*.
+profiles.csv
 my_credentials.*
 env/
 *.pyc

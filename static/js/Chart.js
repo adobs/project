@@ -10,8 +10,9 @@
 
 
 (function(){
-
     "use strict";
+
+
 
     //Declare root variable - window in the browser, global on the server
     var root = this,
@@ -54,12 +55,15 @@
     };
     //Globally expose the defaults to allow for user updating/changing
     Chart.defaults = {
-        global: {
+            //make everything be in percents
+            global: {
+                tooltipTemplate: " <%=label%> <%= numeral(value).format('($00[.]00)') %> - <%= numeral(circumference / 6.28318530718).format('(0[.][00]%%)') %>#",
+
             // Boolean - Whether to animate the chart
             animation: true,
 
             // Number - Number of animation steps
-            animationSteps: 60,
+            animationSteps: 50,
 
             // String - Animation easing effect
             animationEasing: "easeOutQuart",
@@ -97,7 +101,7 @@
             scaleBeginAtZero: false,
 
             // String - Scale label font declaration for the scale label
-            scaleFontFamily: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+            scaleFontFamily: "'Lato, 'Helvetica', 'Arial', sans-serif",
 
             // Number - Scale label font size in pixels
             scaleFontSize: 12,
@@ -166,7 +170,7 @@
             tooltipXOffset: 10,
 
             // String - Template string for single tooltips
-            tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>",
+            tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%",
 
             // String - Template string for single tooltips
             multiTooltipTemplate: "<%= value %>",
@@ -183,6 +187,7 @@
         }
     };
 
+    console.log("TOP");
     //Create a dictionary of chart types, to allow for extension of existing types
     Chart.types = {};
 
@@ -510,6 +515,7 @@
                     labelsArray[index] = template(templateString,{value: (graphMin + (stepValue*(index+1)))});
                 });
             }
+
             return labelsArray;
         },
         //--Animation methods
@@ -908,7 +914,9 @@
             delete Chart.instances[this.id];
         },
         showTooltip : function(ChartElements, forceRedraw){
+            var tooltipLabels = ["hi"];
             // Only redraw the chart if we've actually changed what we're hovering on.
+            
             if (typeof this.activeElements === 'undefined') this.activeElements = [];
 
             var isChanged = (function(Elements){
@@ -950,8 +958,8 @@
                             break;
                         }
                     }
-                    var tooltipLabels = [],
-                        tooltipColors = [],
+                    
+                    var tooltipColors = [],
                         medianPosition = (function(index) {
 
                             // Get all the points at that particular index
@@ -989,13 +997,11 @@
 
                             xMin = min(xPositions);
                             xMax = max(xPositions);
-
                             return {
                                 x: (xMin > this.chart.width/2) ? xMin : xMax,
                                 y: (yMin + yMax)/2
                             };
                         }).call(this, dataIndex);
-
                     new Chart.MultiTooltip({
                         x: medianPosition.x,
                         y: medianPosition.y,
@@ -2380,7 +2386,6 @@
                 x : this.chart.width/2,
                 y : this.chart.height/2
             });
-
             //Set up tooltip events on the chart
             if (this.options.showTooltips){
                 helpers.bindEvents(this, this.options.tooltipEvents, function(evt){
@@ -3241,7 +3246,6 @@
                     pointStrokeColor : dataset.pointStrokeColor,
                     points : []
                 };
-
                 this.datasets.push(datasetObject);
 
                 helpers.each(dataset.data,function(dataPoint,index){
@@ -3264,13 +3268,13 @@
                 },this);
 
             },this);
-
             this.render();
         },
         eachPoints : function(callback){
             helpers.each(this.datasets,function(dataset){
                 helpers.each(dataset.points,callback,this);
-            },this);
+            },this); 
+            return this.datasets.label
         },
 
         getPointsAtEvent : function(evt){
@@ -3469,7 +3473,6 @@
         }
 
     });
-
 
 
 

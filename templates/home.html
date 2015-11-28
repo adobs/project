@@ -12,6 +12,25 @@
     font-size: 2em;
 }
 
+#about{
+    background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+    text-shadow: none;
+    font-family: 'PT Mono', ;
+    color: #F2F2F2;
+}
+
+.btn-default, .btn-default:hover, .btn-default:focus, .btn-default.focus, 
+    .btn-default:active, .btn-default.active, .btn-default.visited,
+    .btn-default:active:hover, .btn-default.active:hover{
+        background-color: #BF1E2D;
+}
+#about-text{
+    text-align: center;
+    margin-top: 30px;
+}
+#button{
+    text-align: center;
+}
 </style>
 
 {% endblock %}
@@ -22,19 +41,40 @@
     <div class="row">
         <div class="col-xs-12">
             <div id="logo">
-                <img src="../static/img/ok+logo.png">
+                <img src="/static/img/ok+logo.png">
             </div> <!-- close logo -->
         </div> <!-- close column -->
     </div> <!-- close row -->
     <div class="row">
         <div class="col-xs-12 col-md-offset-3 col-md-6">
-            <h1>Welcome to OKC+, the site that gives you access to OKCupid, and more.</h1><hr></hr>
-            <p>Create an OKCupid account, or login with your current account to message others and create a custom self summary for your profile.</p><br>
-            <p>Using my OKCupid profile, I analyzed <b>58K profiles</b> across the country of people that are interested in the group I fall into: straight woman aged 18-36 years old.</p>
-            <p>This site shows you the profiles that I, <i>as a woman</i>, found.</p>
-            <p>So come browse the analytics section to see why I put the <span id="female"> &#9792; </span> into OKC+</p>
-        <div>
+            <h1>Welcome to OKC+, the site that gives you access to OkCupid, and more.</h1><hr></hr>
+        </div><!-- close column -->
     </div> <!-- close row -->
+    <div class='row' id='button'>
+        <div class="col-xs-12 col-md-offset-3 col-md-6">
+            <button class="btn btn-default" id="about">About</button>
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+    <div class='row'>
+        <div class="col-xs-12 col-md-offset-3 col-md-6">
+            <div id='about-text' hidden>
+                <p>OKC+ allows you to create an OkCupid account, or login with your current account, to message others and create a custom self summary for your profile.</p><br>
+                <p>I created an OkCupid account.  I then analyzed <b>58K profiles</b> across the country of people that are interested in the group I fall into: straight woman aged 18-36 years old.</p>
+                <p>This site shows you the profiles that I, <i>as a woman</i>, found.</p>
+                <p>So come browse the analytics section to see why I put the <span id="female"> &#9792; </span> into OKC+</p>
+            </div> <!-- close about-text -->
+        </div> <!-- close column -->
+    </div> <!-- close row -->
+
 </div> <!-- close container -->
 
+
+<script>
+function showText(evt){
+    evt.preventDefault();
+    $("#about-text").show(); 
+}
+$("#about").on("click", showText);
+
+</script>
 {% endblock %}
