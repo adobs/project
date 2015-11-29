@@ -1,4 +1,4 @@
-#whole-page{
+    #whole-page{
         height: 100%;
     }
 
@@ -15,7 +15,8 @@
             color: #F2F2F2;
     }
 
-    .btn.btn-default.close, .btn.btn-default.send{
+    .btn.btn-default.close{
+        background-color: #37465d;
         background-image: linear-gradient(to bottom,#37465d 0,#37465d 100%);
         text-shadow: none;
         font-family: 'PT Mono', ;
