@@ -1,0 +1,138 @@
+#whole-page{
+        height: 100%;
+    }
+
+
+    #form-submit, .btn-default, .btn-default:hover, .btn-default:focus, .btn-default.focus, 
+        .btn-default:active, .btn-default.active, .btn-default.visited,
+        .btn-default:active:hover, .btn-default.active:hover,  .btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary.focus, 
+        .btn-primary:active, .btn-primary.active, .btn-primary.visited,
+        .btn-primary:active:hover, .btn-primary.active:hover{
+            background-color: #BF1E2D;
+            background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+            text-shadow: none;
+            font-family: 'PT Mono', ;
+            color: #F2F2F2;
+    }
+
+    .btn.btn-default.close, .btn.btn-default.send{
+        background-image: linear-gradient(to bottom,#37465d 0,#37465d 100%);
+        text-shadow: none;
+        font-family: 'PT Mono', ;
+        color: #F2F2F2;
+    }
+
+
+    #map {
+      height: 100%;
+    }
+      line {
+      stroke: #999;
+      stroke-width: 1px;
+    }
+
+    circle {
+      fill: #ccc;
+      stroke: #fff;
+      stroke-width: 1.5px;
+    }
+
+    text {
+      fill: #000;
+      font: 10px sans-serif;
+      pointer-events: none;
+    }
+
+    #orientation-form{
+        width: 175px;
+        height: 330px;
+        background: white;
+        position: absolute;
+        top: 130px;
+        left: 200px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
+    }   
+    #gender-form{
+        width: 175px;
+        height: 570px;
+        background: white;
+        position: absolute;
+        top: 130px;
+        left: 20px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
+        display: inline-block;
+    }
+    #age-form{
+        width: 175px;
+        height: 60px;
+        background: white;
+        position: absolute;
+        top: 470px;
+        left: 200px;
+        border: 1px solid #999;
+        border-radius: 2px;
+        padding: 10px;
+        display: inline-block;
+    }   
+    #age{
+        width: 50px;
+        border: transparent;
+    }
+    #form-submit{
+        position: absolute;
+        top: 540px;
+        left: 200px;
+        /*width: 60px;*/
+        height: 30px;
+    }
+    #loading{
+        width: 4000px;
+        margin: auto;
+    }
+
+    ul {
+        margin:0;
+        padding:0;
+    }
+    li{
+      margin-right: 0;
+    }
+
+    #loading-spin{
+      position: absolute;
+      left: 200px;
+      top: 540px;
+    }
+
+    #content h1{
+      font-size: 1.1em;
+      font-weight: normal;
+      margin-bottom: 0px;
+      margin-top: 10px;
+      margin-right: 0;
+      margin-left: 0,
+    }
+
+    #content-first{
+        margin-bottom: 15px;
+    }
+
+    #content h2{
+      font-size: 1.1em;
+      font-weight: normal;
+      margin-top: 0px;
+      margin-bottom: 5px;
+      margin-right: 0;
+      margin-left: 0,
+    }
+
+    h2, p{
+      background: white;
+    }
+    h2{
+      text-align: center;
+    }

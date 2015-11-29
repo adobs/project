@@ -1,76 +1,37 @@
 {% extends "base.html" %}
+
 {% block title%}Login{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
 
 {% block content %}
 
-
-
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id='top-row'>
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <section><h1>Login!</h1><p>Log in using your OKCupid account.</p>
+            <section><h1>Login</h1><p>Log in using your OkCupid account.</p>
             </section>
             <hr></hr>
         </div> <!-- close column -->
     </div> <!-- close row -->
     <div class="row">
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <table class="table">
+            <div id='form-container'>
                 <form id="login-form" method="POST" action="/">
-                    <tr>
-                        <td>
-                            <label for="screenname">Username</label>
-                            <input name="screenname" type="text" placeholder="Username" id="screenname" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for ='password'>Password</label>
-                            <input name="password" type="password" placeholder="Password" id="password" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div id="login-status"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input type='submit' value="Login">
-                        </td>
-                    </tr>
+                    <label for='screenname'>Username</label>
+                        <input name="screenname" type="text" placeholder="Username" id="screenname" required><br>
+                    <label for='password'>Password</label>
+                        <input name="password" type="password" placeholder="Password" id="password" required><br>
+                    <div id="login-status"></div>
+                    <input id="submit-btn" type="submit" value="Login">
                 </form>
-            </table>
+            </div><!-- close form container -->
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
 
-<script>
-    function printStatus(results){
-        if(results==="True"){
-            $('#login-form').unbind('submit');
-            $('#login-form').submit();
-             console.log(results);
-        }else{
-            $("#login-status").html("Invalid username/password.").attr("class","alert alert-danger").attr("role", "alert")
-        }
-    }
-
-    function verifyLogin(evt){
-        evt.preventDefault();
-
-        var formInputs = {
-            "screenname": $("#screenname").val(),
-            "password": $("#password").val()
-        };
-        
-        $.post('/login', formInputs, printStatus);
-
-    }
-
-    $("#login-form").on('submit', verifyLogin);
-</script>
-
-
+<script src='/static/js/login.js'></script>
 
 {% endblock %}

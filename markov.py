@@ -1,29 +1,6 @@
 from model import db, connect_to_db
 from random import choice
 
-# def get_list_of_locations(location, radius):
-    
-#     if radius > 0:
-#         LAT_LONG_QUERY = """SELECT longitude, latitude 
-#                             FROM Locations 
-#                             WHERE location = :location"""
-#         lat_long_cursor = db.session.execute(LAT_LONG_QUERY, {"location":location})
-#         lon, lat = lat_long_cursor.fetchone()
-
-#         LOCATION_QUERY = """CREATE EXTENSION cube;
-#                             CREATE EXTENSION earthdistance;
-#                             SELECT
-#                             SELECT *, point(:lon, :lat) <@> 
-#                             point(lon, lat):: 
-#                             FROM Locations 
-#                             WHERE (point(:lon,:lat)) <@> point(lon, lat)) <= :radius"""
-        
-#         location_cursor = db.session.execute(LOCATION_QUERY, {"lon": lon, "lat": lat, "radius": radius})
-#         location_results = location_cursor.fetchall()
-#         print "location results are", location_results
-#         location.extend(location_results)
-
-#     return location
 
 def get_input_text(orientation, gender, location, age_min, age_max, adjective_list, n):
     """Based on parameters, returns string of self summaries."""
@@ -38,12 +15,12 @@ def get_input_text(orientation, gender, location, age_min, age_max, adjective_li
                         WHERE UO.orientation=:orientation AND UO.username IN 
                             (SELECT UG.username FROM Usernamegenders AS UG
                             WHERE UG.gender = :gender and UG.username IN
-                                (SELECT OA.username FROM OldAdjectives AS OA 
-                                WHERE (:adjective_one) @> OA.adjectives OR :adjective_two @> OA.adjectives OR :adjective_three @> OA.adjectives)))
+                                (SELECT A.username FROM Adjectives AS A 
+                                WHERE :adjective_one = A.adjective OR :adjective_two = A.adjective OR :adjective_three = A.adjective)))
             """
     cursor = db.session.execute(QUERY, {"orientation": orientation, 
                                 "gender": gender, "location": location, 
-                                "age_min": age_min, "age_max": age_max, "adjective_one": [adjective_list[0]], "adjective_two": [adjective_list[1]], "adjective_three": [adjective_list[2]]})
+                                "age_min": age_min, "age_max": age_max, "adjective_one": adjective_list[0], "adjective_two": adjective_list[1], "adjective_three": adjective_list[2]})
     results = cursor.fetchall()
 
 

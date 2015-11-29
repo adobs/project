@@ -1,0 +1,90 @@
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
+
+.link:hover {
+  stroke-opacity: .5;
+}
+
+#chart{
+    width: 100%;
+    text-align: center;
+}
+
+/*CSS for NON Sankey Chart Items*/
+.words_container li {
+    width: 80px;
+    height: 100%;
+    /*display: inline-block;*/
+    float: left;
+    position: relative;
+    text-align: center;
+}
+
+li{
+    list-style-type: none; 
+}
+.words_container ul{
+    padding: 0;
+}
+
+.header{
+    text-align: center;    
+}
+
+.words_container{
+    /*margin: 0 auto;*/
+    display: flex; /* or inline-flex */
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: center ;
+    text-align: center;
+    float: right;
+    width: 10)%;
+}
+
+.chart-container {
+  display: flex; /* or inline-flex */
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: flex-start;
+  align-content: center ;
+  text-align: center;
+  float: left;
+  padding-top: 20px;
+}
+.pie-chart{
+    /*border: solid black 1px;*/
+    font-weight: bold;
+}
+.chart{
+    height: auto;
+}
+
+.comment-info ul{
+    font-size: 0.8em;
+    padding: 0;
+}
+#top-row{
+    margin-bottom: 20px;
+}
+div.word-div{
+    width: 80px;
+    text-align: center;
+    display: block;
+    float: right;
+}

@@ -1,0 +1,69 @@
+    #age.input{
+        border: none;
+        background: transparent;
+        display: inline;
+        width: 50px;
+        
+    }
+    #slider-range.input{
+        margin-bottom: 0;
+    }
+    .input{
+        margin-bottom: 10px; 
+    }
+
+    #gender-div, #orientation-div, #age-div, #age-text-div, #range-div{
+        display: inline;
+    }
+
+    #slider-range{
+        width: 150px;
+        display: inline-block;
+    }
+
+    .flex{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    #markov-status{
+      height: 200px;
+    }
+    #adjective-div{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+
+    .flex.bottom{
+        align-items: flex-end;
+    }
+    #randomness{
+        float: left;
+        display: inline;
+    }
+
+    #markov-status{
+      display:inline;
+    }
+    #markov{
+      text-align: justify;
+    }
+
+    .btn-default, .btn-default:hover, .btn-default:focus, .btn-default.focus, 
+        .btn-default:active, .btn-default.active, .btn-default.visited,
+        .btn-default:active:hover, .btn-default.active:hover{
+            background-color: #BF1E2D;
+    }
+
+    #add-btn{
+        background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+        text-shadow: none;
+        font-family: 'PT Mono', ;
+        color: #F2F2F2;
+    }

@@ -25,12 +25,12 @@ function initialize() {
         if (logged_in==="True"){
 
             html =
-                '<div id="content">' +
+                '<div id="content"><div id="content-first">' +
                 '<p>There are <b>' + population + '</b> profiles in ' + location + '<br>matching your search</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" '+
                     'data-toggle="modal" data-target="#myModal" '+
                     'data-recipients="'+ long_profile_list +'">'+
-                    'Message Profiles in '+ location +'</button>'+
+                    'Message Profiles in '+ location +'</button></div>'+
                 '<p>The most commonly used adjective is <b>' + adjective + '</b>'+
                 '<br>('+count+' occurences)</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" '+
@@ -40,10 +40,10 @@ function initialize() {
         }else{
 
             html =
-                '<div id="content">'+
+                '<div id="content"><div id="content-first">'+
                 '<p>There are <b>' + population + '</b> profiles in ' + location + '<br>matching your search</p>'+
                 '<button type="button" class="btn btn-primary btn-sm" disabled>'+
-                    'Login to Message Profiles in ' + location + '</button>' +
+                    'Login to Message Profiles in ' + location + '</button></div>' +
                 '<p>The most commonly used adjective is <b>' + adjective + '</b>'+
                 '<br>('+count+' occurences)<p>'+
                 '<button type="button" class="btn btn-primary btn-sm" disabled>'+

@@ -14,8 +14,6 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
 
-
-
 <!-- add in jQuery  -->
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 
@@ -27,144 +25,16 @@
 
 <!-- favicon -->
 <link rel="icon" type="image/png"  href="/static/img/favicon.ico">
-<style>
 
-body {
-  background-image: url(../static/img/nice_snow_@2X.png)
-}
-body, h2, p {
-  font-family: 'Lato', sans-serif;
+<!-- animated CSS -->
+<link rel="stylesheet" href="/static/css/animate.css">
+<link rel="stylesheet" href="/static/css/base.css">
 
-}
-
-.ui-menu-item {
-  font-family: 'Lato', sans-serif;
-}
-
-h1{
-  font-family: 'PT Mono', ;
-  text-align: center;
-}
-
-hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #BF1E2D;
-    margin: 1em 0;
-    padding: 0; 
-}
-  line {
-  stroke: #999;
-  stroke-width: 1px;
-}
-
-circle {
-  fill: #ccc;
-  stroke: #fff;
-  stroke-width: 1.5px;
-}
-
-text {
-  fill: #000;
-  font: 10px sans-serif;
-  pointer-events: none;
-}
-html, body {
-  height: 100%;
-  margin: 0; 
-  padding: 0;
-}
-#markov-status{
-  height: 200px;
-}
-
-#markov-status{
-  display:inline;
-  /*border: solid grey 2px;*/
- /* height: 100%;
-  width: 100%;*/
-}
-#markov-text{
-  height: auto;
-
-}
-/*#age{
-  display: inline;
-}*/
-table td {
-    border-top: none !important;
-}
-.alert {
-  display:block;
-}
-
-
-
-.labels {
-  color: #fff;
-  background: #C31C33; /* Old browsers */
-  background: -moz-linear-gradient(-45deg, #BF1E2D 0%, #f2f2f2 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(-45deg, #BF1E2D 0%,#f2f2f2 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(135deg, #BF1E2D 0%,#ff1a1a 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b30000', endColorstr='#ff1a1a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
-  border-radius: 5px;
-/*  font-family: "Open Sans", "Arial", sans-serif;
-  text-transform: uppercase;
-*/  padding: 3px 6px 3px 6px;
-  font-size: 10px;
-  font-weight: 700;
-  /*max-width: 50px;*/
-  text-align: center;
-  white-space: wrap;
-}
-#controls{
-  height: 100%;
-}
-#page{
-  height: 100%;
-}
-#whole-page{
-  height: 100%;
-}
-
-#content h1{
-  font-size: 1.1em;
-  font-weight: normal;
-  margin-bottom: 0px;
-  margin-top: 10px;
-  margin-right: 0;
-  margin-left: 0,
-
-}
-#content h2{
-  font-size: 1.1em;
-  font-weight: normal;
-  margin-top: 0px;
-  margin-bottom: 5px;
-  margin-right: 0;
-  margin-left: 0,
-
-}
-ul
-{
-    list-style-type: none;
-}
-
-.navfont{
-  font-family: 'PT Mono', ;
-}
-
-#logo{
-  height: 100%;
-  width: auto;
-}
-        
- </style>
 {% block head %}{% endblock %}
-</head>
+
+  </head>
 <body>
-  <!-- navbar -->
+   <!-- navbar -->
 <nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
@@ -180,29 +50,6 @@ ul
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <!-- <ul class="nav navbar-nav"> -->
-       <!--  <li class="active"><a href="#">Link0 <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Link1</a></li>
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li>
-      </ul>
-      <form class="navbar-form navbar-left" role="search">
-        <div class="form-group">
-          <input type="text" class="form-control" placeholder="Search">
-        </div>
-        <button type="submit" class="btn btn-default">Submit</button>
-      </form> -->
-
       <ul class="nav navbar-nav navbar-right">
         
         {% if session.get("screenname") %}
@@ -211,9 +58,6 @@ ul
           <ul class="dropdown-menu">
             <li><a href="/okcbot">Messaging Bot</a></li>
             <li><a href="/markov">Profile Generator</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
           </ul>
         </li>
         {% endif %}
@@ -222,28 +66,25 @@ ul
           <ul class="dropdown-menu">
             <li><a href="/map">Adjective Map</a></li>
             <li><a href="/sankey">Sankey Profile</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
           </ul>
         </li>
         {% if session.get("screenname") %}        
         <li class="navfont"><a href="/logout">Logout</a></li>
         {% else %}
-        <li class="navfont"><a href="/login">Login</a></li>
         <li class="navfont"><a href="/new-user-form">Create New User</a></li>
+        <li class="navfont"><a href="/login">Login</a></li>
         {% endif %}
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
 </nav>
 
-
-
  <!-- Show flashed messages -->
   {% with messages = get_flashed_messages() %}
       {% for message in messages %}
-          <div class="alert alert-warning">{{ message }}</div>
+          <div id='flash-div'>
+            <div class="alert alert-warning animated bounce">{{ message }}</div>
+          </div> <!-- close flash -->
       {% endfor %}
   {% endwith %}
 {% block content %}
@@ -253,9 +94,11 @@ ul
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/jasmine-html.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/2.3.4/boot.js"></script>
+<script src='/static/js/base.js'></script>
 
 {% if g.jasmine_tests %}
     <script src="path-to-jasmine.js"></script> ...
 {% endif %}
+
 </body>
 </html>

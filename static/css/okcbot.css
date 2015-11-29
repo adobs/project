@@ -1,0 +1,49 @@
+#message{
+    width: 500px;
+}
+
+    
+input, textarea{
+    border-radius: 4px;     
+    margin-bottom: 10px;
+}
+
+.flex{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    /*float: right;*/
+
+
+}
+.flex.send{
+    justify-content: center;
+}
+
+
+#submit-btn{
+    background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+    text-shadow: none;
+    font-family: 'PT Mono', ;
+    color: #F2F2F2;
+}
+
+#age-div.flex, #location-div.flex, #gentation-message-div.flex{
+    max-width: 800px;
+    margin-right: 0;
+}
+
+#okcbot-form{
+    max-width: 800px;
+    text-align: center;
+    margin: auto;
+}
+
+#minimum_age, #maximum_age{
+    width: 100px;
+}
+
+#num{
+    width: 90px;
+}

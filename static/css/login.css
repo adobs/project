@@ -1,0 +1,16 @@
+#form-container{
+    text-align: center;
+}
+
+
+input{
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+#submit-btn{
+    background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+    text-shadow: none;
+    font-family: 'PT Mono', ;
+    color: #F2F2F2;
+}

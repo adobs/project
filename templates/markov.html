@@ -1,223 +1,116 @@
 {% extends "base.html" %}
+
 {% block title %}Profile Generator{% endblock %}
+
 {% block head %}
   <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-  <style>
-  #age{
-    border: none;
-    background: transparent;
-  }
-  table{
-    table-layout: fixed;
-  }
-  </style>
+
+  <link rel="stylesheet" href="/static/css/markov.css">
+
 {% endblock %}
+
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id='top-row'>
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <section><h1>Generate your own self-summary!</h1><p>Select the orientation, gender, age range, and location that matches you.</p><p>Our program searches all profiles that match your parameters, and provides a list of adjectives you can choose from that best describe yourself!</p><p>When done, click 'Generate' for your own customized self summary using Markov Chains!</p><p>When you're happy with the text, click to have your profile updated with your great new self summary!</p> 
+            <section><h1>Generate your own self-summary</h1>
+                <p>Select the gender, orientation, age range, and location that matches you.</p>
+                <p>Based on your parameters, the list of available adjectives will auto-populate.</p>
+                <p>When done, click 'Generate' for your own customized self summary using Markov Chains<a href='https://en.wikipedia.org/wiki/Markov_chain'><span  data-toggle="tooltip" title="Markov Chains are a stochastic model describing a sequence of possible events in which the probability of each event depends only on the state attained in the previous event." class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>.</p>
+                <p>Next, click to have your profile updated with your great new self-summary.</p> 
             </section>
             <hr></hr>
         </div> <!-- close column -->
     </div> <!-- close row -->
     <div class="row">
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <table class="table">
-                <form id="markov-form">
-                    <div class="form-group">
-                        <tr>
-                            <td>
-                                <label for='orientation'>Orientation</label><br>
-                                <select name="orientation" id="orientation" class="input">
-                                        <option value="please-select" selected disabled>Please select</option>
-                                    {% for orientation in orientations %}
-                                        <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                 <label for='gender'>Gender</label><br>
-                                 <select name="gender" id="gender" class='input'>
-                                    <option value="please-select" selected disabled>Please select</option>
-                                    {% for gender in genders %}
-                                        <option value="{{gender.gender}}">{{gender.gender}}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for="age">
-                                    Age range              
-                                </label>
-                                <input type="text" id="age" class="input" name="age">
-                                <div id="slider-range" class="input"></div>
-                            </td>
-                            <td>
-                                <div class="input">
-                                    <label for="location">Location</label><br>
-                                <input type="text" id="location" class="input" value="San Francisco, CA" required>
-                                </div>
-                            </td>
-                            <td>
-                                <label>
-                                Randomness<input type="range" id="randomness" name="randomness" min="2" max="5">
-                                </label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <label for='adjective1'>Select Adjectives</label>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <select name="adjective1" id="adjective1" class = "adjective">
-                                    <option value="adjective1" >No adjectives available</option>
-                                </select>
-                            </td>
-                            <td>
-                                <label for='adjective2'></label>
-                                <select name="adjective2" id="adjective2" class = "adjective">
-                                    <option value="adjective2">No adjectives available</option>
-                                </select>
-                            </td>
-                            <td><label for='adjective3'></label><select name="adjective3" id="adjective3" class = "adjective"><option value="adjective3">No adjectives available</option></select>
-                            </td>
-                        <tr>
-                            <td>
-                                <input type="submit" value="Generate">
-                            </td>
-                        </tr>
-                    </div> <!-- end form group -->
-                </form>
-                <tr>
-                    <td colspan='3'>
-                        <div id="markov"></div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!" disabled>Add to 'Self Summary' in my profile!</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div id="markov-status"></div>
-                    </td>
-                </tr>
-            </table>
-        </div> <!-- close column -->
-        
-
+            <form id="markov-form">
+                <div class='flex'>
+                    <div id='gender-div'>
+                         <label for='gender'>Gender</label>
+                         <select name="gender" id="gender" class='input'>
+                            <option value="please-select" selected disabled>Please select</option>
+                            {% for gender in genders %}
+                                <option value="{{gender.gender}}">{{gender.gender}}</option>
+                            {% endfor %}
+                        </select>
+                    </div> <!-- close gender -->
+                </div> <!-- close flex -->
+                <div class='flex'>
+                    <div id='orientation-div'>
+                        <label for='orientation'>Orientation</label>
+                        <select name="orientation" id="orientation" class="input">
+                                <option value="please-select" selected disabled>Please select</option>
+                            {% for orientation in orientations %}
+                                <option value="{{orientation.orientation}}">{{orientation.orientation}}</option>
+                            {% endfor %}
+                        </select>
+                    </div> <!-- close orientation -->
+                </div><!--  close flex -->
+                <div class='flex bottom'>
+                    <div id='age-div'>
+                        <label for="age">Age range</label>
+                        <div id='age-text-div'>
+                            <input type="text" id="age" class="input" name="age" readonly>
+                        </div> <!-- close age text -->
+                        <div id="slider-range" class="input"></div>
+                    </div> <!-- close age -->
+                </div> <!-- close flex -->
+                <div class='flex'>
+                    <div class="location-div">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" class="input" value="San Francisco, CA" required>
+                    </div> <!-- close input -->
+                </div> <!-- close flex -->
+                <div class='flex'>
+                    <div id='range-div'>
+                        <table>
+                            <tr>
+                                <td>
+                                    <label for='randomness'>Randomness</label>
+                                </td>
+                                <td>
+                                    <input type="range" id="randomness" name="randomness" min="2" max="5">
+                                </td>
+                            </tr>
+                        </table>
+                    </div> <!-- close range -->
+                </div> <!-- close flex -->
+                <div class='flex'>
+                    <div id='adjective-div'>
+                        <label for='adjective1'>Select Adjectives</label>
+                            <select name="adjective1" id="adjective1" class = "adjective">
+                                <option value="adjective1" >None available</option>
+                            </select>
+                        <label for='adjective2'></label>
+                            <select name="adjective2" id="adjective2" class = "adjective">
+                                <option value="adjective2">None available</option>
+                            </select>
+                        <label for='adjective3'></label>
+                            <select name="adjective3" id="adjective3" class = "adjective">
+                                <option value="adjective3">None available</option>
+                            </select>
+                    </div> <!-- close adjective -->
+                </div><!--  close flex -->
+                <div class='flex center'>
+                    <input type="submit" value="Generate">
+                </div> <!-- close flex center -->
+            </form>
+                <div class='flex'>
+                    <div id="markov"></div>
+                </div> <!-- close flex -->
+                <div class='flex'>
+                    <button type="button" id="add-btn" class="btn btn-default" value="Add to 'Self Summary' in my profile!">Add to 'Self Summary' in my profile!</button>
+                </div> <!-- close flex -->
+            <div class='flex'>
+                <div id="markov-status"></div>
+            </div><!--  close flex -->
         </div> <!-- close column -->
     </div> <!-- close row -->
-
 </div> <!-- close container -->
 
-<script>
-
-    // slider
-    $(function() {
-        $( "td #slider-range" ).slider({
-            range: true,
-            min: 18,
-            max: 98,
-            values: [ 20, 30 ],
-            slide: function( event, ui ) {
-                $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                }
-            });
-        $( "#age" ).val( $( "td #slider-range" ).slider( "values", 0 ) +
-          " - " + $( "td #slider-range" ).slider( "values", 1 ) );
-    });
-
-    //location autofill
-    $(function() {
-        var availableTags = [];
-            {% for location in locations %}
-            availableTags.push("{{location.location}}");
-            {% endfor %}
-    $( "td #location" ).autocomplete({
-      source: availableTags
-    });
-  });
-
-    function status(data){
-        $("#markov-status").html("Updated!")
-    }
-
-    function addToProfile(evt){
-        var text= {
-            "text": $("#markov").html()
-        }
-        $.post("/add-to-profile.json", text, status);
-    }
-
-    $("#add-btn").on("click", addToProfile)
-    
-    function showAdjectives(data){
-        var options = $.parseJSON(data);
-        console.log("options is "+options);
-        $('.adjective').empty();
-        if (options != ""){
-            console.log("in full adjectives list");
-            $.each(options, function(i, p) {
-            $('.adjective').append($('<option></option>').val(p).html(p));
-            });
-        }else{
-            console.log("empty adjective list")
-            $('.adjective').append($('<option></option>').val("No adjectives available").html("No adjectives available"));
-        }
-    }
-
-    $('.input').on('change slidechange keypress', function (event) {
-        console.log("change observed")        
-        var adjectiveInputs = {
-            "orientation": $("#orientation").val(),
-            "gender": $("#gender").val(),
-            "age": $("#age").val(),
-            "location": $("#location").val(),
-        }
-        $.get("/markov-adjectives.json", adjectiveInputs, showAdjectives)
-    });
-
-
-
-    function displayMarkov(data){
-        $("#markov").html(data);
-        if(data!='invalid search results'){
-            $("#add-btn").removeAttr('disabled');
-            $("#markov").removeClass("alert alert-danger").removeAttr('role', 'alert');
-        }
-        else{
-            $("#markov").addClass("alert alert-danger").attr('role', 'alert');
-        }
-
-    }
-
-    function execute(evt){
-        evt.preventDefault();
-        var inputs = {
-            "orientation": $("#orientation").val(),
-            "gender": $("#gender").val(),
-            "age": $("#age").val(),
-            "location": $("#location").val(),
-            // "radius": $("#radius").val(),
-            "randomness": $("#randomness").val(),
-            "adjective1": $("#adjective1").val(),
-            "adjective2": $("#adjective2").val(),
-            "adjective3": $("#adjective3").val()
-
-        }
-
-        $.get("/markov.json", inputs, displayMarkov)
-    }
-    $("#markov-form").on("submit", execute)
-
-</script>
+<script src='/static/js/markov.js'></script>
 
 {% endblock %}

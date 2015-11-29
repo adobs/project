@@ -1,0 +1,48 @@
+#about{
+    background-image: linear-gradient(to bottom,#BF1E2D 0,#BF1E2D 100%);
+    text-shadow: none;
+    font-family: 'PT Mono', ;
+    color: #F2F2F2;
+}
+
+.btn-default, .btn-default:hover, .btn-default:focus, .btn-default.focus, 
+    .btn-default:active, .btn-default.active, .btn-default.visited,
+    .btn-default:active:hover, .btn-default.active:hover{
+        background-color: #BF1E2D;
+}
+#about-text{
+    text-align: center;
+    background: white;
+    opacity: 0.5;
+    padding: 90px;
+    margin: 0 auto;
+}
+
+#button{
+    text-align: center;
+}
+
+#female{
+    border: solid #BF1E2D 1px;
+    border-radius: 4px;
+    padding-left: 1px;
+}
+#top-row{
+    background: transparent;
+    margin-bottom: 30px;
+}
+
+#whole-page{
+    margin-top: 50px;
+    height: 100%;
+    background-image: url("/static/img/black-background-2.jpg");
+    background-repeat: no-repeat;
+    background-size: 100%;    
+}
+
+#more{
+    border: solid #BF1E2D 3px;
+    border-radius: 4px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

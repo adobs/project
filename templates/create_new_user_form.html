@@ -1,158 +1,64 @@
 {% extends "base.html" %}
+
 {% block title%}New User{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/static/css/create_new_user_form.css">
+{% endblock %}
 
 {% block content %}
 
-
 <div class="container-fluid">
-    <div class="row">
+    <div class="row" id='top-row'>
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <section><h1>Create an account!</h1><p>This will create a real account registered with OKCupid.</p>
+            <section><h1>Create an account</h1><p>This will create a real account registered with OkCupid.</p>
             </section>
             <hr></hr>
         </div> <!-- close column -->
     </div> <!-- close row -->
     <div class='row'>
         <div class='col-md-6 col-md-offset-3 col-xs-12'>
-            <table class='table'>
-                <form id="new-user-form" action="/" method="POST">
-                    <tr>
-                        <td>
-                            <label for='orientation'>Sexual Orientation</label><br>
-                            <input type="radio" class="orientation" name="orientation" value="1" checked>Straight
-                            <input type="radio" class="orientation" name="orientation" value="2">Gay
-                            <input type="radio" class="orientation" name="orientation" value="3">Bisexual
-                        </td>
-                        <td>
-                            <label for='gender'>Gender</label><br>
-                                <input type="radio" class="gender" name="gender" value="1" checked>Man
-                                <input type="radio" class="gender" name="gender" value="2">Woman
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for='birthmonth'>Birthmonth</label>
-                                <select name="birthmonth" id="birthmonth" required>
-                                    {% for month in months %}
-                                    <option value="{{ month }}">{{ month }}</option>
-                                    {% endfor %}
-                                </select>
-                        </td>
-                        <td>
-                            <label for='birthdate'>Birthdate</label>
-                                <select name="birthdate" id="birthdate">
-                                    {% for day in days %}
-                                    <option value="{{ day }}">{{ day }}</option>
-                                    {% endfor %}
-                                </select>
-                        </td>
-                        <td>
-                            <label for='birthyear'>Birthyear</label>
-                                <select name="birthyear" id="birthyear">
-                                    {% for year in years %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                    {% endfor %}
-                                </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="zipcode">Zip</label>
-                                <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for='email'>Email</label>
-                               <input type="email" placeholder="Email" id="email" required><div id="email-status"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for='screenname'>Username</label>
-                                <input type="text" maxlength="15" placeholder="Username" id="screenname" required><div id="screenname-status"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for='password'>Password</label>
-                                <input type="password" placeholder="Password" id="password" required><div id="password-status"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                                <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input id="submit-btn" type='submit' value="Register">
-                        </td>
-                    </tr>
-                </form>
-            </table>
+            <form id="new-user-form" action="/" method="POST">
+                <label for='orientation'>Sexual Orientation</label>
+                    <input type="radio" class="orientation" name="orientation" value="1" checked>Straight
+                    <input type="radio" class="orientation" name="orientation" value="2">Gay
+                    <input type="radio" class="orientation" name="orientation" value="3">Bisexual<br>
+                <label for='gender'>Gender</label>
+                    <input type="radio" class="gender" name="gender" value="1" checked>Man
+                    <input type="radio" class="gender" name="gender" value="2">Woman<br>
+                <label for='birthmonth'>Birthmonth</label>
+                    <select name="birthmonth" id="birthmonth" required>
+                        {% for month in months %}
+                        <option value="{{ month }}">{{ month }}</option>
+                        {% endfor %}
+                    </select>
+                <label for='birthdate'>Birthdate</label>
+                    <select name="birthdate" id="birthdate">
+                        {% for day in days %}
+                        <option value="{{ day }}">{{ day }}</option>
+                        {% endfor %}
+                    </select>
+                <label for='birthyear'>Birthyear</label>
+                    <select name="birthyear" id="birthyear">
+                        {% for year in years %}
+                        <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select><br>
+                <label for="zipcode">Zip</label>
+                    <input type="text" pattern="\d{5,5}" placeholder="Zipcode" id="zip" required><br>
+                <label for='email'>Email</label>
+                   <input type="email" placeholder="Email" id="email" required><div id="email-status"></div>
+                <label for='screenname'>Username</label>
+                    <input type="text" maxlength="15" placeholder="Username" id="screenname" required><div id="screenname-status"></div>
+                <label for='password'>Password</label>
+                    <input type="password" placeholder="Password" id="password" required><div id="password-status"></div>
+                    <div id="loading"><img id="loading-img" src="../static/gif/loading.gif"></div>
+                <input id="submit-btn" type='submit' value="Register">
+            </form>
         </div> <!-- close column -->
     </div> <!-- close row -->
 </div> <!-- close container -->
-<script>
-    function printStatus(results){
-        console.log("made it to print status");
-        $("#loading").hide();
-        if (results==="This email is already in use."){
-            $('#email-status').html(results);
-        }
-        else if (results==="Screenname already in use."){
-            $('#screenname-status').html(results);
-        }
-        else if (results === "Password is too weak, choose again."){
-            $('#password-status').html(results);
-        }
-        else if (results === "success") {
-            $('#new-user-form').unbind("submit");
-            $('#new-user-form').submit();
-        }
-    
-        $('#submit-btn').removeAttr('disabled');
-    }
 
-    function checkStatus(){
-    //could this all be done with form "sterilization"?  form.sterilze
-
-        var formInputs = {
-            "orientation": $(".orientation").val(),
-            "gender": $(".gender").val(),
-            "birthmonth": $("#birthmonth").val(),
-            "birthdate": $("#birthdate").val(),
-            "birthyear": $("#birthyear").val(),
-            "zip": $("#zip").val(),
-            "email": $("#email").val(),
-            "screenname": $("#screenname").val(),
-            "password": $("#password").val()
-        };
-
-
-        $.post('/new-user', formInputs, printStatus);
-        console.log("made it to check status")
-    }
-
-    function submitForm(evt){
-        evt.preventDefault();
-        $('#loading').show();
-        console.log("hey");
-        $('#email-status').html("");
-        $('#screenname-status').html("");
-        $('#password-status').html("");
-
-        $('#submit-btn').attr('disabled',true);
-        checkStatus();
-    }
-        
-    $('#loading').hide();
-    $('#new-user-form').on("submit", submitForm);
-
-
-</script>
-
-
+<script src='static/js/create_new_user_form.js'></script>
 
 {% endblock %}

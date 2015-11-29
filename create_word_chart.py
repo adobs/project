@@ -35,7 +35,7 @@ def create_self_summary_words(label):
     unique_labels_list = []
     nonunique_labels_list = []
     for word, count in feature_count.iteritems():
-        if count < 2:
+        if count < 3:
             unique_labels_list.append(word) 
         else:
             nonunique_labels_list.append(word)
@@ -87,7 +87,7 @@ def create_message_me_if_words(label):
 
 def _colors():
 
-    colors = ["#37465D", "#F2F2F2", "#000000","#bd1f2e","#051A37"]
+    colors = ["#37465D", "#143726", "#000000","#bd1f2e","#051A37"]
 
     color_cycle = cycle(colors)
 
@@ -95,7 +95,7 @@ def _colors():
 
 def _highlights():
     
-    colors = ["#4E535D", "#F1F1F1", "#000000", "#bd1f2e", '#1A2537']
+    colors = ["#4E535D", "#04371C", "#000000", "#bd1f2e", '#1A2537']
 
     highlight_cycle = cycle(colors)
 
@@ -143,12 +143,10 @@ def prepare_data(label, identifier, section):
         data.append({"value": count, "label": item[0], "color": color, "highlight": highlight})
         print "label is", label
         if identifier == Profile.gender:
-            if item[0]!='Man':
-                comment_info.append({"value": count, "label": item[0]})
+            comment_info.append({"value": count, "label": item[0]})
 
         if identifier == Profile.orientation:
-            if item[0]!='Straight':
-                comment_info.append({"value": count, 'label': item[0]})
+            comment_info.append({"value": count, 'label': item[0]})
 
 
 

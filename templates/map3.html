@@ -1,6 +1,7 @@
-
 {% extends "base.html" %}
+
 {% block title %}Adjective Map{% endblock %}
+
 {% block head %}
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
@@ -14,93 +15,10 @@
     <!-- D3 -->
     <script src="http://d3js.org/d3.v3.min.js"></script>
     
-  <style>
-
-    #map {
-      height: 100%;
-    }
-    table{
-      table-layout: fixed;
-    }
-
-
-    #orientation-form{
-        width: 175px;
-        height: 330px;
-        background: white;
-        position: absolute;
-        top: 130px;
-        left: 200px;
-        border: 1px solid #999;
-        border-radius: 2px;
-        padding: 10px;
-    }   
-    #gender-form{
-        width: 175px;
-        height: 570px;
-        background: white;
-        position: absolute;
-        top: 130px;
-        left: 20px;
-        border: 1px solid #999;
-        border-radius: 2px;
-        padding: 10px;
-        display: inline-block;
-    }
-    #age-form{
-        width: 175px;
-        height: 60px;
-        background: white;
-        position: absolute;
-        top: 470px;
-        left: 200px;
-        border: 1px solid #999;
-        border-radius: 2px;
-        padding: 10px;
-        display: inline-block;
-    }   
-    #age{
-        width: 50px;
-        border: transparent;
-    }
-    #form-submit{
-        position: absolute;
-        top: 540px;
-        left: 200px;
-        /*width: 60px;*/
-        height: 30px;
-    }
-    #loading{
-        width: 4000px;
-        margin: auto;
-    }
-
-    ul {
-        margin:0;
-        padding:0;
-    }
-    li{
-      margin-right: 0;
-    }
-
-    #loading-spin{
-      position: absolute;
-      left: 200px;
-      top: 540px;
-    }
-
-    h2, p{
-      background: white;
-    }
-
-  </style>
-
+    <link rel="stylesheet" href="/static/css/map3.css">
 {% endblock %}
 
 {% block content %}
-
- 
-
 <div class="container-fluid" id="whole-page">
     <div class="row" id="page">
       <div id="loading"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"><img class="loading-img" src="../static/gif/horizontal-loading.GIF"></div>
@@ -148,8 +66,6 @@
     </div> <!-- close row -->
 </div> <!-- close container -->
 
-
-
 <!-- Modal window that pops up inside of Google Maps InfoWindow -->
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
@@ -162,21 +78,18 @@
             <label>
               <textarea id="message" placeholder="Type your message..."></textarea>
             </label>
-            <input type="submit" value="Send" class="btn btn-default"> 
+            <input type="submit" value="Send" class="btn btn-default send"> 
             <div id="loading-2">
                 <img id="loading-img" src="../static/gif/loading.gif">
             </div>
           </form>
           <div id="sent"></div>
           </div>
-          <div class="modal-footer"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <div class="modal-footer"><button type="button" class="btn btn-default close" data-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
-
-
-
 
 <!-- First Modal -->
 <div class="modal" id="pageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -195,7 +108,6 @@
     </div>
   </div>
 </div>
-
 
 <!-- First Modal -->
 <div class="modal" id="orientation-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
