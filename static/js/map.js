@@ -145,35 +145,6 @@ function initialize() {
 
     }
 
-
-   
-
-
-    // var bool=false;
-    // function getCoordinates(bool){
-    //     var NEprime;
-    //     if(bool===true){
-    //         google.maps.event.addListener(map, 'idle', function(){
-    //         console.log("in event get coordinates listener");
-    //         var NE= map.getBounds().getNorthEast().lat();
-    //         console.log("NE IS"+NE);
-    //         bool=false;
-    //                     });
-    //     }
-    // }
-
-//     setTimeout(function(){
-//     map.getBounds().getNorthEast().lat();
-//     map.getBounds().getSouthWest().lat();
-//     map.getBounds().getNorthEast().lng();
-//     map.getBounds().getSouthWest().lng();
-// }, 1000);
-
-    // google.maps.event.addDomListener(window, 'load', initialize);
-        
-
-    // $('#orientation-hover').tooltip();
-
     var ajaxRequest;
     function plotInputs(chart){
         var inputs = {

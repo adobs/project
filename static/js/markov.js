@@ -1,44 +1,22 @@
- $("#add-btn").hide();
+ // (function () {
 
-    // slider
-    $(function() {
-        $( "#slider-range" ).slider({
-            range: true,
-            min: 18,
-            max: 98,
-            values: [ 18, 30 ],
-            slide: function( event, ui ) {
-                $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
-                }
-            });
-        $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
-          " - " + $( "#slider-range" ).slider( "values", 1 ) );
-    });
+    $("#add-btn").hide();
 
-    //location autofill
-    $(function() {
-        var availableTags = [];
-            {% for location in locations %}
-            availableTags.push("{{location.location}}");
-            {% endfor %}
-    $( "#location" ).autocomplete({
-      source: availableTags
-    });
-  });
+
 
     function status(data){
-        $("#markov-status").html("Updated!")
+        $("#markov-status").html("Updated!");
     }
 
     function addToProfile(evt){
         var text= {
             "text": $("#markov").html()
-        }
+        };
         $.post("/add-to-profile.json", text, status);
     }
 
-    $("#add-btn").on("click", addToProfile)
-    
+    $("#add-btn").on("click", addToProfile);
+
     function showAdjectives(data){
         var options = $.parseJSON(data);
         console.log("options is "+options);
@@ -46,17 +24,17 @@
         if (options != ""){
             console.log("in full adjectives list");
             $.each(options, function(i, p) {
-            $('.adjective').append($('<option></option>').val(p).html(p));
+                $('.adjective').append($('<option></option>').val(p).html(p));
             });
         }else{
-            console.log("empty adjective list")
+            console.log("empty adjective list");
             $('.adjective').append($('<option></option>').val("None available").html("None available"));
         }
     }
 
     $('.input').on('change slidechange keypress', function (event) {
         if ($("#orientation").val() && $("#gender").val()){
-            console.log("change observed")        
+            console.log("change observed");
             var adjectiveInputs = {
                 "orientation": $("#orientation").val(),
                 "gender": $("#gender").val(),
@@ -94,8 +72,26 @@
             "adjective2": $("#adjective2").val(),
             "adjective3": $("#adjective3").val()
 
-        }
+        };
 
-        $.get("/markov.json", inputs, displayMarkov)
+        $.get("/markov.json", inputs, displayMarkov);
     }
-    $("#markov-form").on("submit", execute)
+
+    $("#markov-form").on("submit", execute);
+
+       // slider
+    $(function() {
+        $( "#slider-range" ).slider({
+            range: true,
+            min: 18,
+            max: 98,
+            values: [ 18, 30 ],
+            slide: function( event, ui ) {
+                $( "#age" ).val( ui.values[ 0 ] + " - " + ui.values[ 1 ] );
+                }
+            });
+        $( "#age" ).val( $( "#slider-range" ).slider( "values", 0 ) +
+          " - " + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+
+// })();

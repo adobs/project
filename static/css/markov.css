@@ -1,10 +1,4 @@
-    #age.input{
-        border: none;
-        background: transparent;
-        display: inline;
-        width: 50px;
-        
-    }
+
     #slider-range.input{
         margin-bottom: 0;
     }
@@ -16,10 +10,6 @@
         display: inline;
     }
 
-    #slider-range{
-        width: 150px;
-        display: inline-block;
-    }
 
     .flex{
         display: flex;
@@ -30,6 +20,7 @@
     }
     #markov-status{
       height: 200px;
+      display:inline;
     }
     #adjective-div{
         display: flex;
@@ -48,9 +39,6 @@
         display: inline;
     }
 
-    #markov-status{
-      display:inline;
-    }
     #markov{
       text-align: justify;
     }
@@ -66,4 +54,18 @@
         text-shadow: none;
         font-family: 'PT Mono', ;
         color: #F2F2F2;
+    }
+
+    #slider-range{
+        width: 150px;
+        display: inline-block;
+    }
+
+    #age.input{
+        border: none;
+        background: transparent;
+        display: inline;
+        width: 50px;
+        color: black;
+        
     }

@@ -111,6 +111,17 @@
     </div> <!-- close row -->
 </div> <!-- close container -->
 
+<script>
+    //location autofill
+    $(function() {
+        var availableTags = [];
+            {% for location in locations %}
+            availableTags.push("{{location.location}}");
+            {% endfor %}
+        $( "#location" ).autocomplete({
+            source: availableTags
+        // });
+    });
+</script>
 <script src='/static/js/markov.js'></script>
-
 {% endblock %}
