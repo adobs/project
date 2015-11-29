@@ -111,6 +111,7 @@
     </div> <!-- close row -->
 </div> <!-- close container -->
 
+<script src='/static/js/markov.js'></script>
 <script>
     //location autofill
     $(function() {
@@ -120,8 +121,7 @@
             {% endfor %}
         $( "#location" ).autocomplete({
             source: availableTags
-        // });
+        });
     });
 </script>
-<script src='/static/js/markov.js'></script>
 {% endblock %}
