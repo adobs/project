@@ -9,14 +9,12 @@ Ever heard of the dating site [OkCupid](https://www.okcupid.com/)? OKC+ takes Ok
 
 # About the Logo
 
-I created an OkCupid account.  I then analyzed **58K profiles** across the country of people that are interested in the group I fall into:
-
-straight woman aged 18-36 years old.
+I created an OkCupid account.  I then analyzed **58K profiles** across the country of people that are interested in the group I fall into: straight woman aged 18-36 years old.
 
 This site shows you the profiles that I, *as a woman*, found.
 
 
-# Table of Contents(unformatted list with links that jump to the section)
+# Table of Contents
 
 * [Setup](#setup)
 
@@ -38,7 +36,11 @@ This site shows you the profiles that I, *as a woman*, found.
 
 * Linux.  Install dependencies using commands below
 
-[sudo apt get from email, as code links]
+```$ sudo apt-get install libxml2-dev libxslt1-dev python-dev libz-dev```
+```$ sudo apt-get install xvfb```
+```$ sudo apt-get install gfortran libopenblas-dev liblapack-dev```
+```$ sudo apt-get install postgresql```
+```$ sudo apt-get install libpq-dev```
 
 * Windows.  Not compatible.  *Feel free to install a supported virtual machine with a supported environment in order to access OKC+.  Example: [VirtualBox](https://www.virtualbox.org/wiki/Downloads).*
 
@@ -50,7 +52,8 @@ This site shows you the profiles that I, *as a woman*, found.
 * Activate the environment ```$ source env/bin/activate```.
 
 
-### Install requirements ```$ pip install -r requirements.txt```
+### Install requirements 
+```$ pip install -r requirements.txt```
 
 * From the command line of the terminal, run ```$ python flask_app.py```.
 
@@ -65,12 +68,17 @@ This site shows you the profiles that I, *as a woman*, found.
 I used PostgreSQL to store the 58K profiles that I scraped.  I did not put my database on Github, so in order to access meaningful analytics, you will need to pull your own data after you have created an OkCupid account, and populate your own database.  Create your own PostgreSQL database called profiles_final by typing ```$ createdb profiles_final```.  Run the model.py file to create all the tables in the database with ```$ python model.py```.  
 
 
-Add zipcodes to the Zipcodes table of locations you would like to search.  Then edit the file seeding_profile_database.py and enter in your own OkCupid username and password where the code currently says ```python session = Session.login('username', 'password')```. To begin populating the database, run ```$ python seeding_profile_database.py```.  After you are done, populate the remaining tables by running the following programs:
+Add zipcodes to the Zipcodes table of locations you would like to search.  Then edit the file seeding_profile_database.py and enter in your own OkCupid username and password where the code currently says ```python 
+session = Session.login('username', 'password')```. To begin populating the database, run ```$ python seeding_profile_database.py```.  After you are done, populate the remaining tables by running the following programs:
 
 ```$ python querying_the_data.py```
+
 ```$ python seed_adjective_table.py```
+
 ```$ python seed_location_table.py```
+
 ```$ python seed_person_gender_table.py```
+
 ```$ python seed_person_orientation_table.py```
 
 
