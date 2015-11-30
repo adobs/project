@@ -57,8 +57,8 @@ def search_profile(user, location,i):
             continue
 
 def seed_profile_data():
-    session = Session.login('adobsthecat', 'woof6996')
-    locations = db.session.query(Zipcode.zipcodes).filter(Zipcode.zipcodes!='85026', Zipcode.zipcodes!='85726', Zipcode.zipcodes!='90052', Zipcode.zipcodes!='92199', Zipcode.zipcodes!='94188', Zipcode.zipcodes!='95101', Zipcode.zipcodes!='80202', Zipcode.zipcodes!='20090', Zipcode.zipcodes!='32203', Zipcode.zipcodes!='60607', Zipcode.zipcodes!='46206', Zipcode.zipcodes!='40231', Zipcode.zipcodes!='21202', Zipcode.zipcodes !='48233', Zipcode.zipcodes!='89199', Zipcode.zipcodes!='10199', Zipcode.zipcodes!='28228', Zipcode.zipcodes!='43216', Zipcode.zipcodes!='73125', Zipcode.zipcodes!='97208', Zipcode.zipcodes!='19104', Zipcode.zipcodes!='38101', Zipcode.zipcodes!='37230', Zipcode.zipcodes!='78710', Zipcode.zipcodes!='75260', Zipcode.zipcodes!='79910', Zipcode.zipcodes!="76161").all()
+    session = Session.login('username', 'password')
+    locations = db.session.query(Zipcode.zipcodes).all()
     print locations
     user = User(session=session)
     print user
