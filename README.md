@@ -68,8 +68,7 @@ This site shows you the profiles that I, *as a woman*, found.
 I used PostgreSQL to store the 58K profiles that I scraped.  I did not put my database on Github, so in order to access meaningful analytics, you will need to pull your own data after you have created an OkCupid account, and populate your own database.  Create your own PostgreSQL database called profiles_final by typing ```$ createdb profiles_final```.  Run the model.py file to create all the tables in the database with ```$ python model.py```.  
 
 
-Add zipcodes to the Zipcodes table of locations you would like to search.  Then edit the file seeding_profile_database.py and enter in your own OkCupid username and password where the code currently says ```python 
-session = Session.login('username', 'password')```. To begin populating the database, run ```$ python seeding_profile_database.py```.  After you are done, populate the remaining tables by running the following programs:
+Add zipcodes to the Zipcodes table of locations you would like to search.  Then edit the file seeding_profile_database.py and enter in your own OkCupid username and password where the code currently says ```session = Session.login('username', 'password')```. To begin populating the database, run ```$ python seeding_profile_database.py```.  After you are done, populate the remaining tables by running the following programs:
 
 ```$ python querying_the_data.py```
 
@@ -88,7 +87,7 @@ Of note, the analytics you will see will be catered to the profiles you pull dow
 # <a name=“usage”></a>Usage
 
 ### Account creation 
-Create an account on OKC+.  Through use of Selenium[link], creating an account on OKC+ also simultaneously registers the account with OkCupid.
+Create an account on OKC+.  Through use of Selenium, the creation of an account on OKC+ also simultaneously registers the account with OkCupid.
 
 
 ### Login
@@ -104,7 +103,7 @@ Fill out the form to generate a self-summary for your profile using Markov Chain
 
 
 ### Analytics: Adjective Map 
-Based on the profiles in the database, this Google Maps map [link] will display the most common adjective used in people's self-summary per location. Filter by orientations, genders, and age, then click “Submit.”  Click on the marker for each location to open an info window that allows you to message OkCupid users that match your search in that location.
+Based on the profiles in the database, this Google Maps map will display the most common adjective used in people's self-summary per location. Filter by orientations, genders, and age, then click “Submit.”  Click on the marker for each location to open an info window that allows you to message OkCupid users that match your search in that location.
 
 ![Adjective Map](/static/gif/adjective_map_limited.gif)
 

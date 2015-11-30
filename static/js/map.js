@@ -1,3 +1,9 @@
+var orientationHeight = $("#orientation-form").height();
+var cssTop = 130;
+$("#age-form").css("top", orientationHeight+cssTop+40);
+var ageHeight = $("#age-form").height();
+$("#form-submit").css("top", orientationHeight+cssTop+ageHeight+80);
+
 var map;
 
 function initialize() {
