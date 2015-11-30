@@ -46,7 +46,7 @@
 
     #orientation-form{
         width: 175px;
-        height: 330px;
+        /*height: 330px;*/
         background: white;
         position: absolute;
         top: 130px;
@@ -57,7 +57,7 @@
     }   
     #gender-form{
         width: 175px;
-        height: 570px;
+        /*height: 570px;*/
         background: white;
         position: absolute;
         top: 130px;

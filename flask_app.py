@@ -382,4 +382,4 @@ if __name__ == "__main__":
     app.run() 
     import sys
     if sys.argv[-1] == "jstest":
-        JS_TESTING_MODE = True
+        JS_TESTING_MODE = False
