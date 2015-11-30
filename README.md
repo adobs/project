@@ -1,4 +1,4 @@
-![alt text](/static/img/okc_logo.png “Thanks to Leslie Castellanos for designing the logo”)
+![alt text](/static/img/okc_logo.png)
 
 ***
 
@@ -24,7 +24,7 @@ This site shows you the profiles that I, *as a woman*, found.
 
 * [APIs Used](#api)
 
-* [About the Developer](#developer)
+* [Developer](#developer)
 
 
 
@@ -42,7 +42,7 @@ This site shows you the profiles that I, *as a woman*, found.
 ```$ sudo apt-get install postgresql```
 ```$ sudo apt-get install libpq-dev```
 
-* Windows.  Not compatible.  *Feel free to install a supported virtual machine with a supported environment in order to access OKC+.  Example: [VirtualBox](https://www.virtualbox.org/wiki/Downloads).*
+* Windows.  Not compatible.  *Feel free to install a virtual machine with a supported environment in order to access OKC+.  Example: [VirtualBox](https://www.virtualbox.org/wiki/Downloads).*
 
 
 ### Installation
@@ -53,7 +53,7 @@ This site shows you the profiles that I, *as a woman*, found.
 
 
 ### Install requirements 
-```$ pip install -r requirements.txt```
+* ```$ pip install -r requirements.txt```
 
 * From the command line of the terminal, run ```$ python flask_app.py```.
 
