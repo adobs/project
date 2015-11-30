@@ -1,4 +1,4 @@
-![alt text](https://raw.githubusercontent.com/adobs/project/master/static/img/ok%2Blogo.png “Thanks to Leslie Castellanos for designing the logo”)
+![alt text](/static/img/okc_logo.png “Thanks to Leslie Castellanos for designing the logo”)
 
 ***
 
