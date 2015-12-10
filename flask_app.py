@@ -1,23 +1,17 @@
 from flask import Flask, request, render_template, redirect, flash, session, jsonify, g
 from jinja2 import StrictUndefined
 from model import Profile, Adjective, Gender, Orientation, Location, db, connect_to_db
-# from flask_debugtoolbar import DebugToolbarExtension
-from selenium_okc import create_new_user
-from sending_a_message import send_message
-from signing_in import is_signed_in
+from flask_helper_functions.selenium_okc import create_new_user
+from flask_helper_functions.sending_a_message import send_message
+from flask_helper_functions.signing_in import is_signed_in
 import re
 from okcupyd.session import Session
 from okcupyd.user import User
-# from calculate_word_count import calculate_word_count
-# from datetime import datetime
-# from map_helper import get_joined_adjectives, get_lat_long, add_adjective_to_compiled, add_nothing_to_compiled
-from map_helper import get_compiled
-from send_message_map import send
-# from create_json_for_d3_hierarchical import create_json
-from markov import get_input_text, make_chains, make_text
+from flask_helper_functions.map_helper import get_compiled
+from flask_helper_functions.send_message_map import send
+from flask_helper_functions.markov import get_input_text, make_chains, make_text
 import json
-from create_word_chart import create_self_summary_words, create_message_me_if_words, prepare_data
-# from networkxtest import miles_graph
+from flask_helper_functions.create_word_chart import create_self_summary_words, create_message_me_if_words, prepare_data
 from sqlalchemy.sql import func 
 
 

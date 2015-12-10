@@ -7,3 +7,4 @@ adobs.pem
 secret.txt
 *.db
 *.sql
+.DS_Store
