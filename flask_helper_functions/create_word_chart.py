@@ -1,4 +1,3 @@
-from create_json_for_sankey import write_json
 from model import SelfSummaryLabel, MessageMeIfLabel, db, connect_to_db, MeanShiftAlgo, Profile
 from itertools import cycle
 
