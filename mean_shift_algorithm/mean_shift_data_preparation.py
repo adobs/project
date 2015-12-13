@@ -1,14 +1,22 @@
-    # take text data per user, and parse on each word. list of words.
-# unique set(list of words).
-# remove from set any words that are in your common_words
-# convert into a list of booleans:
-# 
+"""
+mean_shift_data_preparation.py
+
+Functions to be called in order that run machine learning: mean shift 
+clustering algorithm.  The algorithm uses common words as feature words 
+(presence of the word is converted into a boolean for the feature list).  
+Bandwith can be flexed to adjust number of clusters and number of profiles 
+per cluster.
+
+Run functions that are commented out under the __name__ == "__main__" 
+as appropriate.
+"""
+
 import os
 
 parentdir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.sys.path.insert(0,parentdir)
 
-# from sklearn.datasets.samples_generator import make_blobs
+
 from model import Profile, Adjective, Gender, Orientation, Location, db, connect_to_db, MeanShiftAlgo, SelfSummaryLabel, MessageMeIfLabel
 from flask_app import app
 from sklearn.cluster import MeanShift, estimate_bandwidth
@@ -19,48 +27,40 @@ from sklearn.externals import joblib
 from nltk.corpus import stopwords
 
 def clean(dirty_list):
-    # print "dirty list is", dirty_list
+    """ Returns list of words with non-alpha characters stripped """
+
     clean_list = []
     clean_string = ""
     for word in dirty_list:
-        # print "\nword is ", word
         word = unicode(word)
         word = word.strip("\n\t1234567890!@#$%^&*()-=+{}[]/\\'\"<>?.,:;~`").replace("\n", " ").replace(".", " ").replace("\t","").replace("1","").replace("2","").replace("3","").replace("4","").replace("5","").replace("6","").replace("7","").replace("8","").replace("9","").replace("0","").replace("!","").replace("@","").replace("#","").replace("$","").replace("%","").replace("^","").replace("&","").replace("*","").replace("(","").replace(")","").replace("-"," ").replace("=","").replace("+","").replace("{","").replace("}","").replace("[","").replace("]","").replace("'","").replace("\"","").replace(":","").replace(";","").replace("\\","").replace("/","").replace(">","").replace("<","").replace("`","").replace("~","").replace("_","")
         clean_string += word+" "
 
-    # print "clean string is", clean_string
-
     clean_list.extend(clean_string.split(" "))
 
-    # print "clean list is", clean_list
+
     return clean_list
 
 
 def get_words(profile, random_profiles_to_train, n_train):
     """Gets word (by parsing text) out of database based on random samples.
 
-        Remove from list common words that appear above threshold (n) times.
-        Returns a randomly generate list of features.
+    Remove from list common words that appear above threshold (n) times.
+    Returns a randomly generated list of features.
     """
     low_threshold, high_threshold = n_train*0.05, n_train*.5
 
     text_tuples = db.session.query(profile).filter(Profile.username.in_(random_profiles_to_train)).all()
-    # print "text_tuples is", text_tuples
-    # returns a list of tuples
+
     words_and_count = {}
 
     features_set = set()
 
     text_word_list = []
     for text in text_tuples:
-        # print "text is ", text
         text_word_list.extend(text[0].split(" "))
-        # print "text wor list is", text_word_list
-        # print "text word list", text_word_list
-    
-    print "pre clean in get words"
+
     clean_list = clean(text_word_list)
-    print "post clean in get words"
     
     filtered_words = [word for word in clean_list if word not in stopwords.words('english')]
     
@@ -68,18 +68,12 @@ def get_words(profile, random_profiles_to_train, n_train):
 
         words_and_count[word] = words_and_count.get(word,0)
         words_and_count[word] += 1
-            # print "word is", word
-
-    # print "words and count ", words_and_count
 
     for key, value in words_and_count.iteritems():
-        # print key
         if value <= high_threshold and value >= low_threshold:
             features_set.add(key)
 
     features = list(features_set)
-
-    # print "for", profile, "the features are", features
 
     return features
 
@@ -90,13 +84,9 @@ def convert(features, text_list):
     1 if has feature, 0 if doesn't
     """
 
-    # print "features is", features 
-
     boolean_input = []
 
     for text in text_list:
-        # print "text in text list is", text
-        # import pdb; pdb.set_trace()
 
         user = []
         clean_list = clean(text.split(" "))
@@ -108,15 +98,10 @@ def convert(features, text_list):
 
     boolean_input_array = np.array(boolean_input, dtype=int)
 
-    # print "shape of the array is", boolean_input_array.shape
     shape = boolean_input_array.shape
-        # for i in range(shape[0]):
-        # print "total non-0s", sum(boolean_input_array[i])
 
-    # X : array-like, shape=[n_samples, n_features]
-    # Input points.
-    # quantile : float, default 0.3
     return boolean_input_array
+
 
 def mean_shift_train(boolean_input_array, bandwidth_factor):
     """Conduct mean shift analysis on training data."""
@@ -128,7 +113,6 @@ def mean_shift_train(boolean_input_array, bandwidth_factor):
     # The following bandwidth can be automatically detected using
     bandwidth = estimate_bandwidth(X, quantile=.3, n_samples=n_samples)
     
-    # print "bandwith is", bandwidth
 
     ms = MeanShift(bandwidth=bandwidth * bandwidth_factor, cluster_all=True)
     ms.fit(X)
@@ -136,113 +120,41 @@ def mean_shift_train(boolean_input_array, bandwidth_factor):
     labels = ms.labels_   # all labels
     cluster_centers = ms.cluster_centers_    # all clusters
 
-    # print "cluster centers", list(cluster_centers)
-
-    # print "mean shift labels (training) is", list(labels)
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
 
-    # print "unique labels:", labels_unique
-    # print "labels:", labels
-    print "number of estimated clusters (training) : %d" % n_clusters_
-   
-
     return ms
 
+
 def mean_shift_predict(boolean_input_array, ms):
-    """Conduct mean shift analysis predictions on unlabeled data."""
+    """ Conduct mean shift analysis predictions on unlabeled data."""
 
     n_samples, n_features = boolean_input_array.shape
-    # seeds = boolean_input_array.shape
     X = boolean_input_array
-
-    # The following bandwidth can be automatically detected using
-    # bandwidth = estimate_bandwidth(X, quantile=quantile, n_samples=n_samples)
-    
-    # print "bandwith is", bandwidth
 
     clusters_for_ea_sample = ms.predict(X)
 
-    # print "cluster label, for ea sample:", clusters_for_ea_sample
-    # print "muke sure # labels predicted == n_samples:", len(list(clusters_for_ea_sample)) == n_samples
-    # print "number of unique labels, in predicted labels:", set(list(clusters_for_ea_sample))
-
-    ##### DLW TIRED CODE -- REMOVE LATER #####
     label_counts_dict = {}
     for lab in list(clusters_for_ea_sample):
         label_counts_dict[lab] = label_counts_dict.get(lab, 0)
         label_counts_dict[lab] += 1
 
-    # print "label counts dict is", label_counts_dict
-
-    ###################################
-
-    # labels = ms.labels_
     labels = ms.labels_
     cluster_centers = ms.cluster_centers_
 
-    # print "cluster centers", list(cluster_centers)
-
     labels_unique = np.unique(labels)
     n_clusters_ = len(labels_unique)
-
-    print "number of estimated clusters, (test should be same as training): %d" % n_clusters_
-
-    # import pdb; pdb.set_trace()
-
-    # import matplotlib.pyplot as plt
-    # from itertools import cycle
-
-    # # plt.figure(1)
-    # # plt.clf()
-
-    # colors = cycle('bgrcmykbgrcmykbgrcmykbgrcmyk')
-    # # colors is an iterator....never runs out, so the zip should be fine
-
-    # # print list(labels)
-    # # print set(labels)
-
-    # for k, col in zip(range(n_clusters_), colors):
-    #    print
-    #    my_members = labels == k
-    #    # print my_members
-    #    print "\nk", k    # number of clusters
-    #    cluster_center = cluster_centers[k]     # len of cluster_center == n_features
-    #    # print "cluster_center", cluster_center   # [-0.95635942 -1.01166653]
-    #    print "len is ok", len(cluster_center) == n_features
-    #    # print "min of all dimensions:", min(cluster_center)
-    #    # print "max of all dimensions:", max(cluster_center)
-       # print "average of all dimensions:", float(sum(cluster_center))/n_features
-
-
-
-
-    #    plt.plot(X[my_members, 0], X[my_members, 1], col + '.')
-    #    plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
-    #             markeredgecolor='k', markersize=14)
-    # plt.title('Estimated number of clusters: %d' % n_clusters_)
-    # plt.show()
-
-    # for dimension in cluster_center:   # 2 variables, plotted as x/y.  or # n_features
-    #    print "THIS DIMENSION,", dimension
 
     return clusters_for_ea_sample, cluster_centers
 
 
 def train_model_and_pickle(n_train):
-    """SAMPLE DATA, EXTRACT FEATURES, TRAIN MODEL"""
+    """ Sample the data, extract features, train the model """
 
     profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).all()
 
-    # random_to_train = sample([item for item in profile_section], n_train)
-
-    # random_profiles_to_train = [item[0] for item in random_to_train]
-
-    # Profile.usernames have ~14,000
-    # all_usernames = db.session.query(Profile.username).all()
-    # return a list of 14,000 tuples, each tup[0] is username
-
     random_to_train = sample(profile_section, n_train)
+
     # result is a much shorter list of tups. now extract only the usernames
     random_profiles_to_train = [item[0] for item in random_to_train]
 
@@ -260,9 +172,7 @@ def train_model_and_pickle(n_train):
     boolean_input_array_self_summary_train = convert(features_self_summary, text_list_self_summary_train)
     boolean_input_array_message_me_if_train = convert(features_message_me_if, text_list_message_me_if_train)
 
-    # print list(boolean_input_array_self_summary_train)
-    # print list(boolean_input_array_message_me_if_train)
-
+    # bandwidth is set here at 0.2
     ms_trained_object_self_summary = mean_shift_train(boolean_input_array_self_summary_train, 0.2)
     ms_trained_object_message_me_if = mean_shift_train(boolean_input_array_message_me_if_train, 0.2)
 
@@ -282,7 +192,7 @@ def train_model_and_pickle(n_train):
 
 
 def test_data():
-    """FOR EVERYTHING IN DATABASE, FIND AND SAVE LABELS"""
+    """ Finds and saves labels for users in databse """
 
     # get a list of all usernames
     all_usernames_tuple = db.session.query(Profile.username).all()
@@ -291,11 +201,11 @@ def test_data():
     increment = 1000
     start = 0
     count_users_both_labels = 0
-    len_to_input =0
+    len_to_input = 0
+
     while start < total_num_users:
         end = start + increment
-        print "start:", start
-        print "end:", end
+
         get_users = all_usernames[start:end]
         profile_section = db.session.query(Profile.username, Profile.self_summary, Profile.message_me_if).filter(Profile.username.in_(get_users)).all()
 
@@ -303,52 +213,6 @@ def test_data():
         count_users_both_labels += count
         len_to_input += input_
         start += increment
-
-    print "SUCCESS - ALL USERS ARE LABELED"
-    print "status: {}".format(float(count_users_both_labels)/len_to_input)
-
-# def print_cluster_words():
-
-#     ms_trained_object_self_summary = joblib.load('model_pkl/self_summary_pickle.pkl')
-#     ms_trained_object_message_me_if = joblib.load('model_pkl/message_me_if_pickle.pkl')
-
-#     self_summary_labels = ms_trained_object_self_summary.labels_
-#     message_me_if_labels = ms_trained_object_message_me_if.labels_
-
-#     features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
-#     features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
-
-#     self_summary_cluster_centers = ms_trained_object_self_summary.cluster_centers_
-#     message_me_if_cluster_centers = ms_trained_object_message_me_if.cluster_centers_
-
-
-#     features_self_summary_list = []
-#     for i in range(len(list(self_summary_labels))):
-#         features_self_summary_list.append(features_self_summary)
-
-#     #     print "features list", features_self_summary_list
-#     # print "cluster centers[0]", self_summary_cluster_centers[0]
-#     # print "message_me_if_labels[0]", message_me_if_labels[0]
-
-#     features_message_me_if_list = []
-#     for i in range(len(list(message_me_if_labels))):
-#         features_message_me_if_list.append(features_message_me_if)
-
-#     self_summary_combined = zip(self_summary_labels, features_self_summary_list, self_summary_cluster_centers)
-#     message_me_if_combined = zip(message_me_if_labels, features_message_me_if_list, message_me_if_cluster_centers)
-
-#     for item in self_summary_combined:
-#         print "item", item
-#         new_self_summary = SelfSummaryLabel(self_summary_label=item[0][0], feature=item[1][0], cluster_center=item[2][0])
-#         db.session.add(new_self_summary)
-
-#     for item in message_me_if_combined:
-#         new_message_me_if = MessageMeIfLabel(message_me_if_label=item[0][0], feature=item[1][0], cluster_center=item[2][000])
-#         db.session.add(new_message_me_if)
-
-#     db.session.commit()
- 
-        # print "MESSAGE ME IF: ", zipped_message_me_if
 
 
 def run_test_and_store(profile_section):
@@ -359,17 +223,10 @@ def run_test_and_store(profile_section):
     features_self_summary = open('model_pkl/features_self_summary.txt').read().rstrip("|").split("|")
     features_message_me_if = open('model_pkl/features_message_me_if.txt').read().rstrip("|").split("|")
 
-
     count_users_both_labels = 0
-
-
-
 
     sample_list = profile_section
 
-
-    # sample_list = profile_section[i*n : (i+1)*n]
-    # print "LEN OF SAMPLE LIST SHOULD BE 1000:", len(sample_list)
     usernames = [item[0] for item in sample_list]
 
     # functions to attain labels for self_summary
@@ -379,23 +236,15 @@ def run_test_and_store(profile_section):
 
     # functions to attain labels for message_me_if
     sample_list_message_me_if = [item[2] for item in sample_list]
-    print "preconvert"
     boolean_input_array_message_me_if = convert(features_message_me_if, sample_list_message_me_if)
-    print "postconver"
     labels_message_me_if, cluster_centers_message_me_if = mean_shift_predict(boolean_input_array_message_me_if, ms_trained_object_message_me_if)
 
- 
-
-        # for cluster in cluster_centers_self_summary:
-        #     print "cluster center is", cluster
     self_summary_dict = {}
     message_me_if_dict = {}    
 
 
     for i in range(len(cluster_centers_self_summary)):
         self_summary_dict[labels_self_summary[i]] = zip(features_self_summary, cluster_centers_self_summary[i])
-
-    print "self summary dict", self_summary_dict
 
     for key, value in self_summary_dict.iteritems():
         for feature, center in value:
@@ -416,7 +265,6 @@ def run_test_and_store(profile_section):
     zipped =  zip(usernames, labels_self_summary, labels_message_me_if)
     to_input = list(zipped)
     for entry in to_input:
-        # print "entry is", entry
         username, self_summary_label, message_me_if_label = entry
         new_input = MeanShiftAlgo(username=username, self_summary_label=self_summary_label, message_me_if_label=message_me_if_label)
 
@@ -425,10 +273,8 @@ def run_test_and_store(profile_section):
 
         db.session.add(new_input)
 
-    print datetime.datetime.now()
-     
-    print "how many users are non-zero for both labels:", count_users_both_labels
     db.session.commit()
+
     return count_users_both_labels, len(to_input)
 
 

@@ -1,3 +1,9 @@
+""" calculate_word_count.py
+
+One-function program to be use as a helper function to count most common word
+"""
+
+
 import operator
 def calculate_word_count(word_list):
     """Calculates count of most common word in a list of words

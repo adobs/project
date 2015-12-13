@@ -1,5 +1,12 @@
+"""
+send_message_map.py
+
+Uses the okcupyd library to send a message to a list of recipients.
+"""
+
 from okcupyd.session import Session
 from okcupyd.user import User
+
 
 def send(username, password, recipient_list, message):
     """If logged in, sends a message to a list of recipients"""

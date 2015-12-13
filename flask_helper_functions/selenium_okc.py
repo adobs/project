@@ -1,3 +1,13 @@
+"""
+selenium_okc.py
+
+The create_new_user function uses Selenium to go to www.okcupid.com and fill out
+all three pages required in order to successfully create an account.  There are
+various checks/safeguards along the way, that make sure that there are valid 
+entries, and that the given username/email hasn't been used before on OkCupid 
+and that the password is strong enough according to OkCupid.
+"""
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -6,12 +16,10 @@ import time
 from pyvirtualdisplay import Display
 from json import dumps
 
-# input password REMEMBER MUST BE AT LEAST 5 CHARACTERS
-# input username REMEMBER MUST BE LESS THAN 16 CHARACTERS
-# add check to zipcode 
 
-# ensure Firefox page doesn't open
 def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, email, screenname, password):
+    
+    # ensure Firefox page doesn't open
     display = Display(visible=0, size=(800, 600))
     display.start()
 
@@ -167,10 +175,6 @@ def create_new_user(orientation, gender, birthmonth, birthday, birthyear, zip, e
 
     display.stop()
     driver.quit()
+    
     return error_status
-    # driver.current_url
-    # printing positive results to the terminal
-    # print current_url
-    # if current_url == "https://www.okcupid.com/onboarding/steps":
-    #     print "F YEAH BABY"
 

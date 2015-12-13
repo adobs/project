@@ -32,14 +32,18 @@ This site shows you the profiles that I, *as a woman*, found.
 
 ### Dependencies and Compatibility
 
-* OSX.  Compatible as-is. 
+* OSX.  Install [PostgreSQL](http://postgresapp.com/). In the *.bash_profile* in your home directory, add the following line to the bottomw of the file: ```export PATH=/Applications/Postgres.app/Contents/Versions/9.4/bin/:$PATH```
 
 * Linux.  Install dependencies using commands below
 
 ```$ sudo apt-get install libxml2-dev libxslt1-dev python-dev libz-dev```
+
 ```$ sudo apt-get install xvfb```
+
 ```$ sudo apt-get install gfortran libopenblas-dev liblapack-dev```
+
 ```$ sudo apt-get install postgresql```
+
 ```$ sudo apt-get install libpq-dev```
 
 * Windows.  Not compatible.  *Feel free to install a virtual machine with a supported environment in order to access OKC+.  Example: [VirtualBox](https://www.virtualbox.org/wiki/Downloads).*
@@ -70,7 +74,7 @@ I used PostgreSQL to store the 58K profiles that I scraped.  I did not put my da
 
 Add zipcodes to the Zipcodes table of locations you would like to search.  Then edit the file seeding_profile_database.py and enter in your own OkCupid username and password where the code currently says ```session = Session.login('username', 'password')```. To begin populating the database, run ```$ python seeding_profile_database.py```.  After you are done, populate the remaining tables by running the following programs:
 
-```$ python querying_the_data.py```
+```$ python postgres_querying.py```
 
 ```$ python seed_adjective_table.py```
 
