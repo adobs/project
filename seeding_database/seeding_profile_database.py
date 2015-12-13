@@ -45,7 +45,6 @@ def search_profile(user, location, i):
             friday_night = profile.essays.friday_night
             private_admission = profile.essays.private_admission
             message_me_if = profile.essays.message_me_if
-            print profile.location
             new_profile = Profile(username=username, 
                                 age=age,
                                 location=usr_location,

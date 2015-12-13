@@ -32,21 +32,19 @@ def add_tests():
 
 @app.route("/")
 def home():
-    """Home page"""
-
+    """ Home page """
 
     return render_template("home.html")
 
 @app.route("/", methods=["POST"])
 def home_landing():
-    """Home page"""
-
+    """ Home page """
 
     return redirect("/")
 
 @app.route("/new-user-form")
 def new_user_form():
-    """Registration form"""
+    """ Registration form """
 
     months = xrange(1,13)
     days = xrange(1,32)
@@ -75,19 +73,18 @@ def create_a_new_user():
             session["screenname"] = screenname
             session["password"] = password   
             flash("You have successfully created a new user")
-    print results
     return results    
 
 
 @app.route("/login")
 def login_form():
-    """Login page"""
+    """ Login page """
 
     return render_template("login.html")
 
 @app.route("/login", methods=["POST"])
 def login():
-    """JSON - Login page"""
+    """ Gets JSON to see if user is able to log in """
 
     screenname = request.form.get("screenname")
     password = request.form.get("password")
@@ -102,7 +99,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    """Logout page"""
+    """ Logout page """
 
     session.clear()
     flash("You have been logged out")
@@ -112,18 +109,16 @@ def logout():
 
 @app.route("/okcbot")
 def bot_form():
-    """Input text for bot to send"""
+    """ OKCBot page"""
 
     locations = db.session.query(Location).all()
 
     return render_template("okcbot.html", locations=locations)
 
 
-
-
 @app.route("/okcbot", methods=["POST"])
 def bot():
-    """Input text for bot to send"""
+    """ Bot sends text based on parameters """
 
     minimum_age = int(request.form.get("minimum_age"))
     maximum_age = int(request.form.get("maximum_age"))
@@ -144,7 +139,7 @@ def bot():
 
 @app.route("/map")
 def map():
-    """Map page."""
+    """ Map page. """
 
     orientations = db.session.query(Orientation).order_by(Orientation.orientation).all()
     genders = db.session.query(Gender).order_by(Gender.gender).all()
@@ -154,7 +149,7 @@ def map():
 
 @app.route("/map-checked.json")
 def map_checked_json():
-    """Map page."""
+    """ Gets JSON - map marker/label inputs """
 
     orientation = request.args.get("orientation")
     orientation = re.sub('orientation=','',orientation)
@@ -197,7 +192,7 @@ def map_checked_json():
 
     
     compiled = get_compiled(logged_in, results)
-    print "end of json"
+
     return jsonify(compiled)
 
 
@@ -220,22 +215,15 @@ def send_messages_map():
 
 @app.route("/sankey")
 def d3_page():
-
+    """ D3 and Chart.js machine learning results """
 
     return render_template("sankey.html")
 
 
-@app.route("/sendjson")
-def send_json():
-
-    graph = json.dumps(create_json("quirky"))
-
-    print "json is", graph
-
-    return graph
 
 @app.route("/markov")
 def markov():
+    """ Change self-summary with Markov Chains page """
 
     orientations = db.session.query(Orientation).order_by(Orientation.orientation).all()
     genders = db.session.query(Gender).order_by(Gender.gender).all()
@@ -253,7 +241,8 @@ def markov():
 
 @app.route("/markov.json")
 def markov_json():
-    
+    """ Gets JSON - markov chains generated text """
+
     orientation = request.args.get("orientation")
     gender = request.args.get("gender")
     age = request.args.get("age")
@@ -276,9 +265,12 @@ def markov_json():
         text = make_text(chains)
 
         return text
+        
 
 @app.route("/markov-adjectives.json")
 def markov_adjective_json():
+    """ Gets JSON to populate adjective lists for dropdowns """
+
     orientation = request.args.get("orientation")
     gender = request.args.get("gender")
     age = request.args.get("age")
@@ -291,10 +283,13 @@ def markov_adjective_json():
                     Profile.age>=age_min).filter(Profile.age<=age_max).order_by(Adjective.adjective).all()
 
     adjective_list = [adjective[0] for adjective in adjectives]
+
     return json.dumps(adjective_list)
+
 
 @app.route("/add-to-profile.json", methods=["POST"])
 def add_to_profile_json():
+    """ Adds Markov Chain self-summary to OkCupid profile """
 
     text = request.form.get("text")
 
@@ -306,24 +301,30 @@ def add_to_profile_json():
 
     return "success"
 
+
 @app.route("/source.json")
 def get_words_for_source():
+    """ Gets JSON to populate words for source """
 
     source_label = request.args.get("source")
 
     source = create_self_summary_words(source_label)
     return json.dumps(source)
 
+
 @app.route("/target.json")
 def get_words_for_target():
+    """ Gets JSON to populate words for target """
 
     target_label = request.args.get("target")
 
     target = create_message_me_if_words(target_label)
     return json.dumps(target)
 
+
 @app.route("/source-chart.json")
 def get_stats_for_source_chart():
+    """ Gets JSON with source informaiton for CHart.js charts """
 
     source_label = request.args.get("source")
 
@@ -343,10 +344,11 @@ def get_stats_for_source_chart():
 
     return json.dumps(stats)
 
+
 @app.route("/target-chart.json")
 def get_stats_for_target_chart():
+    """ Gets JSON with target information for Chart.js charts """
 
-    print "at beginning of target"
     target_label = request.args.get("target")
 
     gender_element = request.args.get("genderElement")
@@ -363,7 +365,6 @@ def get_stats_for_target_chart():
             "orientation": {"identifier": orientation_element, "dataPoints": orientation, "commentInfo":orientation_comment_info, "commentElement": orientation_comment_element}, 
             "age": {"identifier": age_element, "dataPoints": age, "commentInfo": age_comment_info, "commentElement": age_comment_element}}
 
-    # print "stats are", stats
     
     return json.dumps(stats)
 
@@ -372,7 +373,6 @@ if __name__ == "__main__":
     app.debug = True
     connect_to_db(app)
 
-    # DebugToolbarExtension(app)
     app.run() 
     import sys
     if sys.argv[-1] == "jstest":

@@ -1,9 +1,13 @@
+"""
+model.py
+
+Sets up PostgreSQL database with tables to be seeded using the SQLAlchemy ORM.
+"""
+
 from flask_sqlalchemy import SQLAlchemy 
 from datetime import datetime
 from sqlalchemy.dialects import postgresql
-# This is the connection to the SQLite database; we're getting this through
-# the Flask-SQLAlchemy helper library. On this, we can find the `session`
-# object, where we do most of our interactions (like committing, etc.)
+
 
 db = SQLAlchemy()
 
@@ -12,7 +16,7 @@ db = SQLAlchemy()
 # Model definitions
 
 class Profile(db.Model):
-    """Profile information."""
+    """ Profile information """
 
     __tablename__ = "profiles"
 
@@ -33,8 +37,9 @@ class Profile(db.Model):
     private_admission = db.Column(db.Text, nullable=True)
     message_me_if = db.Column(db.Text, nullable=True)
 
+
 class MeanShiftAlgo(db.Model):
-    """Mean shift algortithm resulting labels for user"""
+    """ Mean shift algortithm resulting labels for user """
 
     __tablename__ = "meanshiftalgos"
 
@@ -44,7 +49,9 @@ class MeanShiftAlgo(db.Model):
 
     profile = db.relationship('Profile', backref=db.backref('meanshiftalgos'))
 
+
 class SelfSummaryLabel(db.Model):
+    """ Features for self-summary labels """
 
     __tablename__ = "selfsummarylables"
 
@@ -53,8 +60,8 @@ class SelfSummaryLabel(db.Model):
     feature = db.Column(db.Text)
 
 
-
 class MessageMeIfLabel(db.Model):
+    """ Features for message-me-if labels """
 
     __tablename__ = "messagemeiflabels"
 
@@ -63,23 +70,8 @@ class MessageMeIfLabel(db.Model):
     feature = db.Column(db.Text)
 
 
-
-
-
-class DbscanAlgo(db.Model):
-    """Mean shift algortithm resulting labels for user"""
-
-    __tablename__ = "dbscanalgos"
-
-    username = db.Column(db.Text, db.ForeignKey('profiles.username'), primary_key=True)
-    self_summary_label = db.Column(db.Integer, nullable=True)
-    message_me_if_label = db.Column(db.Integer, nullable=True)
-
-    profile = db.relationship('Profile', backref=db.backref('dbscanalgos'))
-
-
 class OldAdjective(db.Model):
-    """List of adjectives per user"""
+    """ List of adjectives per user, stored as an array """
 
     __tablename__ = "oldadjectives"
 
@@ -89,9 +81,8 @@ class OldAdjective(db.Model):
     profile = db.relationship('Profile', backref=db.backref('oldadjectives'))
 
 
-
 class Adjective(db.Model):
-    """List of adjectives per user"""
+    """ Adjectives per user """
 
     __tablename__ = "adjectives"
 
@@ -103,7 +94,7 @@ class Adjective(db.Model):
 
 
 class Orientation(db.Model):
-    """List of orientations in database"""
+    """ List of orientations in database """
 
     __tablename__ = "orientations"
 
@@ -112,8 +103,9 @@ class Orientation(db.Model):
 
     profiles = db.relationship("Profile", secondary="usernameorientations", lazy="dynamic", backref=db.backref("orientations", lazy="dynamic"))
 
+
 class UsernameOrientation(db.Model):
-    """User matched up with their orientation"""
+    """ User matched up with their orientation """
 
     __tablename__ = "usernameorientations"
 
@@ -121,12 +113,9 @@ class UsernameOrientation(db.Model):
     username = db.Column(db.Text, db.ForeignKey("profiles.username"), nullable=False)
     orientation = db.Column(db.Text, db.ForeignKey("orientations.orientation"), nullable=False)
 
-    # orientations = db.relationship('Orientation', backref=db.backref("usernameorientations", lazy='dynamic'))
-    # profile = db.relationship('Profile', backref=db.backref("usernameorientations",lazy='dynamic'))
-
 
 class Gender(db.Model):
-    """List of genders in database"""
+    """ List of genders in database """
 
     __tablename__ = "genders"
 
@@ -136,7 +125,7 @@ class Gender(db.Model):
 
 
 class UsernameGender(db.Model):
-    """User matched up with their gender"""
+    """ User matched up with their gender """
 
     __tablename__ = "usernamegenders"
 
@@ -144,12 +133,9 @@ class UsernameGender(db.Model):
     username = db.Column(db.Text, db.ForeignKey('profiles.username'), nullable=False)
     gender = db.Column(db.Text, db.ForeignKey('genders.gender'), nullable=False)
 
-    # genders = db.relationship('Gender', backref=db.backref('usernamegenders', lazy='dynamic'))
-    # profile = db.relationship('Profile', backref=db.backref('usernamegenders', lazy='dynamic'))
-
 
 class Location(db.Model):
-    """List of locations and lat/long"""
+    """ List of locations and lat/long """
 
     __tablename__ = "locations"
 
@@ -161,28 +147,23 @@ class Location(db.Model):
 
 
 class Zipcode(db.Model):
-    """List of zipcodes."""
+    """ List of zipcodes """
 
     __tablename__ = "zipcodes"
 
     zipcodes = db.Column(db.Text, primary_key=True)
 
 
-
 def connect_to_db(app):
-    """Connect the database to our Flask app."""
+    """ Connect the database to our Flask app """
 
-    # Configure to use our SQLite database
+    # Configure to use our PostgreSQL database
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///profiles_final'
     db.app = app
     db.init_app(app)
 
 
 if __name__ == "__main__":
-    # As a convenience, if we run this module interactively, it will leave
-    # you in a state of being able to work with the database directly.
     from flask_app import app
-
     connect_to_db(app)
-    print "Connected to DB."
     db.create_all()
