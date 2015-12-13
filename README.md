@@ -32,7 +32,7 @@ This site shows you the profiles that I, *as a woman*, found.
 
 ### Dependencies and Compatibility
 
-* OSX.  Install [PostgreSQL](http://postgresapp.com/). In the *.bash_profile* in your home directory, add the following line to the bottomw of the file: ```export PATH=/Applications/Postgres.app/Contents/Versions/9.4/bin/:$PATH```
+* OSX.  Install [PostgreSQL](http://postgresapp.com/). In the *.bash_profile* in your home directory, add the following line to the bottom of the file: ```export PATH=/Applications/Postgres.app/Contents/Versions/9.4/bin/:$PATH```
 
 * Linux.  Install dependencies using commands below
 
